@@ -1,5 +1,5 @@
-Haskell for Readers
-==================
+% Haskell for Readers
+% Joachim Breitner
 
 Welcome to the lecture series “Haskell for Readers”. This workshop is uniquely tailored to those who need to *read*, rather than *write* Haskell code: auditors, scientists, managers, testers etc.
 
@@ -10,6 +10,8 @@ On the other hand, less words will be spent on how to approach writing the progr
 Nevertheless it is hard to understand a programming paradigm without writing any code, so there will some amount of hands-on work to be done, especially early on, when we start with a introduction to basic functional programming.
 
 I expect the audience to be familiar with programming and computer science in general.
+
+The exercises are all very small, in the order of minutes, and meant to be done along the way. Sometimes later material refers to their results.
 
 The basics of functional programming
 ------------------------------------
@@ -272,8 +274,7 @@ By the way, you can use infix operator syntax in function definitions as well:
 x `divides` y = x `div` y == 0
 ```
 
-Recursion
----------
+### Recursion
 
 We already saw that one function that we defined could call another. But the real power of general computation comes when a function can call itself, i.e. when we employ recursion. Recursion is a very fundamental technique in functional programming, much more so than loops or iterators or such.
 
@@ -332,7 +333,7 @@ The fact that we can replace equals with equals does not change just because we 
 
 ### Higher order functions
 
-We created functions when we took expressions that followed a certain pattern, and abstracted over a number that occurred therein. But the thing we can abstract over does not have to be a simple number. It could also be a function! 
+We created functions when we took expressions that followed a certain pattern, and abstracted over a number that occurred therein. But the thing we can abstract over does not have to be just a simple number. It could also be a function! 
 
 Consider the task of calculating the number of digits in the number of digits of a number:
 ```
@@ -348,7 +349,7 @@ Prelude> countDigits (countDigits (15^15))
 2
 ```
 
-Clearly, we can abstract over over the argument here:
+Clearly, we can abstract over the argument here:
 ```
 Prelude> countCountDigits n = countDigits (countDigits n)
 Prelude> countCountDigits (10^123)
@@ -376,7 +377,7 @@ Prelude> twice countDigits (15^15)
 Prelude> twice sumDigits (15^15)
 18
 ```
-This is our first *higher order function*, and it is called as such because it is a function that take another function as an argument. More precisely, it is called a second-order function, because it takes a normal, i.e. first-order function, as an argument. Abstracting over a second order function yields a third order function, and so on. Up to [sixth-order functions](https://doi.org/10.1017/S0956796898003001) are seen in the wild.
+This is our first *higher order function*, and it is called so because it is a function that take another function as an argument. More precisely, it is called a second-order function, because it takes a normal, i.e. first-order function, as an argument. Abstracting over a second order function yields a third order function, and so on. Up to [sixth-order functions](https://doi.org/10.1017/S0956796898003001) are seen in the wild.
 
 If you look at the last two lines, we again see a common pattern. And abstracting over that, we recover very nice and declarative definitions for `countCountDigits` and `sumSumDigits`:
 ```
@@ -411,6 +412,12 @@ To recapitulate: We took two functions that were doing somehow related things, a
 This single mechanism -- abstracting over functions -- can [replace thick volumes full of design patterns](https://www.voxxed.com/2016/04/gang-four-patterns-functional-light-part-1/) in non-functional programming paradigms.
 
 Note that if one would have to abstract `countDigits` and `sumDigits` to `sumDigitsWith` in practice, one would probably not rewrite them first with `id` etc., but just look at them and come up with `sumDigitsWith` directly.
+
+**Exericse:**
+Write a (recursive) function `fixEq` so that `fixEq f x` repeatedly applies `f` to `x` until the result does not change.
+
+**Exercise:**
+Use this function and `countDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `countDigits` to `x` results in 3 or 9.
 
 ### Anonymous functions
 
@@ -534,10 +541,187 @@ In fact, even `if … then … else` could just be a normal function with three 
 Types
 -----
 
-What is the deal about types?
+In the first section, we have seen how functional programming opens the way to abstraction, and to condense independent concerns into separate pieces of code. This is a very powerful tool for modularity, and to focus on the relevant part of a problem, while keeping the bookkeeping out of sight. But powerful is also dangerous -- using a higher order function correctly without any aid, can be mind-bending.
 
-Basic types, function type, tuples.
+Whenever we write functions like in the previous section, we have an idea in our head about what their arguments are -- are they just numbers, or are they functions, and what kind of functions -- and what they return. It is obvious to us that writing `twice isEven` does not make sense, because `isEven` returns `True` or `False`, but expects a number, so it cannot be applied to itself.
+
+This is all simple and obvious, but it is a lot to keep in your head as the code grows larger, and even more so once the code is changing and there are more people working on it.  So to keep this power and complexity managable, Haskell has a strong static type system, which is essentially a way for you to communicate with the compiler about these ideas you have in your head. You can ask the compiler “what do you know about this function? what can it take, what kind of things does it return?”. And you can tell the compiler “this function ought to take this and return that (and please tell me if you disagree)”.
+
+In fact, many Haskeller prefer to do type-driven development: First think about and write down the type of the function they need to create, and *then* think about implementing them.
+
+Besides communicating with the compiler, types are also crucial in communicating with your fellow developers and/or users of your API. For many functions, the type alone, or the type and the name, is sufficient to tell you what it does.
+
+### Tooling interlude: Editing files
+
+At this point, we should switch from working exclusively in the REPL to writing an actual Haskell file. We can start by creating a file `Types.hs`, and put in the code from the previous section:
+
+```haskell
+isRound x = x `mod` 10 == 0
+hasLastDigit x y = x `div` 10 == y
+isHalfRound x = x `hasLastDigit` 0 || x `hasLastDigit` 5
+x `divides` y = x `div` y == 0
+twice f x = f (f x)
+countCountDigits x = twice countDigits x
+sumSumDigits x = twice sumDigits x
+sumDigitsWith f n = if n < 10 then f n else sumDigitsWith f (n `div` 10) + f (n `mod` 10)
+countDigits = sumDigitsWith (\d -> 1)
+sumDigits = sumDigitsWith (\d -> d)
+fixEq f x = if f x == x then x else fixEq f (f x)
+isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
+
+```
+
+We can load this file into `ghci` by either starting it with `ghci Types.hs` or by typing `:load Types.hs`. After you change and save the file, you can reload with `:reload` (or simply `:r`)
+
+### Basic types
+
+As I mentioned before, you can chat with the compiler about the types of things, and ask what it thinks they are. We can do that with the `:type` (or `:t`) command:
+
+```
+*Main> :t sumDigits
+sumDigits :: Integer -> Integer
+```
+
+Here, GHC tells us the type of `sumDigits`, in the form of a *type annotation*, i.e. a term (`sumDigits`) followed by two colons, followed by its type. The type itself tells us that `sumDigits` is a function (as indicated by the arrow) that takes an `Integer` as an argument and returns an `Integer` as a result. Which greatly matches our expectation!
+
+Instead of asking GHC for the type, we can also specify it, simply by adding the line
+```haskell
+sumDigits :: Integer -> Integer
+```
+to the file (commonly directly above the function definition, rarely all bundled up in the beginning).
+
+If we insert a type annotation that does not match what we wrote in the code, for example, if we added
+```haskell
+isRound :: Integer -> Integer
+```
+we would get an error message like
+```
+types.hs:2:13: error:
+    • Couldn't match expected type ‘Integer’ with actual type ‘Bool’
+    • In the expression: x `mod` 10 == 0
+      In an equation for ‘isRound’: isRound x = x `mod` 10 == 0
+  |
+2 | isRound x = x `mod` 10 == 0
+  |             ^^^^^^^^^^^^^^^
+```
+
+Note that the compiler believes the type signature, and complains about the code, not the other way around.
+
+The error message mentions a type `Bool` which, as you can guess, is the type of boolean expressions, e.g. `True` and `False`. With this knowledge, we can write the correct type signature for `isRound`:
+
+```haskell
+isRound :: Integer -> Bool
+```
+
+### Polymorphism
+
+Let us consider `twice` for a moment, and think about what expect from its type. It is a function that takes two arguments, the and the first ought to be a function itself... and here is how GHC writes this:
+```
+*Main> :t twice
+twice :: (t -> t) -> t -> t
+```
+
+From this example, we learn that
+ * the type of functions with multiple arguments is written using multiple arrows,
+ * the function arrow can just as occur inside an argument, namely when an argument itself is a function.
+
+But what is this type `t`? There is not, actually, a type called `t`. Instead, this is a *type variable*, meaning that the function `twice` can be used with any type. Any lower-case identifier in a type is a type variable (not just `t`), and concrete types are always upper-case.
+
+Here we can see that we can use `twice` with numbers, booleans, and even with functions:
+```
+*Main> twice countDigits (99^99)
+3
+*Main> twice not True
+True
+*Main> twice twice countDigits (99^99)
+1
+```
+
+What does not work is passing a function to `twice` that works on numbers, but then pass a `Bool`:
+```
+*Main> twice countDigits True
+
+<interactive>:12:19: error:
+    • Couldn't match expected type ‘Integer’ with actual type ‘Bool’
+    • In the second argument of ‘twice’, namely ‘True’
+      In the expression: twice countDigits True
+      In an equation for ‘it’: it = twice countDigits True
+```
+
+In other words: The `t`s in the type of `twice` can become *any* type, but it has the be the same type everywhere.
+
+**Exercise:** What do you think is the type of `id`?
+
+If we ask for the type of the function `const`, we see two different type variables:
+```
+*Main> :t const
+const :: a -> b -> a
+```
+And here we can indeed instantiate them at different types:
+```
+*Main> :t const True 1
+const True 1 :: Bool
+```
+
+### Constrained types (a first glimpse)
+
+There are more polymorphic functions in our initial set, for example `fixEq`:
+```
+*Main> :t fixEq
+fixEq :: Eq t => (t -> t) -> t -> t
+```
+The part after the `=>` is what we expect: two arguments, the first a function, all the same types, just like with `twice`. The part before the `=>` is new: It is a *constraint*, and it limits which types `t` can be instantiated with. Remember that `fixEq` uses `(==)` to check if the value has stabilized. But not all values can be compared for equality! (In particular, functions cannot). So `fixOn` does not work with any type, but only those that support equality. This is what `Eq t` indicates, and indeed we get an error message when we try to do it wrongly:
+```
+*Main> fixEq twice not True
+
+<interactive>:27:1: error:
+    • No instance for (Eq (Bool -> Bool)) arising from a use of ‘fixEq’
+        (maybe you haven't applied a function to enough arguments?)
+    • In the expression: fixEq twice not True
+      In an equation for ‘it’: it = fixEq twice not True
+```
+This `Eq` thing is not some built-in magic, but rather a *type class*, another very powerful and important feature of Haskell, which we will dive into separately later.
+
+Other functions in our list are polymorphic where we may not have expected it:
+```
+*Main> :t sumDigitsWith
+sumDigitsWith :: (Integral a1, Num a2) => (a1 -> a2) -> a1 -> a2
+```
+This is not the type we might have expected! This is because Haskell supports different numeric types, and uses type classes to overload the numeric operations. But remember that typing is a conversation: We can simply tell GHC that we want a different (more specific) type for `sumDigitsWith`, by adding
+```haskell
+sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
+```
+to our file. In fact, in practice one *always* writes full type signatures for all top-level definitions, so this should be less of a problem for Haskell readers.
+
+### Parametricity.
+
+One obvious use for such polymorphism is to write code once, and use it at different types. But there is another great advantage of polymorphic functions, even if we only ever intend to instantiate the type variables with the same type, and that is reasoning by parametricity.
+
+In a function with a polymorphic type like `twice` there is not a lot we can do with the parameters. Sure, we can apply `f` to `x`, and maybe apply `f` more than once. But that is just about all we can do: Because `x` can have an arbitrary type, we cannot do arithmetic with it, we cannot print it, we cannot even compare it to other values of type `x`.
+
+This severly restricts what `twice` can do at all … but on the other hand means that just from looking at the type signature of `twice` we alredy know a lot about what it does.
+
+A very simple example for that is the function `id`, with type `a -> a`. *Any* function of this type will either
+* return its argument (i.e. be the identity function),
+* return never (i.e. go into an infinite loop), or
+* raise an exception.
+
+**Exercise:**
+A great example for the power of polymorphism is the following type signature:
+```
+(a -> b -> c) -> b -> a -> c
+```
+There is a function of that type in the standard library. Can you tell what it does? Can you guess its name? You can use a type-based search engline like [Hoogle](https://www.haskell.org/hoogle/?hoogle=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c) to find the function.
+
+### Structured types
+
 
 Algebraic data types.
+
+Haddock-documentation.
+
+Outlook: More type saftey (refinement types, e.g. for natural numbers)
+
+
 
 
