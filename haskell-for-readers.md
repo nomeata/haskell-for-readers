@@ -14,15 +14,16 @@ I expect the audience to be familiar with programming and computer science in ge
 The exercises are all very small, in the order of minutes, and meant to be done along the way. Sometimes later material refers to their results.
 
 The basics of functional programming
-------------------------------------
+====================================
 
 Functional program is the the art of thinking about *data* and how the new data is calculated from old data, rather than thinking about how to *modify* data.
 
-### Expressions
+Expressions
+-----------
 
 The simplest form of data are numbers, and basic arithmetic is one way of creating new numbers from old numbers.
 
-#### Numbers and arithmetic operators
+### Numbers and arithmetic operators
 
 To play around with this, start the Haskell REPL (“read-eval-print-loop”) by running `ghci` (or maybe on [tryhaskell.org](https://tryhaskell.org/)), and enter some numbers, and some of the usual arithmetic operations:
 
@@ -74,7 +75,7 @@ Let us ignore the first line (which is the type signature): The `r` in `infixr` 
 
 **Exercise:** Look up the precedences of the other arithmetic operations, and see how that corresponds to the PEMDAS rule.
 
-#### Applying Functions
+### Applying Functions
 
 So far we have a calculator (which is not useless, I sometimes use `ghci` as a calculator). But to get closer to functional programming, let us look at some functions that are already available to use.
 
@@ -174,7 +175,7 @@ What is the result of
 Prelude> (-) 5 $ div 16 $ (-) 10 $ 4 `div` 2
 ```
 
-#### Booleans and branching
+### Booleans and branching
 
 Some cryptographers might be happy to only write code that always does the same thing (yay, no side effects), but most of us pretty quickly want to write branching code.
 
@@ -207,7 +208,8 @@ Prelude> if -5 < 0 then 0 else 1
 
 The use of `if … then … else …` is actually not the most idiomatic way to code decisions in Haskell, and we will come back to that point later, but for now it is good enough.
 
-### Function abstraction
+Function abstraction
+--------------------
 
 Assume you want to check a bunch of numbers as to whether they are multiples of 10 (so called “round numbers” in German). You can do that using `mod` and `(==)`:
 ```
@@ -274,7 +276,8 @@ By the way, you can use infix operator syntax in function definitions as well:
 x `divides` y = x `div` y == 0
 ```
 
-### Recursion
+Recursion
+---------
 
 We already saw that one function that we defined could call another. But the real power of general computation comes when a function can call itself, i.e. when we employ recursion. Recursion is a very fundamental technique in functional programming, much more so than loops or iterators or such.
 
@@ -331,7 +334,8 @@ The fact that we can replace equals with equals does not change just because we 
 
 **Exercise:** Write the function `digitSum` that sums up the digit of a natural number.
 
-### Higher order functions
+Higher order functions
+----------------------
 
 We created functions when we took expressions that followed a certain pattern, and abstracted over a number that occurred therein. But the thing we can abstract over does not have to be just a simple number. It could also be a function! 
 
@@ -413,13 +417,14 @@ This single mechanism -- abstracting over functions -- can [replace thick volume
 
 Note that if one would have to abstract `countDigits` and `sumDigits` to `sumDigitsWith` in practice, one would probably not rewrite them first with `id` etc., but just look at them and come up with `sumDigitsWith` directly.
 
-**Exericse:**
+**Exercise:**
 Write a (recursive) function `fixEq` so that `fixEq f x` repeatedly applies `f` to `x` until the result does not change.
 
 **Exercise:**
 Use this function and `countDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `countDigits` to `x` results in 3 or 9.
 
-### Anonymous functions
+Anonymous functions
+-------------------
 
 We defined a function `always1`, but it seems a bit silly to give a name to such a specialized and small concept. Therefore, Haskell allows us to define *anonymous functions* on the fly. The syntax is a backslash, followed by the parameter (or parameters), followed by the body of the function. So we can define `countDigits` and `sumDigits` without any helper functions like this:
 
@@ -430,7 +435,8 @@ Prelude> sumDigits n = sumDigitsWith (\d -> d) n
 
 These are also called *lambda abstractions*, because they are derived from the Lambda calculus, and the backslash is a poor imitation of the Greek letter lambda (λ).
 
-### Higher-Order function definition
+Higher-Order function definition
+--------------------------------
 
 Lets look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
 
@@ -450,13 +456,15 @@ Prelude> countCountDigits = twice countCountDigits
 Prelude> sumSumDigits = twice sumDigits
 ```
 
-### Currying
+Currying
+--------
 
 We have already seen functions that *receive* a function as an argument. The way we use `twice` or `sumDigitsWith` here, we can think of them as a function that *return* functions. And this brings us to the deep and beautiful explanation we write multiple arguments to functions the way we do: Because really, every function only ever has one argument, and returns another one.
 
 We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function that takes one argument (the function `f`), and returns another function, that then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
 
-### The composition operator
+The composition operator
+------------------------
 
 Because writing code that passes functions around and modifies them (like in `twice` or `sumDigitsWith`) is so important in this style of programming, I should at this point introduce the composition operator. It is already pre-defined, but we can define it ourselves:
 ```
@@ -491,7 +499,8 @@ where again, the actual value is no longer the emphasis, but rather the function
 The value `x` is sometimes called the point (as in geometry), and this style of programming is called *points-free* (or sometimes *pointless*).
 
 
-### Laziness
+Laziness
+--------
 
 As a final bit in this section, let’s talk about laziness. Most often this can be ignored when reading Haskell code, and in general laziness is not as important (or as bad) as some people say it is. But it plays an important role in Haskell’s support for abstraction, so let’s briefly look at it.
 
@@ -539,19 +548,20 @@ Only with laziness can we easily abstract not only over computations, but even o
 In fact, even `if … then … else` could just be a normal function with three parameters, defined somewhere in the standard library. The fact that there is special syntax for it is pure convenience -- which, again, is not the case in strict languages.
 
 Types
------
+=====
 
 In the first section, we have seen how functional programming opens the way to abstraction, and to condense independent concerns into separate pieces of code. This is a very powerful tool for modularity, and to focus on the relevant part of a problem, while keeping the bookkeeping out of sight. But powerful is also dangerous -- using a higher order function correctly without any aid, can be mind-bending.
 
 Whenever we write functions like in the previous section, we have an idea in our head about what their arguments are -- are they just numbers, or are they functions, and what kind of functions -- and what they return. It is obvious to us that writing `twice isEven` does not make sense, because `isEven` returns `True` or `False`, but expects a number, so it cannot be applied to itself.
 
-This is all simple and obvious, but it is a lot to keep in your head as the code grows larger, and even more so once the code is changing and there are more people working on it.  So to keep this power and complexity managable, Haskell has a strong static type system, which is essentially a way for you to communicate with the compiler about these ideas you have in your head. You can ask the compiler “what do you know about this function? what can it take, what kind of things does it return?”. And you can tell the compiler “this function ought to take this and return that (and please tell me if you disagree)”.
+This is all simple and obvious, but it is a lot to keep in your head as the code grows larger, and even more so once the code is changing and there are more people working on it.  So to keep this power and complexity manageable, Haskell has a strong static type system, which is essentially a way for you to communicate with the compiler about these ideas you have in your head. You can ask the compiler “what do you know about this function? what can it take, what kind of things does it return?”. And you can tell the compiler “this function ought to take this and return that (and please tell me if you disagree)”.
 
-In fact, many Haskeller prefer to do type-driven development: First think about and write down the type of the function they need to create, and *then* think about implementing them.
+In fact, many Haskellers prefer to do type-driven development: First think about and write down the type of the function they need to create, and *then* think about implementing them.
 
 Besides communicating with the compiler, types are also crucial in communicating with your fellow developers and/or users of your API. For many functions, the type alone, or the type and the name, is sufficient to tell you what it does.
 
-### Tooling interlude: Editing files
+Tooling interlude: Editing files
+--------------------------------
 
 At this point, we should switch from working exclusively in the REPL to writing an actual Haskell file. We can start by creating a file `Types.hs`, and put in the code from the previous section:
 
@@ -573,7 +583,8 @@ isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumD
 
 We can load this file into `ghci` by either starting it with `ghci Types.hs` or by typing `:load Types.hs`. After you change and save the file, you can reload with `:reload` (or simply `:r`)
 
-### Basic types
+Basic types
+-----------
 
 As I mentioned before, you can chat with the compiler about the types of things, and ask what it thinks they are. We can do that with the `:type` (or `:t`) command:
 
@@ -607,13 +618,14 @@ types.hs:2:13: error:
 
 Note that the compiler believes the type signature, and complains about the code, not the other way around.
 
-The error message mentions a type `Bool` which, as you can guess, is the type of boolean expressions, e.g. `True` and `False`. With this knowledge, we can write the correct type signature for `isRound`:
+The error message mentions a type `Bool` which, as you can guess, is the type of Boolean expressions, e.g. `True` and `False`. With this knowledge, we can write the correct type signature for `isRound`:
 
 ```haskell
 isRound :: Integer -> Bool
 ```
 
-### Polymorphism
+Polymorphism
+------------
 
 Let us consider `twice` for a moment, and think about what expect from its type. It is a function that takes two arguments, the and the first ought to be a function itself... and here is how GHC writes this:
 ```
@@ -627,7 +639,7 @@ From this example, we learn that
 
 But what is this type `t`? There is not, actually, a type called `t`. Instead, this is a *type variable*, meaning that the function `twice` can be used with any type. Any lower-case identifier in a type is a type variable (not just `t`), and concrete types are always upper-case.
 
-Here we can see that we can use `twice` with numbers, booleans, and even with functions:
+Here we can see that we can use `twice` with numbers, Booleans, and even with functions:
 ```
 *Main> twice countDigits (99^99)
 3
@@ -663,14 +675,15 @@ And here we can indeed instantiate them at different types:
 const True 1 :: Bool
 ```
 
-### Constrained types (a first glimpse)
+Constrained types (a first glimpse)
+-----------------------------------
 
 There are more polymorphic functions in our initial set, for example `fixEq`:
 ```
 *Main> :t fixEq
 fixEq :: Eq t => (t -> t) -> t -> t
 ```
-The part after the `=>` is what we expect: two arguments, the first a function, all the same types, just like with `twice`. The part before the `=>` is new: It is a *constraint*, and it limits which types `t` can be instantiated with. Remember that `fixEq` uses `(==)` to check if the value has stabilized. But not all values can be compared for equality! (In particular, functions cannot). So `fixOn` does not work with any type, but only those that support equality. This is what `Eq t` indicates, and indeed we get an error message when we try to do it wrongly:
+The part after the `=>` is what we expect: two arguments, the first a function, all the same types, just like with `twice`. The part before the `=>` is new: It is a *constraint*, and it limits which types `t` can be instantiated with. Remember that `fixEq` uses `(==)` to check if the value has stabilized. But not all values can be compared for equality! (In particular, functions cannot). So `fixEq` does not work with any type, but only those that support equality. This is what `Eq t` indicates, and indeed we get an error message when we try to do it wrongly:
 ```
 *Main> fixEq twice not True
 
@@ -693,15 +706,17 @@ sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
 ```
 to our file. In fact, in practice one *always* writes full type signatures for all top-level definitions, so this should be less of a problem for Haskell readers.
 
-### Parametricity.
+Parametricity.
+--------------
 
 One obvious use for such polymorphism is to write code once, and use it at different types. But there is another great advantage of polymorphic functions, even if we only ever intend to instantiate the type variables with the same type, and that is reasoning by parametricity.
 
 In a function with a polymorphic type like `twice` there is not a lot we can do with the parameters. Sure, we can apply `f` to `x`, and maybe apply `f` more than once. But that is just about all we can do: Because `x` can have an arbitrary type, we cannot do arithmetic with it, we cannot print it, we cannot even compare it to other values of type `x`.
 
-This severly restricts what `twice` can do at all … but on the other hand means that just from looking at the type signature of `twice` we alredy know a lot about what it does.
+This severely restricts what `twice` can do at all … but on the other hand means that just from looking at the type signature of `twice` we already know a lot about what it does.
 
 A very simple example for that is the function `id`, with type `a -> a`. *Any* function of this type will either
+
 * return its argument (i.e. be the identity function),
 * return never (i.e. go into an infinite loop), or
 * raise an exception.
@@ -711,17 +726,179 @@ A great example for the power of polymorphism is the following type signature:
 ```
 (a -> b -> c) -> b -> a -> c
 ```
-There is a function of that type in the standard library. Can you tell what it does? Can you guess its name? You can use a type-based search engline like [Hoogle](https://www.haskell.org/hoogle/?hoogle=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c) to find the function.
+There is a function of that type in the standard library. Can you tell what it does? Can you guess its name? You can use a type-based search engine like [Hoogle](https://www.haskell.org/hoogle/?hoogle=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c) to find the function.
 
-### Structured types
+Algebraic Data types
+--------------------
+
+The function type is very expressive, and one can model many data structures purely with functions. But of course it is more convenient to use dedicated data structures. There are a number of data structure types that come with the standard library, in particular tuples, lists, the `Maybe` type. But it is more instructive to start defining our own.
+
+We can declare new data types using the `data` keyword, the name of the type, the `=` sign, and then a list of *constructors*.
+
+### Enumerations
+
+In the simplest case, we can use this to declare an enumeration type:
+
+```haskell
+data Suit = Diamonds | Clubs | Hearts | Spades
+```
+
+From now on, we can use the constructors, e.g. `Diamonds` as values of type `Suit`. This is how we *create* values of type `Suit` -- and it is the only way, so we know that every value of type `Suit` is, indeed, one of these four constructors.
+
+When we have a value of type `Suit` then the only thing we can really do with it is to find out which of these four constructors it actually is. The way to do that is using *pattern matching*, for example using the `case … of …` syntax:
+
+```haskell
+isRed :: Suit -> Bool
+isRed s = case s of
+  Diamonds -> True
+  Hearts -> True
+  _ -> False
+```
+
+The expression `case e of …` evaluates the *scrutinee* `e`, and then linearly goes through the list of cases. If the value of the scrutinee matches the *pattern* left of the arrow, the whole expression evaluates to the right-hand side. We see two kinds of patterns here: Constructor patterns like `Diamonds`, which match simply when the value is the constructor, and the *wildcard pattern*, written as an underscore, which matches any value.
+
+It is common to immediately pattern match on the parameter of a function, so Haskell supports pattern-matching directly in the function definition:
+```haskell
+isRed :: Suit -> Bool
+isRed Diamonds = True
+isRed Hearts = True
+isRed _ = False
+```
+
+The type `Bool` that we have already used before is nothing else but one of these enumeration types, defined as
+```haskell
+data Bool = False | True
+```
+and we could do without `if … then … else …` by pattern-matching on `Bool`:
+```haskell
+ifThenElse :: Bool -> a -> a -> a
+ifThenElse True x y = x
+ifThenElse False x y = y
+```
+the only reason to have `if … then … else …`  is that it is a bit more readable.
+
+### Constructor with parameters
+
+So far, the constructors were just plain values. But we can also turn them into “containers” of sort, where we can store other values. As an basic example, maybe we want to introduce complex numbers:
+
+```
+data Complex = C Integer Integer
+```
+(Mathematically educated readers please excuse the use of `Integers` here).
+
+This creates a new type `Complex`, with a constructor `C`. But `C` itself is not a value of type `Complex`, but rather it is a function that creates values of type `Complex` and, crucially, it is the only way of creating values of type `Complex`. We can ask for the type of `C` and see that it is indeed just a function:
+```
+Prelude> :t C
+C :: Integer -> Integer -> Complex
+```
+so it should be clear how to use it:
+```haskell
+origin :: Complex
+origin = C 0 0
+```
+
+Again, and as always, the way to use a complex number is by pattern matching. This time we use pattern matching not to distinguish different cases -- *every* `Complex` is a `C` -- but to extract the parameters of the constructor:
+
+```haskell
+addC :: Complex -> Complex -> Complex
+addC (C x1 y1) (C x2 y2) = C (x1 + x2) (y1 + y2)
+```
+
+The parameter in a pattern -- the `x1` here -- can itself be a pattern, for example `0` (which matches only the number 0), or underscore:
+```haskell
+isReal :: Complex -> Bool
+isReal (C 0 _) = True
+isReal _ = False
+```
+
+A type like `Complex`, with exactly one constructor, is called a *product type*. But we can of course have types with more than one constructor and constructor arguments:
+```haskell
+data Riemann = Complex Complex | Infinity
+```
+This declares a new type `Riemann` that can be built using one of these two constructors:
+
+ 1. The constructor `Complex`, which takes one argument, of type `Complex`. Types and terms (including constructors) have different namespaces, so we can have a type called `Complex`, and a constructor called `Complex`, and they can be completely independent. This can be confusing, but is rather idiomatic.
+
+    The type of `Complex` shows that we can use it as a function, to create a point of the `Riemann` sphere from a complex number:
+    ```
+    Prelude> :t Complex
+    Complex :: Complex -> Riemann
+    ```
+ 2. The constructor `Infinity` takes no arguments, and simply is a value of type `Riemann` itself.
+
+When we pattern match on a value of type `Riemann`, we learn whether it was created using `Complex` or `Infinity`, and in the former case, we also get the complex number passed to it:
+```haskell
+addR :: Riemann -> Riemann -> Riemann
+addR (Complex c1) (Complex c2) = Complex (c1 `add` c2)
+addR Infinity _  = Infinity
+addR _ Infinity  = Infinity
+```
+
+A data type that has more than one constructor is commonly called a *sum type*. So these data types are built from sums and products, and hence are called algebraic data types (ADTs).
+
+### Recursive data types
+
+It it worth pointing out that it is completely fine to haven a constructor argument of the type that we are currently defining. This way, we obtain a *recursive data type*, and this is the foundation for many important data structures, in particular lists and trees of various sorts. Here is a simple example, a binary tree with numbers on all internal nodes:
+```haskell
+data Tree = Leaf | Node Integer Tree Tree
+```
+Again, this can be read as “a value of type `Tree` is either a `Leaf`, or it is a `Node` that contains a value of type `Integer` and references to two subtrees.”
+
+There is nothing particularly interesting about constructing such a tree (use `Leaf` and `Node`) and traversing it (use pattern matching).  Here is a piece of idiomatic code that inserts a new number into a tree:
+```haskell
+insert :: Integer -> Tree -> Tree
+insert x Leaf = Node x Leaf Leaf
+insert x (Node y t1 t2)
+    | y < x     = Node y t1 (insert x t2)
+    | otherwise = Node y (insert x t1) t2
+```
+This code shows a new, syntactic feature: Pattern guards! These are Boolean expressions that you can use to further restrict when a case is taken. The third case in this function definition is only used if `y < x`, otherwise the following cases are tried. Of course this could be written using `if … then … else …`, but the readability and aesthetics are better with pattern guards.
 
 
-Algebraic data types.
+### Polymorphic data types
+
+The tree data type declared in the previous section ought to be useful not just for integers, but maybe for any type. But it would be seriouly annoying to have to create a new tree data type for each type we want to store in the tree. Therefore, we haven have *polymorphic data types*. In the example of the tree, we can write:
+```haskell
+data Tree a = Leaf | Node a (Tree a) (Tree a)
+```
+
+You may remember that the `a` here ought to be a type variable, because it occurs in the place of a type, but is lower-case. When we want to use this tree data type at a concrete type, say `Integer`, we simply write `Tree Integer`:
+```haskell
+insert :: Integer -> Tree Integer -> Tree Integer
+```
+The actual code of the function does not change.
+
+We can also write functions that work on polymorphic trees, i.e. which we can use on *any* `Tree`, no matter what type the values in the nodes are. A good example is:
+```haskell
+size :: Tree a -> Integer
+size Leaf = 0
+size (Node _ t1 t2) = 1 + size t1 + size t2
+```
+Again, parametricity makes the type signature of such a function more useful than it seems at first: Just from looking at the type signature of `size` we *know* that this function does not look at the values stored in the nodes. Together with the name, that is really all the documentation we might need. Compare this to `size :: Tree Integer -> Interger` -- now it could just as well be that this function includes the number stored in the node in the result somehow.
+
+Predefined data types
+--------------------
+
+Records
+-------
+
+Newtypes
+--------
+
+A data type with one constructor and one field…
+
+
+Type synonyms
+-------------
 
 Haddock-documentation.
 
-Outlook: More type saftey (refinement types, e.g. for natural numbers)
+Outlook: More type safety (refinement types, e.g. for natural numbers)
 
 
+Code structure small and large
+==============================
+
+Let, where, modules, imports, qualified names
 
 
