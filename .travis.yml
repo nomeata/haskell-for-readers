@@ -18,7 +18,7 @@ script:
   - mkdir out/
   - touch out/nojekyll
   - mv haskell-for-readers.html out/index.html
-  - mv *.css out/
+  - mv *.css *.png out/
 
 deploy:
   provider: pages

@@ -5,9 +5,10 @@
     top: 0;
     height: 100%;
     overflow: auto;
+    padding-left:1em;
 }
 #TOC ul {
-    margin-left: 1em;
+    margin-left: 0em;
     padding-left: 1em;
 }
 

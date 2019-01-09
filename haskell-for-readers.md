@@ -1,7 +1,7 @@
 % Haskell for Readers
-% Joachim Breitner <<joachim@dfinity.org>>
+% [Joachim Breitner](http://www.joachim-breitner.de/), [DFINITY Foundation](https://dfinity.org/)
 
-Preface
+Preface {.unnumbered}
 =======
 
 Welcome to the lecture series “Haskell for Readers”. This workshop is uniquely tailored to those who need to *read*, rather than *write* Haskell code: auditors, scientists, managers, testers etc.
@@ -26,7 +26,7 @@ The exercises are all very small, in the order of minutes, and are meant to be d
 
 ### Acknowledgments and license {.unnumbered}
 
-The creation of this material was sponsored by the [DFINITY Foundation](http://dfinity.org/), and is shared with the public under the terms of the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
+The creation of this material was sponsored by the [DFINITY Foundation](http://dfinity.org/), and is shared with the public under the terms of the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). You can view [the source on GitHub](https://github.com/nomeata/haskell-for-readers/) of this document, and submit improvements there.
 
 The basics of functional programming
 ====================================
