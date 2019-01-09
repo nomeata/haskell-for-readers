@@ -6,7 +6,7 @@ addons:
     - pandoc
 
 script:
-  make
+  - make
 
 deploy:
   provider: pages
