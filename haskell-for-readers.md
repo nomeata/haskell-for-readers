@@ -1,29 +1,42 @@
 % Haskell for Readers
-% Joachim Breitner
+% Joachim Breitner <<joachim@dfinity.org>>
+
+Preface
+=======
 
 Welcome to the lecture series “Haskell for Readers”. This workshop is uniquely tailored to those who need to *read*, rather than *write* Haskell code: auditors, scientists, managers, testers etc.
 
-This implies a higher focus on syntax (because you can *write* programs ignoring most syntactic gadgets available to you, but if you read code, you have to deal with them), types and type signatures (because they are the key to understanding Haskell code) and abstraction patterns (because it is key to understanding well-written code, and Haskell excels at abstraction).
+### Scope {.unnumbered}
+
+This goal implies a higher focus on syntax (because you can *write* programs ignoring most syntactic gadgets available to you, but if you read code, you have to deal with them), types and type signatures (because they are the key to understanding Haskell code) and abstraction patterns (because it is key to understanding well-written code, and Haskell excels at abstraction).
 
 On the other hand, less words will be spent on how to approach writing the program, e.g. how to set up your tooling, how to please Haskell’s layout rules, how to design your data type, which libraries to pick, how to read error messages. That said, we hope that even Haskell programmers will gain useful insight from tutorial.
 
 Nevertheless it is hard to understand a programming paradigm without writing any code, so there will some amount of hands-on work to be done, especially early on, when we start with a introduction to basic functional programming.
 
-I expect the audience to be familiar with programming and computer science in general.
+### Form and audience {.unnumbered}
 
-The exercises are all very small, in the order of minutes, and meant to be done along the way. Sometimes later material refers to their results.
+This document is not (necessarily) a self-contained tutorial; it is rather the base for an interactive lecture, given by a real instructor. In such a lecture, some holes will be filled as we go, and the questions from the audience form a crucial part of the learning experience.
+
+That said we I that the notes are detailed enought that while they are not ideal for independent study, they are at least useful and helpful.
+
+I expect the audience to be familiar with programming and computer science in general, but do not assume prior knowledge of functional program (or, in case you are worried, category theory).
+
+The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them.
+
+### Acknowledgments and license {.unnumbered}
+
+The creation of this material was sponsored by the [DFINITY Foundation](http://dfinity.org/), and is shared with the public under the terms of the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
 
 The basics of functional programming
 ====================================
 
 Functional program is the the art of thinking about *data* and how the new data is calculated from old data, rather than thinking about how to *modify* data.
 
-Expressions
------------
+Numbers and arithmetic operators
+--------------------------------
 
 The simplest form of data are numbers, and basic arithmetic is one way of creating new numbers from old numbers.
-
-### Numbers and arithmetic operators
 
 To play around with this, start the Haskell REPL (“read-eval-print-loop”) by running `ghci` (or maybe on [tryhaskell.org](https://tryhaskell.org/)), and enter some numbers, and some of the usual arithmetic operations:
 
@@ -87,7 +100,8 @@ Look up the precedences of the other arithmetic operations, and see how that cor
 The precedences of `(+)` and `(-)` is the same, and smaller than the precedences of `(*)`, which is again shorter than the precedence of `(^)`.
 :::
 
-### Applying Functions
+Applying Functions
+------------------
 
 So far we have a calculator (which is not useless, I sometimes use `ghci` as a calculator). But to get closer to functional programming, let us look at some functions that are already available to use.
 
@@ -202,7 +216,8 @@ Prelude> (-) 5 $ div 16 $ (-) 10 $ 4 `div` 2
 ```
 :::
 
-### Booleans and branching
+Booleans and branching
+----------------------
 
 Some cryptographers might be happy to only write code that always does the same thing (yay, no side effects), but most of us pretty quickly want to write branching code.
 
@@ -395,7 +410,7 @@ sumDigits n = if n < 10 then n else sumDigits (n `div` 10) + (n `mod` 10)
 ```
 :::
 
-Higher order functions
+Higher-order functions
 ----------------------
 
 We created functions when we took expressions that followed a certain pattern, and abstracted over a number that occurred therein. But the thing we can abstract over does not have to be just a simple number. It could also be a function!
@@ -510,7 +525,7 @@ Prelude> sumDigits n = sumDigitsWith (\d -> d) n
 
 These are also called *lambda abstractions*, because they are derived from the Lambda calculus, and the backslash is a poor imitation of the Greek letter lambda (λ).
 
-Higher-Order function definition
+Higher-order function definition
 --------------------------------
 
 Lets look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
@@ -819,7 +834,7 @@ There is a function of that type in the standard library. Can you tell what it d
 It is the function `flip` that takes a function and swaps its first two arguments.
 :::
 
-Algebraic Data types
+Algebraic data types
 --------------------
 
 The function type is very expressive, and one can model many data structures purely with functions. But of course it is more convenient to use dedicated data structures. There are a number of data structure types that come with the standard library, in particular tuples, lists, the `Maybe` type. But it is more instructive to start defining our own.

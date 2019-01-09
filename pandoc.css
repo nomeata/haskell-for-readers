@@ -1,8 +1,21 @@
+#TOC {
+    width: 20%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    overflow: auto;
+}
+#TOC ul {
+    margin-left: 1em;
+    padding-left: 1em;
+}
+
 body {
     margin: auto;
     padding-right: 1em;
     padding-left: 1em;
-    max-width: 44em; 
+    max-width: 50%; 
     border-left: 1px solid black;
     border-right: 1px solid black;
     color: black;
@@ -10,6 +23,12 @@ body {
     font-size: 100%;
     line-height: 140%;
     color: #333; 
+
+    background-image: url("dfinity.png");
+    background-position: bottom 1em right 1em; /*Positioning*/
+    background-repeat: no-repeat; /*Prevent showing multiple background images*/
+    background-attachment: fixed;
+    background-size: 20%;
 }
 pre {
     border: 1px dotted gray;
