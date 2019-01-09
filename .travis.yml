@@ -2,11 +2,6 @@ sudo: false
 
 language: generic
 
-script:
-  - make
-  - touch .nojekyll
-
-
 env:
   global:
     - PANDOC="$HOME/.pandoc"
@@ -18,8 +13,16 @@ before_install:
   - dpkg -x "$PANDOC/pandoc.deb" "$PANDOC"
   - export PATH="$PANDOC/usr/bin:$PATH"
 
+script:
+  - make
+  - mkdir out/
+  - touch out/nojekyll
+  - mv haskell-for-readers.html out/index.html
+  - mv *.css out/
+
 deploy:
   provider: pages
+  local-dir: out
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: false
