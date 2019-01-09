@@ -1,9 +1,7 @@
 sudo: false
 
-addons:
-  apt:
-    packages:
-    - pandoc
+language: r
+pandoc_version: 1.16
 
 script:
   - make
