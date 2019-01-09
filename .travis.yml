@@ -4,6 +4,7 @@ language: generic
 
 script:
   - make
+  - touch .nojekyll
 
 
 env:
