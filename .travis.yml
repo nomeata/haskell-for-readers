@@ -1,15 +1,20 @@
 sudo: false
 
-language: r
-pandoc_version: 2.5
+language: generic
 
 script:
   - make
+
+before_install:
+  - curl -L https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb > pandoc.deb
+  - dpkg -x pandoc.deb .
+  - export PATH="$PWD/usr/bin:$PATH"
 
 deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: false
+  fqdn: haskell-for-readers.nomeata.de
   on:
     branch: master
