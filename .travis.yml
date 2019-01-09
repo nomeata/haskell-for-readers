@@ -1,7 +1,7 @@
 sudo: false
 
 language: r
-pandoc_version: 1.16
+pandoc_version: 2.5
 
 script:
   - make
