@@ -5,10 +5,16 @@ language: generic
 script:
   - make
 
+
+env:
+  global:
+    - PANDOC="$HOME/.pandoc"
+    - PANDOC_DEB="https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb"
+
 before_install:
-  - curl -L https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb > pandoc.deb
-  - dpkg -x pandoc.deb .
-  - export PATH="$PWD/usr/bin:$PATH"
+  - curl -L https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb > "$PANDOC/pandoc.deb"
+  - dpkg -x "$PANDOC/pandoc.deb" "$PANDOC"
+  - export PATH="$PANDOC/usr/bin:$PATH"
 
 deploy:
   provider: pages
