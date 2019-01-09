@@ -71,9 +71,21 @@ infixr 8 ^
 ```
 Let us ignore the first line (which is the type signature): The `r` in `infixr` tells us that the `(^)` operator is right-associative. And the number is the precedence; a higher number means that this operator binds more tightly.
 
-**Exercise:** What associativity do you expect for `(+)` and `(-)`? Verify your expectation.
+::: Exercise
+What associativity do you expect for `(+)` and `(-)`? Verify your expectation.
+:::
 
-**Exercise:** Look up the precedences of the other arithmetic operations, and see how that corresponds to the PEMDAS rule.
+::: Solution
+Both operator are left-associative, so that `10 - 2 + 3 - 4` means `((10 - 2) + 3) - 4` as expected.
+:::
+
+::: Exercise
+Look up the precedences of the other arithmetic operations, and see how that corresponds to the PEMDAS rule.
+:::
+
+::: Solution
+The precedences of `(+)` and `(-)` is the same, and smaller than the precedences of `(*)`, which is again shorter than the precedence of `(^)`.
+:::
 
 ### Applying Functions
 
@@ -113,10 +125,18 @@ Prelude> const 23 42
 23
 ```
 
-**Exercise**: Can you predict the result of the following?
+::: Exercise
+Can you predict the result of the following?
 ```
 Prelude> 1 + const 2 3 + 4
 ```
+:::
+
+::: Solution
+```
+6
+```
+:::
 
 **A note on syntactic sugar:** Haskell is a high-calorie language: There is lots of syntactic sugar. Syntactic sugar refers to when there are alternative ways of writing something that *look* different, but *behave* the same. The goal is to allow the programmer to write the code in a way that best suits the reader, which is good, but it also means that a reader needs to know about the sugar.
 
@@ -169,11 +189,18 @@ This operator takes a function as the first argument, an argument as the second 
 I call this non-syntactic sugar, because the dollar operator it is not part of the built-in language, but can be define by anyone.
 
 
-**Exercise:**
+::: Exercise
 What is the result of
 ```
 Prelude> (-) 5 $ div 16 $ (-) 10 $ 4 `div` 2
 ```
+:::
+
+::: Solution
+```
+3
+```
+:::
 
 ### Booleans and branching
 
@@ -250,13 +277,39 @@ And now we are squarely in the realm of functional programming, as we have just 
 
 Note that we defined the `isRound` by way of an equation. And it really is an equation: Wherever we see `isRound something`, we can obtain its meaning by replacing it with ``something `mod` 10 == 0``. This *equational reasoning*, where you replace equals by equals is one key technique to make sense of Haskell programs.
 
-**Exercise (discussion):** Think of other programming language that have concepts called functions. Can you always replace a function call with the function definition? Does it change the meaning of the program?
+::: Exercise
+Discuss: Think of other programming language that have concepts called functions. Can you always replace a function call with the function definition? Does it change the meaning of the program?
+:::
 
-**Exercise:** Write a function `absoluteValue` with one parameter. If the parameter is negative, returns its opposite number, otherwise the number itself.
+::: Exercise
+Write a function `absoluteValue` with one parameter. If the parameter is negative, returns its opposite number, otherwise the number itself.
+:::
 
-**Exercise:** Write a function `isHalfRound` that checks if a number is divisible by 5, by checking whether the last digit is 0 or 5.
+::: Solution
+```haskell
+absoluteValue x = if x < 0 then - x else x
+```
+:::
 
-**Exercise:** Write a function `isEven` that checks if a number is divisible by 2, by checking whether the last digit is 0, 2, 4, 6, 8.
+::: Exercise
+Write a function `isHalfRound` that checks if a number is divisible by 5, by checking whether the last digit is 0 or 5.
+:::
+
+::: Solution
+```haskell
+isHalfRound x = x `div` 10 == 0 || x `div` 10 == 5
+```
+:::
+
+::: Exercise
+Write a function `isEven` that checks if a number is divisible by 2, by checking whether the last digit is 0, 2, 4, 6, 8.
+:::
+
+::: Solution
+```haskell
+isEven x = x `div` 10 == 0 || x `div` 10 == 2 || x `div` 10 == 4 || x `div` 10 == 6 || x `div` 10 == 8
+```
+:::
 
 Of course, you can abstract over more than one parameter. In the last exercise, you had to write something like ``x `div` 10 == y`` a lot. So it makes sense to abstract over that:
 
@@ -271,7 +324,7 @@ Prelude> isHalfRound x = x `hasLastDigit` 0 || x `hasLastDigit` 5
 which, if you read it out, is almost a transliteration of the specification! Here we see how abstraction, together with good naming and syntax, can produce very clear and readable code.
 
 **Infix operator application again (Syntactic Sugar)**:
-By the way, you can use infix operator syntax in function definitions as well:
+By the way, you can use infix operator syntax already when defining a function:
 ```
 x `divides` y = x `div` y == 0
 ```
@@ -332,12 +385,20 @@ The fact that we can replace equals with equals does not change just because we 
 = 3
 ```
 
-**Exercise:** Write the function `digitSum` that sums up the digit of a natural number.
+::: Exercise
+Write the function `sumDigits` that sums up the digits of a natural number.
+:::
+
+::: Solution
+```haskell
+sumDigits n = if n < 10 then n else sumDigits (n `div` 10) + (n `mod` 10)
+```
+:::
 
 Higher order functions
 ----------------------
 
-We created functions when we took expressions that followed a certain pattern, and abstracted over a number that occurred therein. But the thing we can abstract over does not have to be just a simple number. It could also be a function! 
+We created functions when we took expressions that followed a certain pattern, and abstracted over a number that occurred therein. But the thing we can abstract over does not have to be just a simple number. It could also be a function!
 
 Consider the task of calculating the number of digits in the number of digits of a number:
 ```
@@ -417,11 +478,25 @@ This single mechanism -- abstracting over functions -- can [replace thick volume
 
 Note that if one would have to abstract `countDigits` and `sumDigits` to `sumDigitsWith` in practice, one would probably not rewrite them first with `id` etc., but just look at them and come up with `sumDigitsWith` directly.
 
-**Exercise:**
+::: Exercise
 Write a (recursive) function `fixEq` so that `fixEq f x` repeatedly applies `f` to `x` until the result does not change.
+:::
 
-**Exercise:**
+::: Solution
+```haskell
+fixEq f x = if f x == x then x else fixEq f (f x)
+```
+:::
+
+::: Exercise
 Use this function and `countDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `countDigits` to `x` results in 3 or 9.
+:::
+
+::: Solution
+```haskell
+isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
+```
+:::
 
 Anonymous functions
 -------------------
@@ -447,14 +522,17 @@ Prelude> sumDigits = sumDigitsWith (\d -> d)
 
 It looks as if we just saved two characters. But what really just happened is that we shifted our perspective, and raised the level of abstraction by one layer. Instead of defining a `countDigits` as a function that takes a number and produces another number, we have defined `countDigits` as the result of instantiating the pattern `sumDigitsWith` with the function `(\d -> 1)`. At this level of thought, we do not care about the argument to `countDigits`, i.e. what it is called or so.
 
-**Exercise:**
+::: Exercise
 Which other recent definitions can be changed accordingly?
+:::
 
-**Answer:** The definitions for `countCountDigits` and `sumSumDigits`:
+::: Solution
+The definitions for `countCountDigits` and `sumSumDigits`:
 ```
 Prelude> countCountDigits = twice countCountDigits
 Prelude> sumSumDigits = twice sumDigits
 ```
+:::
 
 Currying
 --------
@@ -578,7 +656,6 @@ countDigits = sumDigitsWith (\d -> 1)
 sumDigits = sumDigitsWith (\d -> d)
 fixEq f x = if f x == x then x else fixEq f (f x)
 isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
-
 ```
 
 We can load this file into `ghci` by either starting it with `ghci Types.hs` or by typing `:load Types.hs`. After you change and save the file, you can reload with `:reload` (or simply `:r`)
@@ -662,7 +739,16 @@ What does not work is passing a function to `twice` that works on numbers, but t
 
 In other words: The `t`s in the type of `twice` can become *any* type, but it has the be the same type everywhere.
 
-**Exercise:** What do you think is the type of `id`?
+::: Exercise
+What do you think is the type of `id`?
+:::
+
+::: Solution
+```haskell
+id :: a -> a
+```
+:::
+
 
 If we ask for the type of the function `const`, we see two different type variables:
 ```
@@ -721,12 +807,17 @@ A very simple example for that is the function `id`, with type `a -> a`. *Any* f
 * return never (i.e. go into an infinite loop), or
 * raise an exception.
 
-**Exercise:**
+::: Exercise
 A great example for the power of polymorphism is the following type signature:
 ```
 (a -> b -> c) -> b -> a -> c
 ```
 There is a function of that type in the standard library. Can you tell what it does? Can you guess its name? You can use a type-based search engine like [Hoogle](https://www.haskell.org/hoogle/?hoogle=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c) to find the function.
+:::
+
+::: Solution
+It is the function `flip` that takes a function and swaps its first two arguments.
+:::
 
 Algebraic Data types
 --------------------

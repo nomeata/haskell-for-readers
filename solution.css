@@ -1,0 +1,18 @@
+div.Exercise:before {
+    content:"Exercise";
+    font-weight:bold;
+}
+
+div.Solution:before {
+    content:"Solution";
+    font-weight:bold;
+}
+
+div.Solution {
+  filter: blur(.3em);
+}
+div.Solution.revealed {
+  filter: none;
+  transition: filter 1s;
+}
+
