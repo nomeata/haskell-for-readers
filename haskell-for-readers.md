@@ -807,8 +807,8 @@ sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
 ```
 to our file. In fact, in practice one *always* writes full type signatures for all top-level definitions, so this should be less of a problem for Haskell readers.
 
-Parametricity.
---------------
+Parametricity
+-------------
 
 One obvious use for such polymorphism is to write code once, and use it at different types. But there is another great advantage of polymorphic functions, even if we only ever intend to instantiate the type variables with the same type, and that is reasoning by parametricity.
 
