@@ -99,7 +99,7 @@ Look up the precedences of the other arithmetic operations, and see how that cor
 :::
 
 ::: Solution
-The precedences of `(+)` and `(-)` is the same, and smaller than the precedences of `(*)`, which is again shorter than the precedence of `(^)`.
+The precedences of `(+)` and `(-)` are the same, and smaller than the precedence of `(*)`, which is again shorter than the precedence of `(^)`.
 :::
 
 Applying Functions
