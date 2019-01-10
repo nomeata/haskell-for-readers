@@ -42,7 +42,7 @@ The simplest form of data are numbers, and basic arithmetic is one way of creati
 
 To play around with this, start the Haskell REPL (“read-eval-print-loop”) by running `ghci` (or maybe on [tryhaskell.org](https://tryhaskell.org/)), and enter some numbers, and some of the usual arithmetic operations:
 
-```
+~~~~ {#ghci .haskell}
 $ ghci
 GHCi, version 8.4.4: http://www.haskell.org/ghc/  :? for help
 Prelude> 1
@@ -53,7 +53,7 @@ Prelude> 2 + 3 * 4
 14
 Prelude> (2 + 3) * 4
 20
-```
+~~~~~~~
 
 At this point we can tell that the usual precedence rules apply (i.e. the [PEMDAS rule](https://en.wikipedia.org/wiki/Order_of_operations#Mnemonics)).
 
@@ -63,7 +63,7 @@ Prelude> 0 - 1
 ```
 Numbers can be negative…
 
-```
+~~~~ {#numbers-negative .haskell}
 Prelude> 2^10
 1024
 Prelude> 2^2^10
@@ -73,7 +73,7 @@ Prelude> 2^2^10
 540827237163350510684586298239947245938479716304835356329624224137216
 Prelude> (2^2)^10
 1048576
-```
+~~~~
 
 …and also very large. By default, Haskell uses arbitrary precision integer arithmetic. Note that for this lecture, we will completely avoid and ignore floating point arithmetic.
 
@@ -1084,7 +1084,7 @@ There is more special syntax for lists:
 2. Lists of numbers can be enumerated, e.g. `[1..10]`, or `[0,2..10]`, or even (due to laziness) `[1..]`.
 3. List comprehensions look like `[ (x,y) | x <- xs, y <- ys, x < y ]`, reminiscent of the set comprehension syntax from mathematics. We will not discuss them now, I just wanted to show them and tell you what to search for.
 
-Common operations on lists worth knowing are `(++)` to concatenate two lists. 
+Common operations on lists worth knowing are `(++)` to concatenate two lists.
 
 Lists are very useful for many applications, but they are not a particularly high-performance data structure -- random access and concatenation is expensive, and they use quite a bit of memory. Depending on the application, other types like arrays/vectors, finger trees, difference lists might be more suitable.
 
@@ -1126,5 +1126,3 @@ Code structure small and large
 ==============================
 
 Let, where, modules, imports, qualified names
-
-
