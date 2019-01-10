@@ -10,4 +10,5 @@ all: haskell-for-readers.html
 	  --include-in-header solution.js \
 	  --css pandoc.css \
 	  --css solution.css \
+	  --write=html5 \
 	  $< -o $@
