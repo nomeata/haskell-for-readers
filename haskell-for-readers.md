@@ -18,11 +18,13 @@ Nevertheless it is hard to understand a programming paradigm without writing any
 
 This document is not (necessarily) a self-contained tutorial; it is rather the base for an interactive lecture, given by a real instructor. In such a lecture, some holes will be filled as we go, and the questions from the audience form a crucial part of the learning experience.
 
-That said we I that the notes are detailed enought that while they are not ideal for independent study, they are at least useful and helpful.
+That said we I that the notes are detailed enough that while they are not ideal for independent study, they are at least useful and helpful.
 
 I expect the audience to be familiar with programming and computer science in general, but do not assume prior knowledge of functional program (or, in case you are worried, category theory).
 
 The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them.
+
+Some sections are marked with ★. These are optional in the sense that the following material does not rely heavily on them. If time is short, e.g. during a workshop, they can be skipped.
 
 ### Acknowledgments and license {.unnumbered}
 
@@ -180,7 +182,7 @@ class (Real a, Enum a) => Integral a where
 infixl 7 `div`
 ```
 
-**Prefix operator application (Syntactic Sugar)**:
+**Prefix operator application (Syntactic Sugar) ★**:
 We can also go the other way, and use any operator as if it were a function, by wrapping it in parentheses:
 ```
 Prelude> 1 + 1
@@ -189,7 +191,7 @@ Prelude> (+) 1 1
 2
 ```
 
-**The dollar operator (Non-Syntactic Sugar)**:
+**The dollar operator (Non-Syntactic Sugar) ★**:
 Consider an expression that takes a number, and applies a number of functions , maybe with arguments, to it, such as:
 ```
 f5 (f4 (f3 (f2 (f1 42))))
@@ -556,8 +558,8 @@ We have already seen functions that *receive* a function as an argument. The way
 
 We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function that takes one argument (the function `f`), and returns another function, that then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
 
-The composition operator
-------------------------
+The composition operator ★
+--------------------------
 
 Because writing code that passes functions around and modifies them (like in `twice` or `sumDigitsWith`) is so important in this style of programming, I should at this point introduce the composition operator. It is already pre-defined, but we can define it ourselves:
 ```
@@ -592,8 +594,8 @@ where again, the actual value is no longer the emphasis, but rather the function
 The value `x` is sometimes called the point (as in geometry), and this style of programming is called *points-free* (or sometimes *pointless*).
 
 
-Laziness
---------
+Laziness ★
+----------
 
 As a final bit in this section, let’s talk about laziness. Most often this can be ignored when reading Haskell code, and in general laziness is not as important (or as bad) as some people say it is. But it plays an important role in Haskell’s support for abstraction, so let’s briefly look at it.
 
@@ -653,8 +655,8 @@ In fact, many Haskellers prefer to do type-driven development: First think about
 
 Besides communicating with the compiler, types are also crucial in communicating with your fellow developers and/or users of your API. For many functions, the type alone, or the type and the name, is sufficient to tell you what it does.
 
-Tooling interlude: Editing files
---------------------------------
+Tooling interlude: Editing files ★
+----------------------------------
 
 At this point, we should switch from working exclusively in the REPL to writing an actual Haskell file. We can start by creating a file `Types.hs`, and put in the code from the previous section:
 
@@ -958,12 +960,12 @@ insert x (Node y t1 t2)
     | y < x     = Node y t1 (insert x t2)
     | otherwise = Node y (insert x t1) t2
 ```
-This code shows a new, syntactic feature: Pattern guards! These are Boolean expressions that you can use to further restrict when a case is taken. The third case in this function definition is only used if `y < x`, otherwise the following cases are tried. Of course this could be written using `if … then … else …`, but the readability and aesthetics are better with pattern guards.
+This code shows a new, syntactic feature: Pattern guards! These are Boolean expressions that you can use to further restrict when a case is taken. The third case in this function definition is only used if `y < x`, otherwise the following cases are tried. Of course this could be written using `if … then … else …`, but the readability and aesthetics are better with pattern guards. The value `otherwise` is simply `True`, but this reads better.
 
 
 ### Polymorphic data types
 
-The tree data type declared in the previous section ought to be useful not just for integers, but maybe for any type. But it would be seriouly annoying to have to create a new tree data type for each type we want to store in the tree. Therefore, we haven have *polymorphic data types*. In the example of the tree, we can write:
+The tree data type declared in the previous section ought to be useful not just for integers, but maybe for any type. But it would be seriously annoying to have to create a new tree data type for each type we want to store in the tree. Therefore, we haven have *polymorphic data types*. In the example of the tree, we can write:
 ```haskell
 data Tree a = Leaf | Node a (Tree a) (Tree a)
 ```
@@ -980,10 +982,128 @@ size :: Tree a -> Integer
 size Leaf = 0
 size (Node _ t1 t2) = 1 + size t1 + size t2
 ```
-Again, parametricity makes the type signature of such a function more useful than it seems at first: Just from looking at the type signature of `size` we *know* that this function does not look at the values stored in the nodes. Together with the name, that is really all the documentation we might need. Compare this to `size :: Tree Integer -> Interger` -- now it could just as well be that this function includes the number stored in the node in the result somehow.
+Again, parametricity makes the type signature of such a function more useful than it seems at first: Just from looking at the type signature of `size` we *know* that this function does not look at the values stored in the nodes. Together with the name, that is really all the documentation we might need. Compare this to `size :: Tree Integer -> Integer` -- now it could just as well be that this function includes the number stored in the node in the result somehow.
+
+### Functions in data types ★
+
+Maybe this is obvious to you, after the emphasis on functions in the first chapter, but it is still worth pointing out that data type can also store functions. This blurs the distinction between data and code some more, as this nice example shows:
+```haskell
+data Stream a b
+    = NeedInput (a -> Stream a b)
+    | HasOutput b (Stream a b)
+    | Done
+```
+The type `Stream a b` models a state machine that consumes values of type `a`, produces values of type `b`, and maybe eventually stops. Such a machine is in one of three states:
+
+ 1. Waiting for input. This uses the `NeedInput` constructor, which carries a *function* that consumes a type of value `a` and returns the new state of the machine.
+ 2. Producing output. This uses the `HasOutput` constructor, which stores the output value of type `b`, and the subsequent state of the machine.
+ 3. `Done`.
+
+We can create a state machine that does run-length encoding this way. This one does not ever stop, but that’s fine:
+
+```haskell
+rle :: Eq a => Stream a (Integer,a)
+rle = NeedInput rle_start
+
+rle_start :: Eq a => a -> Stream a (Integer, a)
+rle_start x = NeedInput (rle_count x 1)
+
+rle_count :: Eq a => a -> Integer -> a -> Stream a (Integer, a)
+rle_count x n x' | x == x' = NeedInput (rle_count x (n + 1))
+                 | otherwise = HasOutput (n, x) (rle_start x')
+```
 
 Predefined data types
 --------------------
+
+We intentionally discussed the mechanisms of algebraic data types first, so that we can explain the most common data types in the standard library easily.
+
+### Booleans ★
+
+As mentioned before, the values `True` and `False` are simply the constructors of a data type defined as
+```haskell
+data Bool = False | True
+```
+
+There is nothing magic about the definition of `Bool`. But this type plays a special role because of the `if … then … else …` construct, and because of the pattern guards seen before.
+
+### `Maybe`
+
+A very common use case for algebraic data types is to capture the idea of a type whose values “maybe contain nothing, or just a value of type `a`”. Because this is so common, such a data type is predefined:
+```haskell
+data Maybe a = Nothing | Just a
+```
+
+You might see `Maybe`, for example, in the return type of a function that deserializes a binary or textual representation of a type, for example:
+```haskell
+parseFoo :: String -> Maybe Foo
+```
+Such an operation can fail, and if the input is invalid, it would return `Nothing`. As a user of such a function, the only way to get to the value of type `a` therein is to pattern-match on the result, which forces me to think about and handle the case where the result is `Nothing`.
+
+This is much more robust than the common idiom in C, where you have to remember to check for particular error values (-1, or `NULL`), or Go, where you get both a result and a separate error code, but you can still be lazy and use the result without checking the error code.
+
+A big part of Haskell’s reputation as a language that makes it easier to write correct code relies on the use of data types to precisely describe the values you are dealing with.
+
+::: Exercise
+How many values are there of type `Maybe (Maybe Bool)`. When can it be useful to nest `Maybe` in that way?
+:::
+
+::: Solution
+There are four: `Nothing`, `Just Nothing`, `Just False` and `Just True`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more speaking names could be preferred here.
+:::
+
+### `Either` ★
+
+With maybe we can express “one or none”. Sometimes we want “one or another” type. For this, the standard library provides
+```haskell
+data Either a b = Left a | Right b
+```
+
+Commonly, this type is used for computations that can fail, but that provide some useful error messages when they fail:
+```haskell
+parseFoo :: String -> Either ParseError Foo
+```
+This gives us the same robustness benefits of `Maybe`, but also a more helpful error messages. If used in this way, then the `Left` value is always used for the error or failure case, and the `Right` value for when everything went all right.
+
+### Lists
+
+In the previous section we defined trees using a recursive data type. It should be obvious that we can define lists in a very analogous way:
+```haskell
+data List a = Empty | Link a (List a)
+```
+
+This data structure is so ubiquitous in functional programming that it not only comes with the standard library, it also has very special, magic syntax:
+```haskell
+data [a] = [] | a : [a]
+```
+In words: The type `[a]` is the type of lists with values of type `a`. Such a list is either the empty list, written as `[]`, or it is a non-empty list containing of a head `x` of type `a`, and a tail `xs`, and is written as `x:xs`. Note that the constructor `(:)`, called “cons”, is using operator syntax.
+
+There is more special syntax for lists:
+
+1. Finite lists can be written as `[1, 2, 3]` instead of `1 : 2 : 3 : []`.
+2. Lists of numbers can be enumerated, e.g. `[1..10]`, or `[0,2..10]`, or even (due to laziness) `[1..]`.
+3. List comprehensions look like `[ (x,y) | x <- xs, y <- ys, x < y ]`, reminiscent of the set comprehension syntax from mathematics. We will not discuss them now, I just wanted to show them and tell you what to search for.
+
+Common operations on lists worth knowing are `(++)` to concatenate two lists. 
+
+Lists are very useful for many applications, but they are not a particularly high-performance data structure -- random access and concatenation is expensive, and they use quite a bit of memory. Depending on the application, other types like arrays/vectors, finger trees, difference lists might be more suitable.
+
+### Characters and strings ★
+
+Unexpectedly, Haskell has built-in support for characters and text. A single character has type `Char`, and is written in single quotes, e.g. `'a'`, `'☃'`, `'\''`, `'\0'`, `'\xcafe'`. These character are Unicode code points, and not just 7 or 8 bit characters.
+
+The built-in type `String` is just an alias for `[Char]`, i.e. a list of characters. Haskell supports special built-in syntax for strings, using double quotes, but this is just syntactic sugar to the list syntax:
+```
+Prelude> "hello"
+"hello"
+Prelude> ['h','e','l','l','o']
+"hello"
+Prelude> 'h':'e':'l':'l':'o':[]
+"hello"
+```
+
+Because `String` is built on the list type, it has the same problems with performance: While it is fine to be used in non-critical parts of the code (diagnostic and error messages, command line and configuration file parsing, filenames), it is usually the wrong choice if large amounts of strings need to be processed, e.g. in a templating library. Additionally libraries provide more suitable data structures, in particular `ByteString` for binary data and `Text` for human-readable text.
+
 
 Records
 -------

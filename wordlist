@@ -1,16 +1,18 @@
-personal_ws-1.1 en 58 
+personal_ws-1.1 en 70 
 unlessZero
 scrutinee
 digitSum
-modularity
 subtrees
+modularity
 Newtypes
+xcafe
 Polymorphism
 polymorphism
 countCountDigits
-isMultipleOf
 addR
+isMultipleOf
 haskell
+parseFoo
 sumDigitsWith
 Parametricity
 parametricity
@@ -21,7 +23,10 @@ backticks
 infixr
 isRed
 Eq
+xs
+HasOutput
 const
+ys
 Haskellers
 yay
 fs
@@ -51,9 +56,16 @@ pre
 isHalfRound
 fixEq
 REPL
+NeedInput
 someDigits
+deserializes
+DFINITY
 GHC
 precedences
 ADTs
 addC
+ParseError
+templating
+ByteString
 isRound
+rle
