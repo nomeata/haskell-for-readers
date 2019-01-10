@@ -1065,6 +1065,68 @@ parseFoo :: String -> Either ParseError Foo
 ```
 This gives us the same robustness benefits of `Maybe`, but also a more helpful error messages. If used in this way, then the `Left` value is always used for the error or failure case, and the `Right` value for when everything went all right.
 
+### Tuples
+
+Imagine you are writing a function that wants to return two numbers -- say, the last digit the rest of the number. The way to do that that you know so far would require defining a data type:
+```haskell
+data TwoIntegers = TwoIntegers Integer Integer
+splitLastDigit :: Integer -> TwoIntegers
+splitLastDigit n = TwoIntegers (n `div` 10) (n `mod` 10)
+```
+
+Clearly, the concept of “passing around two values together“ is not particularly tied to `Integer`, and we can use polymorphism to generalize this definition:
+```haskell
+data Two a b = Two a b
+splitLastDigit :: Integer -> Two a b
+splitLastDigit n = Two (n `div` 10) (n `mod` 10)
+```
+
+And because this is so useful, Haskell comes with built-in support for such pairs, including a nice and slim syntax:
+```haskell
+data (a,b) = (a,b) -- morally this is how it is defined
+splitLastDigit :: Integer -> (a, b)
+splitLastDigit n = (n `div` 10, n `mod` 10)
+```
+
+Besides tuples, which store two values, there are triples, quadruples and, in general, n-tuples of any size you might encounter. But really, if these tuples get larger than two or three, the code starts to smell.
+
+Their size is always fixed and statically known at compile time, and you can have values of different types as components of the tuple. This distinguishes them from the lists we will see shortly.
+
+::: Exercise
+How could you represent the Riemann numbers from the previous section using only these predefined data types?
+:::
+
+::: Solution
+```haskell
+Maybe (Integer, Integer)
+```
+:::
+
+### The unit type
+
+There is also a zero-tuple, so to say: The unit type written `()` with only the value `()`:
+```haskell
+data () = () -- morally this is how it is defined
+```
+While this does not look very useful yet, we will see that it plays a crucial role later. Until then, you can think of it as a good choice when we have something polymorphic, but we do not actually need an “interesting” type there.
+
+::: Exercise
+Write functions `fromEitherUnit :: Either () a -> Maybe a` and `toEitherUnit :: Maybe a -> Either () a` that are inverses to each other. In one of these type signatures you can replace `()` with a new type variable `b`, and still implement the function. In which one? Why?
+:::
+
+::: Solution
+```haskell
+fromEitherUnit :: Either () a -> Maybe a
+fromEitherUnit (Left ()) = Nothing
+fromEitherUnit (Right x) = Just x
+
+toEitherUnit :: Maybe a -> Either () a
+toEitherUnit Nothing = Left ()
+toEitherUnit (Just x) = Right x
+```
+We can make `fromEitherUnit` more polymorphic; it can simply ignore the argument to `Left`. We cannot do this in `toEitherUnit`: we would not have a value of type `b` at hand to pass to `Left`.
+:::
+
 ### Lists
 
 In the previous section we defined trees using a recursive data type. It should be obvious that we can define lists in a very analogous way:
@@ -1102,16 +1164,52 @@ Prelude> 'h':'e':'l':'l':'o':[]
 "hello"
 ```
 
-Because `String` is built on the list type, it has the same problems with performance: While it is fine to be used in non-critical parts of the code (diagnostic and error messages, command line and configuration file parsing, filenames), it is usually the wrong choice if large amounts of strings need to be processed, e.g. in a templating library. Additionally libraries provide more suitable data structures, in particular `ByteString` for binary data and `Text` for human-readable text.
+Because `String` is built on the list type, all the usual list operations, in particular `++` for concatenation, work on strings as well.
+
+But `String` also has the same performance issues as lists: While it is fine to use them  in non-critical parts of the code (diagnostic and error messages, command line and configuration file parsing, filenames), `String` is usually the wrong choice if large amounts of strings need to be processed, e.g. in a templating library. Additionally libraries provide more suitable data structures, in particular `ByteString` for binary data and `Text` for human-readable text.
+
+Records ★
+---------
+
+Assume you want to create a type that represents an employee in a HR database. There are a fair number of field to store -- name, date of birth, employee number, room, login handle, public key etc. You could use a tuple with many fields, or create your own data type with a constructor with many fields, but either way you will have to address the various fields by their position, which is verbose, easy to get wrong, and hard to extend.
+
+In such a case, you can use records. These allow you to give names to the *field* of a constructor, and get some convenience functions along the way. The syntax to declare the record is
+```haskell
+data Employee = Employee
+    { name :: String
+    , room :: Integer
+    , pubkey :: ByteString
+    }
+```
+
+In terms of the constructor `Employee`, this is equivalent to
+```
+data Employee = Employee String Integer ByteString
+```
+and it is always possible to use `Employee` as a normal prefix function in terms and patterns. But the record syntax declaration enables the following nicer syntaxes:
+
+1. Record creation: Instead of `Employee n r p` you can write `Employee { name = n; room = r; pubkey = p }`, and of course the order of the fields is irrelevant.
+
+2. Record pattern matching. You can also write `Employee { name = n; room = r; pubkey = p }` in a pattern, to match on `Employee` and get `n`, `r` and `p` into scope.
+
+3. Record update syntax: If we have `e :: Employee`, then `e { room = r' }` is like an `Employee` and all fields are the same as `e` with the exception of `room`.
+
+4. The names of the fields are available as getters, i.e. after the above definition of `Employee`, there is a function `name :: Employee -> String` etc.
+
+Curiously, the record creation or update syntax binds closer than function applications: `g x { f = y }` is `g (x { f = y })`, and *not* `(g x) { f = y }`.
+
+With the language extension `RecordWildCards` enabled, it is even possible to write `Employee{..}` in a pattern, and get *all* fields of the employee record into scope, as variables, as if one had written `Employee { name = name; room = room; pubkey = pubkey }`.
 
 
-Records
--------
+Newtypes ★
+----------
 
-Newtypes
---------
+Sometimes you will see a type declaration that uses `newtype` instead of `data`:
+```haskell
+newtype Riemann = Riemann (Maybe (Integer, Integer))
+```
 
-A data type with one constructor and one field…
+For all purposes relevant to us so far you can mentally replace `newtype` with `data`. There are difference in memory representation (a `newtype` is “free” in some sense), but none that relevant at our current level.
 
 
 Type synonyms

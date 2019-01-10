@@ -1,4 +1,4 @@
-personal_ws-1.1 en 70 
+personal_ws-1.1 en 79 
 unlessZero
 scrutinee
 digitSum
@@ -11,9 +11,12 @@ polymorphism
 countCountDigits
 addR
 isMultipleOf
-haskell
+TwoIntegers
 parseFoo
+haskell
+newtype
 sumDigitsWith
+RecordWildCards
 Parametricity
 parametricity
 safeDiv
@@ -22,6 +25,7 @@ sumSumDigits
 backticks
 infixr
 isRed
+getters
 Eq
 xs
 HasOutput
@@ -29,6 +33,7 @@ const
 ys
 Haskellers
 yay
+pubkey
 fs
 Breitner
 PEMDAS
@@ -39,6 +44,7 @@ sumDigits
 hs
 isEven
 equational
+splitLastDigit
 Enum
 eval
 Joachim
@@ -54,9 +60,11 @@ copy'n'paste
 ifThenElse
 pre
 isHalfRound
+fromEitherUnit
 fixEq
 REPL
 NeedInput
+toEitherUnit
 someDigits
 deserializes
 DFINITY
@@ -65,6 +73,7 @@ precedences
 ADTs
 addC
 ParseError
+syntaxes
 templating
 ByteString
 isRound
