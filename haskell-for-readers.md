@@ -1102,6 +1102,13 @@ Maybe (Integer, Integer)
 ```
 :::
 
+Useful predefined functions related to tuples are
+```haskell
+fst :: (a,b) -> a
+snd :: (a,b) -> b
+```
+and because of their type I do not have to tell you what they do.
+
 ### The unit type
 
 There is also a zero-tuple, so to say: The unit type written `()` with only the value `()`:
@@ -1212,12 +1219,26 @@ newtype Riemann = Riemann (Maybe (Integer, Integer))
 For all purposes relevant to us so far you can mentally replace `newtype` with `data`. There are difference in memory representation (a `newtype` is “free” in some sense), but none that relevant at our current level.
 
 
-Type synonyms
--------------
+Type synonyms ★
+---------------
 
-Haddock-documentation.
+Haskell allows you to introduce new names for existing types. One example is the type `String`, which is defined as
+```haskell
+type String = [Char]
+```
 
-Outlook: More type safety (refinement types, e.g. for natural numbers)
+With this declaration, you can use `String` instead of `[Char]` in your type signatures. They are completely interchangable, and a value of type `String` is still just a list of characters.
+
+So type synonyms do not introduce any kind of type safety, they merely make types more readable.
+
+Haddock ★
+---------
+
+Because knowing the type of a function is already a big step towards understanding what it does, the usual way of documenting a Haskell API is very much centered around types. The tool `haddock` creates HTML pages from Haskell source files that list all functions with their type, and -- if present -- the documentation that is attached to it via a comment.
+
+For Haskell libraries hosted in the central package repository *Hackage*, this documentation is also provided. For example, you can learn all about the types  and functions that are availble by default by reading the [haddock page for the prelude](https://hackage.haskell.org/package/base/docs/Prelude.html). (There is a bunch of noise there that might not be relevant to you, like long lists of “Instances”. You can skip over them.)
+
+From this documentation you will also find links labeled “Source” that take you to the definition of a type or function in the source code, in a syntax-highlighted and crosslinked presentation of the source.
 
 
 Code structure small and large
