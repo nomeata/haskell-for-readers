@@ -1,22 +1,8 @@
-#TOC {
-    width: 20%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100%;
-    overflow: auto;
-    padding-left:1em;
-}
-#TOC ul {
-    margin-left: 0em;
-    padding-left: 1em;
-}
 
 body {
     margin: auto;
     padding-right: 1em;
     padding-left: 1em;
-    max-width: 50%; 
     border-left: 1px solid black;
     border-right: 1px solid black;
     color: black;
@@ -25,11 +11,39 @@ body {
     line-height: 140%;
     color: #333; 
 
-    background-image: url("dfinity.png");
-    background-position: bottom 1em right 1em; /*Positioning*/
-    background-repeat: no-repeat; /*Prevent showing multiple background images*/
-    background-attachment: fixed;
-    background-size: 20%;
+    max-width: 44em;
+}
+@media only screen and not (min-width: 88em) {
+    #TOC {
+        display: none
+    }
+}
+@media only screen and (min-width: 88em) {
+
+    body {
+        max-width: 50%;
+
+        background-image: url("dfinity.png");
+        background-position: bottom 1em right 1em; /*Positioning*/
+        background-repeat: no-repeat; /*Prevent showing multiple background images*/
+        background-attachment: fixed;
+        background-size: 20%;
+    }
+
+    #TOC {
+        width: 20%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        overflow: auto;
+        padding-left:1em;
+    }
+    #TOC ul {
+        margin-left: 0em;
+        padding-left: 1em;
+    }
+
 }
 pre {
     border: 1px dotted gray;
