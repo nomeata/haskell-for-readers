@@ -158,14 +158,14 @@ Prelude> 1 + const 2 3 + 4
 
 ::: Solution
 ```
-6
+7
 ```
 :::
 
 **A note on syntactic sugar:** Haskell is a high-calorie language: There is lots of syntactic sugar. Syntactic sugar refers to when there are alternative ways of writing something that *look* different, but *behave* the same. The goal is to allow the programmer to write the code in a way that best suits the reader, which is good, but it also means that a reader needs to know about the sugar.
 
 
-**Infix operator application (Syntactic Sugar)**:
+**Infix operator application (syntactic sugar)**:
 Functions that take two arguments can be written infix, as if they were an operator, by putting backticks around the name:
 ```
 Prelude> 123 `div` 10
@@ -190,7 +190,7 @@ class (Real a, Enum a) => Integral a where
 infixl 7 `div`
 ```
 
-**Prefix operator application (Syntactic Sugar) ★**:
+**Prefix operator application (syntactic sugar) ★**:
 We can also go the other way, and use any operator as if it were a function, by wrapping it in parentheses:
 ```
 Prelude> 1 + 1
@@ -199,7 +199,7 @@ Prelude> (+) 1 1
 2
 ```
 
-**The dollar operator (Non-Syntactic Sugar) ★**:
+**The dollar operator (non-syntactic sugar) ★**:
 Consider an expression that takes a number, and applies a number of functions , maybe with arguments, to it, such as:
 ```
 f5 (f4 (f3 (f2 (f1 42))))
@@ -300,7 +300,7 @@ False
 
 And now we are squarely in the realm of functional programming, as we have just defined out first function, `isRound`!
 
-Note that we defined the `isRound` by way of an equation. And it really is an equation: Wherever we see `isRound something`, we can obtain its meaning by replacing it with ``something `mod` 10 == 0``. This *equational reasoning*, where you replace equals by equals is one key technique to make sense of Haskell programs.
+Note that we defined the `isRound` by way of an equation. And it really is an equation: Wherever we see `isRound something`, we can obtain its meaning by replacing it with ``something `mod` 10 == 0``. This *equational reasoning*, where you replace equals by equals, is one key technique to make sense of Haskell programs.
 
 ::: Exercise
 Discuss: Think of other programming language that have concepts called functions. Can you always replace a function call with the function definition? Does it change the meaning of the program?
@@ -348,7 +348,7 @@ Prelude> isHalfRound x = x `hasLastDigit` 0 || x `hasLastDigit` 5
 ```
 which, if you read it out, is almost a transliteration of the specification! Here we see how abstraction, together with good naming and syntax, can produce very clear and readable code.
 
-**Infix operator application again (Syntactic Sugar)**:
+**Infix operator application again (syntactic sugar)**:
 By the way, you can use infix operator syntax already when defining a function:
 ```
 x `divides` y = x `div` y == 0

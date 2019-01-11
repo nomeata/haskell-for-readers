@@ -11,4 +11,5 @@ all: haskell-for-readers.html
 	  --css pandoc.css \
 	  --css solution.css \
 	  --write=html5 \
+	  -V lang=en-US \
 	  $< -o $@

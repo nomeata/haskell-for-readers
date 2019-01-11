@@ -1,25 +1,41 @@
 
 body {
-    margin: auto;
-    padding-right: 1em;
-    padding-left: 1em;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-    color: black;
     font-family: Verdana, sans-serif;
     font-size: 100%;
     line-height: 140%;
-    color: #333; 
 
-    max-width: 44em;
+}
+p {
+    text-align: justify;
+    hyphens: auto;
+}
+@media only screen {
+    body{
+        margin: auto;
+        padding-right: 1em;
+        padding-left: 1em;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        color: #333;
+    }
+}
+@media only print {
+    body {
+	font-size: 12pt;
+    }
+    #TOC {
+        display: none
+    }
 }
 @media only screen and not (min-width: 88em) {
+    body {
+        max-width: 44em;
+    }
     #TOC {
         display: none
     }
 }
 @media only screen and (min-width: 88em) {
-
     body {
         max-width: 50%;
 
