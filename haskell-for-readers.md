@@ -6,6 +6,10 @@ Preface {.unnumbered}
 
 Welcome to the lecture series “Haskell for Readers”. This workshop is uniquely tailored to those who need to *read*, rather than *write* Haskell code: auditors, scientists, managers, testers etc.
 
+### Status {.unnumbered}
+
+This document is work in progress (but whatever chapters and sections are there ought to be … usable). 
+
 ### Scope {.unnumbered}
 
 This goal implies a higher focus on syntax (because you can *write* programs ignoring most syntactic gadgets available to you, but if you read code, you have to deal with them), types and type signatures (because they are the key to understanding Haskell code) and abstraction patterns (because it is key to understanding well-written code, and Haskell excels at abstraction).
@@ -14,17 +18,21 @@ On the other hand, less words will be spent on how to approach writing the progr
 
 Nevertheless it is hard to understand a programming paradigm without writing any code, so there will some amount of hands-on work to be done, especially early on, when we start with a introduction to basic functional programming.
 
-### Form and audience {.unnumbered}
+### Form {.unnumbered}
 
 This document is not (necessarily) a self-contained tutorial; it is rather the base for an interactive lecture, given by a real instructor. In such a lecture, some holes will be filled as we go, and the questions from the audience form a crucial part of the learning experience.
 
-That said we I that the notes are detailed enough that while they are not ideal for independent study, they are at least useful and helpful.
+This document is also meant to be more on the concise side, assuming the audience is shorter on time than on wits, and in a small, live workshop, the lecturer can add details, come up with more examples and slow down as needed.
 
-I expect the audience to be familiar with programming and computer science in general, but do not assume prior knowledge of functional program (or, in case you are worried, category theory).
+This makes these notes less ideal for independent study, but that said, it should be possible to work attentively through them and still learn a lot.
 
-The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them.
+### Audience {.unnumbered}
 
-Some sections are marked with ★. These are optional in the sense that the following material does not rely heavily on them. If time is short, e.g. during a workshop, they can be skipped.
+I expect the audience to be familiar with programming and computer science in general, but do not assume prior knowledge of functional program (or, in case you are worried about this, category theory).
+
+The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them. The exercises are not sufficient in number and depths to provide the reader the experience needed to really learn Haskell.
+
+Some sections are marked with ★. These are optional in the sense that the following material does not rely heavily on them. If time is short, e.g. during a workshop, they can be skipped, and the participants can be invited to come back to them on their own.
 
 ### Acknowledgments and license {.unnumbered}
 
@@ -1447,4 +1455,4 @@ Haskell packages ★
 Zooming out some more, we come across packages: A *package* is a collection of modules that are bundled under a single package name. A package contains meta-data (name, version number, author, license...). Packages declare which other packages they depend upon, together with version ranges. All this meta-data can be found in the *Cabal file* called `foo.cabal` in the root directory of the project.
 
 Almost all publicly available Haskell packages are hosted centrally on [Hackage](http://hackage.haskell.org/packages/), including the haddock-generated documentation and cross-linked source code. They can be easily installed using the [`cabal` tool](https://www.haskell.org/cabal/), or alternative systems like [`stack`](https://www.haskellstack.org/) or [`nix`](https://nixos.org/nixpkgs/manual/#users-guide-to-the-haskell-infrastructure).
-These cover many common needs and it is expected that a serious Haskell project depends on dozen of Haskell packages from Hackage.
+The packages on Hackage cover many common needs and it is expected that a serious Haskell project depends on dozen of Haskell packages from Hackage.
