@@ -1339,6 +1339,112 @@ sumDigitsWith f n
   | otherwise = sumDigitsWith f r + f d
   where (r,d) = splitLastDigit n
 ```
-if we wanted.
+(note that `d` is used in both right-hand sides) if we wanted.
+
+The structure of a module
+-------------------------
+
+As we zoom out one step, we get to look at a Haskell file as a whole. In Haskell, every file is also a Haskell *module*, and modules serve to provide namespacing support.
+
+Normally, a Haskell module named `Foo.Bar.Baz` lives in a file `Foo/Bar/Baz.hs`, and begins with
+```haskell
+module Foo.Bar.Baz where
+```
+Haskell module names are always capitalized.
+
+If a file does not have such a header (which is usually only the case for experiments and the entry point of a Haskell program), then it is implicitly called `Main`. This is why the GHCi prompt says `Main>` after loading such a file.
+
+The rest of the module is are declarations: Values, functions, types, type synonyms etc. The important bit to know here is that the order of declarations is completely irrelevant: You can use functions you that are defined further down, you can mix type and function declarations, you can even separate the type signature of a function from its definition (but you have to keep multiple equations of one function together). This allows the author to sort functions by topic, or by relevance, rather than by dependency, and it is not uncommon to first show the main entry-point of a module, and put all the helper functions it uses below.
+
+Importing other modules
+-----------------------
+
+Obviously, the point of having multiple files of Haskell code is to use the code from one in the other. This is achieved using `import` statements, which *must* come right after the `module` header, and before any declarations.
+
+So if we have a file `Target.hs` with content
+```haskell
+module Target where
+who :: String
+who = "world"
+```
+and another file `Tropes.hs` with content
+```haskell
+module Tropes where
+
+import Target
+
+greeting :: String
+greeting = "Hello " ++ who ++ "!"
+```
+then the use of `who` in `greeting` refers to the definition in the file `Target.hs`.
+
+We could also write
+```haskell
+greeting :: String
+greeting = "Hello " ++ Target.who ++ "!"
+```
+and use the *fully qualified* name of `who`. This can be useful for disambiguation, or simply for clarity. There must not be spaces around the period, or else it would refer to the composition operator.
+
+If we only ever intend to use the things we import from a module in their qualified names, we can use a *qualified* import:
+```haskell
+import qualified Target
+```
+And if the module has a long name, we can shorten it:
+```haskell
+import qualified Target as T
+```
+and write `T.who`. This is a common idiom for modules like `Data.Text` that export many names that would otherwise clash with names from the prelude.
+
+The standard library, called `base`, comes with [many modules you can import](http://hackage.haskell.org/package/base) in addition to the `Prelude` module, which is always imported implicitly.
+
+Import lists ★
+--------------
+
+If we do not want to import *all* names of another module, we can import just a specific selection, e.g.:
+```haskell
+import Data.Maybe (mapMaybe)
+```
+This makes it easier for someone reading the code to locate where a certain function is from, and it makes the code more robust against breakage when a new version of the other module starts exporting additional names. These would not silently override other names, but cause compiler errors about ambiguous names.
+
+When including an operator in this list, include it in parenthesis:
+```haskell
+import Data.Function ((&), on)
+```
+
+You can import types just as well, just include them in the list. To import *constructors* (which look like types), you have to list them after the type they belong to. So if we put our definitions of `Complex` and `Riemann` into a file `Riemann.hs`, namely
+```haskell
+module Riemann where
+data Complex = C Integer Integer
+data Riemann = Complex Complex | Infinity
+```
+then you can import everything using
+```haskell
+import Riemann (Complex(C), Riemann(Complex, Infinity))
+```
+or, shorter,
+```haskell
+import Riemann (Complex(..), Riemann(..))
+```
+
+Export lists and abstract types ★
+---------------------------------
+
+You can not only restrict what you import, but also what you export. To do so, you list the names of functions, types, etc. that you want to export after the module name:
+```
+module Riemann (Complex, Riemann(..)) where
+…
+```
+A short export list is a great help when trying to understand the role and purpose of a module: If it only exports one or a small number of functions, it is clear that these are the (only) entry points to the code, and that all other declarations are purely internal.
+
+By excluding the constructors of a data type from the export list, as we did in this example with the `Complex` type, we can make this type *abstract*: Users of our module now have no knowledge of the internal structure of `Complex`, and they are unable to create or arbitrarily inspect values of type `Complex`. Instead, they are only able to do so using the *other* functions that we export along with `Complex`. This way we can ensure certain invariant in our types – think of a search tree with the invariant that it is sorted – or reserve the ability to change the shape of the type without breaking depending code.
+
+Proper user of abstract types greatly helps to make code more readable, more maintainable and more robust, quite similar to how polymorphism does it on a smaller scale.
 
 
+Haskell packages ★
+------------------
+
+Zooming out some more, we come across packages: A *package* is a collection of modules that are bundled under a single package name. A package contains meta-data (name, version number, author, license...). Packages declare which other packages they depend upon, together with version ranges. All this meta-data can be found in the *Cabal file* called `foo.cabal` in the root directory of the project.
+
+Almost all publicly available Haskell packages are hosted centrally on [Hackage](http://hackage.haskell.org/packages/), including the haddock-generated documentation and cross-linked source code. They can be easily installed using the [`cabal` tool](https://www.haskell.org/cabal/), or alternative systems like [`stack`](https://www.haskellstack.org/) or [`nix`](https://nixos.org/nixpkgs/manual/#users-guide-to-the-haskell-infrastructure).
+These cover many common needs and it is expected that a serious Haskell project depends on dozen of Haskell packages from Hackage.

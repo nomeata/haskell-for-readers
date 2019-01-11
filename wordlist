@@ -1,4 +1,4 @@
-personal_ws-1.1 en 84 
+personal_ws-1.1 en 87 
 unlessZero
 scrutinee
 digitSum
@@ -23,8 +23,8 @@ safeDiv
 subexpression
 infixl
 sumSumDigits
-backticks
 snd
+backticks
 getters
 infixr
 isRed
@@ -44,7 +44,9 @@ absoluteValue
 Booleans
 Num
 sumDigits
+Baz
 hs
+namespacing
 isEven
 crosslinked
 equational
@@ -54,8 +56,8 @@ eval
 Joachim
 safeMod
 Hackage
-ghci
 GHCi
+ghci
 Bool
 countDigits
 namespaces
@@ -66,6 +68,7 @@ ifThenElse
 pre
 isHalfRound
 fromEitherUnit
+mapMaybe
 fixEq
 REPL
 NeedInput
