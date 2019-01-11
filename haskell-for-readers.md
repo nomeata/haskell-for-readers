@@ -1077,14 +1077,14 @@ splitLastDigit n = TwoIntegers (n `div` 10) (n `mod` 10)
 Clearly, the concept of “passing around two values together“ is not particularly tied to `Integer`, and we can use polymorphism to generalize this definition:
 ```haskell
 data Two a b = Two a b
-splitLastDigit :: Integer -> Two a b
+splitLastDigit :: Integer -> Two Integer Integer
 splitLastDigit n = Two (n `div` 10) (n `mod` 10)
 ```
 
 And because this is so useful, Haskell comes with built-in support for such pairs, including a nice and slim syntax:
 ```haskell
 data (a,b) = (a,b) -- morally this is how it is defined
-splitLastDigit :: Integer -> (a, b)
+splitLastDigit :: Integer -> (Integer, Integer)
 splitLastDigit n = (n `div` 10, n `mod` 10)
 ```
 
@@ -1227,7 +1227,7 @@ Haskell allows you to introduce new names for existing types. One example is the
 type String = [Char]
 ```
 
-With this declaration, you can use `String` instead of `[Char]` in your type signatures. They are completely interchangable, and a value of type `String` is still just a list of characters.
+With this declaration, you can use `String` instead of `[Char]` in your type signatures. They are completely interchangeable, and a value of type `String` is still just a list of characters.
 
 So type synonyms do not introduce any kind of type safety, they merely make types more readable.
 
@@ -1236,7 +1236,7 @@ Haddock ★
 
 Because knowing the type of a function is already a big step towards understanding what it does, the usual way of documenting a Haskell API is very much centered around types. The tool `haddock` creates HTML pages from Haskell source files that list all functions with their type, and -- if present -- the documentation that is attached to it via a comment.
 
-For Haskell libraries hosted in the central package repository *Hackage*, this documentation is also provided. For example, you can learn all about the types  and functions that are availble by default by reading the [haddock page for the prelude](https://hackage.haskell.org/package/base/docs/Prelude.html). (There is a bunch of noise there that might not be relevant to you, like long lists of “Instances”. You can skip over them.)
+For Haskell libraries hosted in the central package repository *Hackage*, this documentation is also provided. For example, you can learn all about the types  and functions that are available by default by reading the [haddock page for the prelude](https://hackage.haskell.org/package/base/docs/Prelude.html). (There is a bunch of noise there that might not be relevant to you, like long lists of “Instances”. You can skip over them.)
 
 From this documentation you will also find links labeled “Source” that take you to the definition of a type or function in the source code, in a syntax-highlighted and crosslinked presentation of the source.
 
@@ -1244,6 +1244,101 @@ From this documentation you will also find links labeled “Source” that take 
 Code structure small and large
 ==============================
 
-Let, where, modules, imports, qualified names
+The next big topic we need to learn about are the ways with which the programmer structures the code. This happens on multiple levels
+
+ * in a function: intermediate results are named, local helper functions are defined.
+ * within a file: functions, type signatures, and documentation is arranged.
+ * within a project (library, package): code is spread out in different files,and imported from other files.
+ * between projects: packages are versioned, equipped with meta-data, and depend on each other.
+
+
+`let`-expressions
+-----------------
+
+The most basic way of adding some structure within an expression is to give a name to a subexpression, and possibly use it later. So instead of
+```haskell
+isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
+```
+one could write
+```haskell
+isMultipleOf3 x =
+  let y = fixEq sumDigits x
+  in y == 3 || y == 6 || y == 9
+```
+which is arguably easier to read.
+
+Be careful: A `let` expression in Haskell can always be recursive, so
+```haskell
+isMultipleOf3 x =
+  let x = fixEq sumDigits x
+  in x == 3 || x == 6 || x == 9
+```
+does *not* work as expected.
+
+In such a `let` expression, you can also do pattern-matching, e.g. to unpack a tuple:
+```haskell
+sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
+sumDigitsWith f n
+  | n < 10 = f n
+  | otherwise =
+    let (r,d) = splitLastDigit n
+    in sumDigitsWith f r + f d
+```
+This is a fine and innocent thing to do if the pattern is *irrefutable*, i.e. always succeeds, but is a code smell if it is a pattern that can fail, e.g. `Just x = something`. In the latter case, a `case` statement might be more appropriate.
+
+We can also define whole functions in a `let`-expression, just like on the top level. This might improve the code of our run-length-encoding automaton:
+```haskell
+rle :: Eq a => Stream a (Integer,a)
+rle =
+  let start x = NeedInput (count x 1)
+      count x n x' | x == x' = NeedInput (count x (n + 1))
+                       | otherwise = HasOutput (n, x) (start x')
+  in NeedInput start
+```
+One advantage of this is that the “internal” functions `start` and `count` are now no longer available from the outside, and so a reader of this code knows for sure that these are purely internal. We can also drop the `rle_` prefix.
+
+Another important advantage is that such local functions have access to the parameters of the enclosing function. To see this in action, let us extend `rle` with a parameter that indicates a element of the stream that should make the automaton stop:
+
+```haskell
+rle :: Eq a => a -> Stream a (Integer,a)
+rle stop =
+  let start x | x == stop = Done
+              | otherwise = NeedInput (count x 1)
+      count x n x' | x == x' = NeedInput (count x (n + 1))
+                   | otherwise = HasOutput (n, x) (start x')
+  in NeedInput start
+```
+In `start` we can now access `stop` just fine. If `start` and `count` were not local functions, then we would have to add `stop` as an explicit parameter to *both* local functions, significantly cluttering the code with administrative details.
+
+
+`where`-clauses ★
+-----------------
+
+I think few syntactic features show that Haskell’s syntax is designed with readability in mind, valuing that higher than syntactic minimalism, as well as the `where` clauses.
+
+Looking the previous version of the `rle` program, a very picky reader might complain that it is annoying to have to first read past `start` and `count` to see the last line, when the last line tells the reader how it all starts, and thus should be first.
+
+Therefore, the programmer has the option to use a `where`-clause instead of a `let` expression here. A `where`-clause is attached to a function equation (or, more rarely, to a match in a `case` expression), has access to its parameters and – most crucially – is written after or below the right-hand side of the equation:
+```haskell
+rle :: Eq a => a -> Stream a (Integer,a)
+rle stop = NeedInput start
+  where
+    start x | x == stop = Done
+            | otherwise = NeedInput (count x 1)
+    count x n x' | x == x' = NeedInput (count x (n + 1))
+                 | otherwise = HasOutput (n, x) (start x')
+```
+
+It is not a huge change, but one that – in my humble opinion – improves readability by a small but noticeable bit.
+
+If you have a function with multiple guards on one equation, such as `start`, then a `where` clause would scope over all such guards. So we could write
+```haskell
+sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
+sumDigitsWith f n
+  | n < 10 = f d
+  | otherwise = sumDigitsWith f r + f d
+  where (r,d) = splitLastDigit n
+```
+if we wanted.
 
 

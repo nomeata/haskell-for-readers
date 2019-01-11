@@ -1,4 +1,4 @@
-personal_ws-1.1 en 79 
+personal_ws-1.1 en 84 
 unlessZero
 scrutinee
 digitSum
@@ -20,20 +20,23 @@ RecordWildCards
 Parametricity
 parametricity
 safeDiv
+subexpression
 infixl
 sumSumDigits
 backticks
+snd
+getters
 infixr
 isRed
-getters
 Eq
 xs
 HasOutput
 const
+fst
 ys
 Haskellers
-yay
 pubkey
+yay
 fs
 Breitner
 PEMDAS
@@ -43,12 +46,14 @@ Num
 sumDigits
 hs
 isEven
+crosslinked
 equational
 splitLastDigit
 Enum
 eval
 Joachim
 safeMod
+Hackage
 ghci
 GHCi
 Bool
