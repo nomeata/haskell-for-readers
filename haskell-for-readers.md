@@ -1,6 +1,8 @@
 % Haskell for Readers
 % [Joachim Breitner](http://www.joachim-breitner.de/), [DFINITY Foundation](https://dfinity.org/)
 
+<a id="nav-toggle" href="#TOC"></a>
+
 Preface {.unnumbered}
 =======
 
