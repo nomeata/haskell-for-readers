@@ -847,9 +847,9 @@ It is the function `flip` that takes a function and swaps its first two argument
 Algebraic data types
 --------------------
 
-The function type is very expressive, and one can model many data structures purely with functions. But of course it is more convenient to use dedicated data structures. There are a number of data structure types that come with the standard library, in particular tuples, lists, the `Maybe` type. But it is more instructive to start defining our own.
+The function type is very expressive, and one can model many data structures purely with functions. But of course it is more convenient to use dedicated data structures. There are a number of data structure types that come with the standard library, in particular tuples, lists, the `Maybe` type. But it is more instructive to first look at how we can define our own.
 
-We can declare new data types using the `data` keyword, the name of the type, the `=` sign, and then a list of *constructors*.
+We can declare new data types using the `data` keyword, the name of the type, the `=` sign, and then a list of *constructors*, separated by pipes (`|`). The form of these declarations is a bit odd, e.g. it uses `=` although it is not really an equality, but let us look at it step by step.
 
 ### Enumerations
 
@@ -861,6 +861,8 @@ data Suit = Diamonds | Clubs | Hearts | Spades
 
 From now on, we can use the constructors, e.g. `Diamonds` as values of type `Suit`. This is how we *create* values of type `Suit` -- and it is the only way, so we know that every value of type `Suit` is, indeed, one of these four constructors.
 
+Note that `Suit` is a *type*, i.e. something you can use in type signatures, while `Diamonds` and the other constructors are *values*, i.e. something you can use in your function definitions.
+
 When we have a value of type `Suit` then the only thing we can really do with it is to find out which of these four constructors it actually is. The way to do that is using *pattern matching*, for example using the `case … of …` syntax:
 
 ```haskell
@@ -871,7 +873,7 @@ isRed s = case s of
   _ -> False
 ```
 
-The expression `case e of …` evaluates the *scrutinee* `e`, and then linearly goes through the list of cases. If the value of the scrutinee matches the *pattern* left of the arrow, the whole expression evaluates to the right-hand side. We see two kinds of patterns here: Constructor patterns like `Diamonds`, which match simply when the value is the constructor, and the *wildcard pattern*, written as an underscore, which matches any value.
+The expression `case e of …` evaluates the *scrutinee* `e`, and then sequentially goes through the list of cases. If the value of the scrutinee matches the *pattern* left of the arrow, the whole expression evaluates to the right-hand side. We see two kinds of patterns here: Constructor patterns like `Diamonds`, which match simply when the value is, indeed, the constructor, and the *wildcard pattern*, written as an underscore, which matches any value.
 
 It is common to immediately pattern match on the parameter of a function, so Haskell supports pattern-matching directly in the function definition:
 ```haskell
@@ -881,7 +883,7 @@ isRed Hearts = True
 isRed _ = False
 ```
 
-The type `Bool` that we have already used before is nothing else but one of these enumeration types, defined as
+The type `Bool` that we have already used before is merely one of these enumeration types, defined as
 ```haskell
 data Bool = False | True
 ```
@@ -891,7 +893,7 @@ ifThenElse :: Bool -> a -> a -> a
 ifThenElse True x y = x
 ifThenElse False x y = y
 ```
-the only reason to have `if … then … else …`  is that it is a bit more readable.
+The only reason to have `if … then … else …`  is that it is a bit more readable.
 
 ### Constructor with parameters
 
@@ -900,7 +902,7 @@ So far, the constructors were just plain values. But we can also turn them into 
 ```
 data Complex = C Integer Integer
 ```
-(Mathematically educated readers please excuse the use of `Integers` here).
+(Mathematically educated readers please excuse the use of `Integers` here.)
 
 This creates a new type `Complex`, with a constructor `C`. But `C` itself is not a value of type `Complex`, but rather it is a function that creates values of type `Complex` and, crucially, it is the only way of creating values of type `Complex`. We can ask for the type of `C` and see that it is indeed just a function:
 ```
@@ -913,7 +915,9 @@ origin :: Complex
 origin = C 0 0
 ```
 
-Again, and as always, the way to use a complex number is by pattern matching. This time we use pattern matching not to distinguish different cases -- *every* `Complex` is a `C` -- but to extract the parameters of the constructor:
+Note that in the above declaration, `Complex` is a type, `C` is a term, but `Integer` is again a type.
+
+Again the way to use a complex number is by pattern matching. This time we use pattern matching not to distinguish different cases -- *every* `Complex` is a `C` -- but to extract the parameters of the constructor:
 
 ```haskell
 addC :: Complex -> Complex -> Complex
@@ -933,7 +937,7 @@ data Riemann = Complex Complex | Infinity
 ```
 This declares a new type `Riemann` that can be built using one of these two constructors:
 
- 1. The constructor `Complex`, which takes one argument, of type `Complex`. Types and terms (including constructors) have different namespaces, so we can have a type called `Complex`, and a constructor called `Complex`, and they can be completely independent. This can be confusing, but is rather idiomatic.
+ 1. The constructor `Complex`, which takes one argument, of type `Complex`. Types and terms (including constructors) have different namespaces, so we can have a type called `Complex`, and a constructor called `Complex`, and they can be completely unrelated. This can be confusing, but is rather idiomatic.
 
     The type of `Complex` shows that we can use it as a function, to create a point of the `Riemann` sphere from a complex number:
     ```
@@ -950,7 +954,7 @@ addR Infinity _  = Infinity
 addR _ Infinity  = Infinity
 ```
 
-A data type that has more than one constructor is commonly called a *sum type*. So these data types are built from sums and products, and hence are called algebraic data types (ADTs).
+A data type that has more than one constructor is commonly called a *sum type*. Because `data` allows you to build types from sums and products, they are called algebraic data types (ADTs).
 
 ### Recursive data types
 
@@ -970,6 +974,21 @@ insert x (Node y t1 t2)
 ```
 This code shows a new, syntactic feature: Pattern guards! These are Boolean expressions that you can use to further restrict when a case is taken. The third case in this function definition is only used if `y < x`, otherwise the following cases are tried. Of course this could be written using `if … then … else …`, but the readability and aesthetics are better with pattern guards. The value `otherwise` is simply `True`, but this reads better.
 
+::: Exercise
+Consider the following definition:
+```haskell
+data Wat = Wat Wat
+```
+Is this legal? What does it mean? Which occurences of `Wat` are terms, and which are types? Can you define a value of type `Wat`?
+:::
+
+::: Solution
+This type is legal. Every value of type `Wat` is built from the constructor `Wat`, applied to another value of type `Wat`. So, unless there are exceptions or nontermination around, it is just an infinite tower of `Wat`s:
+```
+wat :: Wat
+wat = Wat wat
+```
+:::
 
 ### Polymorphic data types
 
