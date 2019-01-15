@@ -1764,7 +1764,7 @@ instance (Finite a, Finite b) => Finite (a -> b) where
 
 Note that for obvious reasons we do not have an instance for `Integer`, or the list type.
 
-Now that we have sowed the seed, we want to reap the fruit: Whatever complex type we build out of these constructors, we can evaluate `size` that that type:
+Now that we have sown the seed, we want to reap the fruit: Whatever complex type we build out of these constructors, we can evaluate `size` that that type:
 
 ```
 Prelude> size @(Maybe Bool)
@@ -1774,10 +1774,75 @@ Prelude> size @(Suit -> Bool)
 Prelude> size @(Suit -> Bool, Bool -> Suit)
 256
 Prelude> size @((Suit -> Suit) -> Maybe Bool)
-139008452377144732764939786789661303114218850808529137991604824430036072629766435941001769154109609521811665540548899435521
+1390084523771447327649397867896613031142188508
+0852913799160482443003607262976643594100176915
+4109609521811665540548899435521
 ```
 
-The utility of such a `size` function is questionable (but not completely absent), but I hope you understand the power behind this approach, and also recognize the pattern if you see in the wild.
+The utility of such a `size` function is questionable (but not completely void), but I hope you understand the power behind this approach, and also recognize the pattern if you see in the wild.
 
 In fact, instances of the `Eq` and `Ord` class for the container types like tuples and lists etc. are also instances of this pattern.
 
+Interlude: Kinds ★
+------------------
+
+This section is not directly related to type classes, but the concept of *kinds* shows up first here.
+
+You might have already noticed that there is a fundamental difference between a type like `Bool` and a type like `Maybe`. The former has values, e.g. `True`, and it can be an argument or a return value of a function. That is not true for `Maybe`. There is no value that has type `Maybe`! Only when we say what type we maybe have, do we get a proper type. So `Maybe` is not a normal type in that sense, but `Maybe Bool` is, or in general `Maybe a` for any normal type `a`.
+
+So what is `Maybe`? It is a type former! It takes a normal type, with values (like `Bool`) and creates a new normal type form it (namely `Maybe Bool`).
+
+We can apply `Maybe` multiple times: `Maybe (Maybe Bool)` is also a normal type. But we cannot apply `Maybe` to itself: `Maybe Maybe` is nonsense.
+
+This is all very similar to the term level, where `True` is a Boolean, but `not` is not a Boolean. But `not` can be applied to a Boolean, and `not True` is another Boolean. We can apply it multiple times `not (not True)`, but we cannot apply it to itself `not not`.
+
+On the term level, terms have *types* that describe what compositions make sense and which compositions are disallowed. `True` has type `Bool`, and `not` has type `Bool -> Bool`, which explains why you can apply `not` to `True`, but not to `not`.
+
+We find the same on the type level: Types have *kinds* that describe which compositions make sense and which compositions are disallowed. `Bool` has kind `*` (pronounced “star” or simply type), and `Maybe` has kind `* -> *`, which explains why you can apply `Maybe` to `Bool`, but not to `Maybe`.
+
+The kind `*` is the kind of all the normal types, who have values, and which can be the argument or return type of a function. `* -> *` is the kind of simple type formers like `Maybe`, or `Tree`, or the list type. These are also called *type constructors*. Some have more than one argument, e.g. `Either` has kind `* -> * -> *`. GHCi happily tells you the kind of a type constructor using the `:kind` command:
+```
+Prelude> :kind Bool
+Bool :: *
+Prelude> :kind Maybe
+Maybe :: * -> *
+Prelude> :kind Either
+Either :: * -> * -> *
+```
+
+In mundane code, kinds do not get more complicated than that, but there are good uses for higher kinds, such as
+```haskell
+newtype Fix f = Fix (f (Fix f))
+-- Kind of Fix:
+-- Fix :: (* -> *) -> *
+```
+
+Type classes also have a kind, only these do not construct types of kind `*`, but rather of kind `Constraint`:
+```
+Prelude> :kind Eq
+Eq :: * -> Constraint
+Prelude> :kind Monoid
+Monoid :: * -> Constraint
+```
+
+Common pre-defined type classes ★
+---------------------------------
+
+You should know the following common type classes. Follow the links for a list
+of methods and other documentation:
+
+* [`Eq`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Eq): Equality (or equivalence)
+
+* [`Ord`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Ord): Ordering
+
+* [`Num`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Num): Numeric operations (`(+)`, `(-)`, `(*)` and others). There are more numerical type classes (`Real`, `Integral`, `Fractional`, `RealFloat`).
+
+* [`Show`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Show): Provides `show :: Show a => a -> String` to serialize a value to a textual representation that (ideally) is valid source code. Should be used for debugging mostly.
+
+* [`Read`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Read): Provides `read :: Read a => String -> a`, which goes the other way. Again, not ideal for production use, but can sometimes be used with `Show` to scaffold serialization. If you have to use `Read`, please use [`readMaybe`](http://hackage.haskell.org/package/base/docs/Text-Read.html#v:readMaybe).
+
+* [`Functor`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Functor): Provides `fmap :: Functor f => (a -> b) -> f a -> f b`. This type class had kind `(* -> *) -> Constraint`, i.e. can only be instantiated for type formers like `Maybe` and the list type. It provides the ability to apply a function to each value within the container (for types that are a container, of sorts).
+
+* [`Applicative`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Applicative) and [`Monad`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Monad), also of kind `(* -> *) -> Constraint`, are used to model effects of sorts, for example to hide bookkeeping (in a parser) or safely allow side-effects (in IO code). These deserve their own chapter.
+
+* [`Foldable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Foldable) and [`Traversable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Traversable), also of kind `(* -> *) -> Constraint`, are abstractions over containers where elements can be visited in sequence. 

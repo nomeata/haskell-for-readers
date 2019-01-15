@@ -1,4 +1,4 @@
-personal_ws-1.1 en 117 
+personal_ws-1.1 en 118 
 templating
 fixBy
 Haskellers
@@ -26,11 +26,12 @@ fromEitherUnit
 Enum
 snd
 href
+fmap
 isRound
 ParseError
 Bool
-ghci
 GHCi
+ghci
 hs
 nontermination
 unlessZero
@@ -39,6 +40,7 @@ digitSum
 absoluteValue
 namespaces
 countDigits
+RealFloat
 nav
 ADTs
 REPL
@@ -53,9 +55,9 @@ haskell
 everyValue
 someDigits
 xcafe
+formers
 syntaxes
 polymorphism
-Polymorphism
 NeedInput
 XScopedTypeVariables
 getters
@@ -74,8 +76,8 @@ RecordWildCards
 hasLastDigit
 TODO
 infixl
-xs
 mempty
+xs
 namespacing
 infixr
 XTypeApplications
@@ -110,7 +112,6 @@ Hackage
 Breitner
 sumSumDigits
 parametricity
-Parametricity
 addR
 codomain
 isSorted
