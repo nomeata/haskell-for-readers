@@ -511,7 +511,7 @@ Write a (recursive) function `fixEq` so that `fixEq f x` repeatedly applies `f` 
 
 ::: Solution
 ```haskell
-fixEq f x = if f x == x then x else fixEq f (f x)
+fixEq f x = if x == f x then x else fixEq f (f x)
 ```
 :::
 
@@ -681,7 +681,7 @@ sumSumDigits x = twice sumDigits x
 sumDigitsWith f n = if n < 10 then f n else sumDigitsWith f (n `div` 10) + f (n `mod` 10)
 countDigits = sumDigitsWith (\d -> 1)
 sumDigits = sumDigitsWith (\d -> d)
-fixEq f x = if f x == x then x else fixEq f (f x)
+fixEq f x = if x == f x then x else fixEq f (f x)
 isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
 ```
 
@@ -981,7 +981,7 @@ Consider the following definition:
 ```haskell
 data Wat = Wat Wat
 ```
-Is this legal? What does it mean? Which occurences of `Wat` are terms, and which are types? Can you define a value of type `Wat`?
+Is this legal? What does it mean? Which occurrences of `Wat` are terms, and which are types? Can you define a value of type `Wat`?
 :::
 
 ::: Solution
@@ -1370,6 +1370,9 @@ sumDigitsWith f n
 ```
 (note that `d` is used in both right-hand sides) if we wanted.
 
+Comments (TODO)
+--------
+
 The structure of a module
 -------------------------
 
@@ -1470,6 +1473,9 @@ By excluding the constructors of a data type from the export list, as we did in 
 Proper user of abstract types greatly helps to make code more readable, more maintainable and more robust, quite similar to how polymorphism does it on a smaller scale.
 
 
+Language extensions (TODO)
+-------------------
+
 Haskell packages ★
 ------------------
 
@@ -1477,3 +1483,301 @@ Zooming out some more, we come across packages: A *package* is a collection of m
 
 Almost all publicly available Haskell packages are hosted centrally on [Hackage](http://hackage.haskell.org/packages/), including the haddock-generated documentation and cross-linked source code. They can be easily installed using the [`cabal` tool](https://www.haskell.org/cabal/), or alternative systems like [`stack`](https://www.haskellstack.org/) or [`nix`](https://nixos.org/nixpkgs/manual/#users-guide-to-the-haskell-infrastructure).
 The packages on Hackage cover many common needs and it is expected that a serious Haskell project depends on dozen of Haskell packages from Hackage.
+
+
+Type classes
+============
+
+The language features we have seen so far can be found, with slight variations, in most functional programming languages. In this chapter, we will look at a feature that Haskell is particularly renown for: *Type classes*.
+
+Let me start by pointing out what type classes are not: They are not classes as in object oriented programming, so please do not try to attempt to understand them by analogy to that.
+
+Instead, type classes are a language feature that provides, in sequence of sophistication,
+
+ * overloading of operators and function,
+ * implicit dependency injection,
+ * polymorphism over types with structure, and
+ * type-driven code synthesis.
+
+We have actually seen most of them:
+
+Overloading
+-----------
+
+Assume, for a moment, that `(==)` operator we have seen already only works on `Integer`. But surely, it is no problem to define equality on, say, `Complex` and `Riemann`:
+```haskell
+eqComplex :: Complex -> Complex -> Bool
+eqComplex (C x1 y1) (C x2 y2) = x1 == x2 && y1 == y2
+
+eqRiemann :: Riemann -> Riemann -> Bool
+eqRiemann (Complex c1) (Complex c2) = c1 `eqComplex` c2
+eqRiemann Infinity Infinity = True
+eqRiemann _ _ = False
+```
+
+Similarly, we can define comparisons, numeric operators etc.  This is good enough to express most of the code that we want to write, but it is terribly verbose and annoying to remember the name of the right equality function, and have the type (in the name) be repeated all over the code.
+
+So what we really want is to use the nice `(==)` syntax, but we want it to mean *different things at different types* -- overloading!
+
+In order to do that, we first have to declare that `(==)` is a function we can overload, by declaring a class with it as a method:
+```haskell
+class Eq a where
+    (==) :: a -> a -> a
+```
+Of course, the `Eq` class is already defined. From now on, I can use `(==)` with every type that is an *instance* of `Eq`. We can declare instances for `Complex` and `Riemann`:
+```haskell
+instance Eq Complex where
+    C x1 y1 == C x2 y2 = x1 == x2 && y1 == y2
+instance Eq Riemann where
+    (==) = eqRiemann
+```
+and with this in place, we can use `(==)` not only for `Integer`, but also `Complex` and `Riemann`. In fact, we can use `(==)` instead of `eqComplex` in the definition of `eqRiemann` -- remember that the order of declarations is irrelevant in a Haskell module.
+
+Now can hopefully better understand the type signature of `(==)`:
+```
+Prelude> :t (==)
+(==) :: Eq a => a -> a -> Bool
+```
+The part after the `=>` indicates the argument and return types of `(==)`. But the type variable `a` cannot just be any type (as it was the case with fully polymorphic functions like `const`): It has to be a type that is an instance of the `Eq` class. This is expressed by the *constraints* on the left of the `=>`.
+
+::: Exercise
+Write an `Eq` instance for `Employee`, using record accessors.
+Is there a problem with this code?
+:::
+
+::: Solution
+```haskell
+instance Eq Employee where
+    e1 == e2 =
+        name e1 == name e2 &&
+        room e1 == room e2 &&
+        pubkey e1 == pubkey e2
+```
+The problem is: If the record gains additional fields, this code still compiles, and the programmer is not warned that they should update it. By not using the record accessors, but instead normal constructor syntax, this can be avoided:
+```haskell
+instance Eq Employee where
+    Employee n1 r1 p1 == Employee n2 r2 pr =
+        n1 == n2 && r1 == r2 && p1 == p2
+```
+:::
+
+Implicit dependency injection
+-----------------------------
+
+Sometimes type classes are used for implicit dependency injection. Which is just a fancy way of saying “I don’t want to pass an extra argument and instead want the compiler do that implicitly for me, based on the types”.
+
+Recall our definition of `fixEq`:
+```haskell
+fixEq :: Eq a => (a -> a) -> a -> a
+fixEq f x = if x == f x then x else fixEq f (f x)
+```
+which “iterates `f` on `x` until the value is equal to the one before.”. Compare this to the following version:
+```haskell
+fixBy :: (a -> a -> Bool) -> (a -> a) -> a -> a
+fixBy p f x = if x `p` f x then x else fixEq p f (f x)
+```
+This function iterates until a user-specified function tells it to stop. This might be useful for some iterative approximation algorithm, where we stop once the difference between subsequent approximations is smaller than some epsilon.
+
+Note that this is a form of dependency injection: The caller of `fixBy` passes the dependency “stopping function” along. In general, this can be of course much more complex, e.g. a storage backend.
+
+It is clearly more general than the other, as we can implement `fixEq` using `fixBy`, by specifying `p` to be equality:
+```haskell
+fixEq :: Eq a => (a -> a) -> a -> a
+fixEq = fixBy (==)
+```
+So whenever a parameter to a polymorphic function is, for the given concrete type, the same, on can use type classes and overloading to make this parameter selection implicit.
+
+Note that just because one *can* do that, one does not have to. Often explicit arguments are easier to understand and maintain and more flexible (e.g. if you want different arguments at the same types). I consider this use of type classes less relevant than the other uses presented here.
+
+Polymorphism over types with structure
+--------------------------------------
+
+Similar to the `Eq` type class, there is an `Ord` type class that overloads the comparisons operators `(<)` `(<=)`, `(>)` and `(>=)`.
+
+Using them, we can define a predicate on polymorphic trees that checks whether the tree is sorted, i.e. every value is less than or equal to every value further right. One way of implementing this is:
+```haskell
+everyNode :: (a -> Tree a -> Tree a -> Bool) -> Tree a -> Bool
+everyNode p (Node x t1 t2) = p x t1 t2 && everyNode p t1 && everyNode p t2
+everyNode _ Leaf = True
+
+everyValue :: (a -> Bool) -> Tree a -> Bool
+everyValue p = everyNode (\x _ _ -> p x)
+
+isSorted :: Ord a => Tree a -> Bool
+isSorted = everyNode $ \y t1 t2 ->
+    everyValue (\x -> x <= y) t1 &&
+    everyValue (\z -> y <= z) t2
+```
+(Can you make sense of this code? It is a good exercise to make sure you can read this code. If you find this code to be inefficient, then you are right: It is algorithmically bad, but serves nicely as a high-level specification.)
+
+Does this correctly implement the specification? Yes and no! If we have a tree of `Integer`, then `isSorted` will indeed return `True` if every element is smaller or equal to every element further on the right. But here is a counter example, for which we need to define a type:
+```haskell
+data ABC = A | B | C deriving Eq
+instance Ord a where
+  x <= y | x == y = True
+  A <= B = True
+  B <= C = True
+  _ <= _ = False
+```
+(You can ignore the `deriving Eq` for a moment).
+Now we can have a tree that is claimed to be sorted, but it is not!
+```
+*Main> isSorted (Node B (Node A Leaf Leaf) (Node C Leaf Leaf))
+True
+*Main> A <= C
+False
+```
+
+What is the problem here? The problem is not (really) with the code `isSorted`, but rather with the `Ord` instance for `ABC`: It does not behave as we would expect it to, in particular, it is not transitive:
+```
+*Main> (A <= B && B <= C, A <= C)
+(True,False)
+```
+And if we look at the [documentation of the `Ord`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Ord) type class, we see that any instance of `Ord` is expected to be, among other things, transitive. And indeed, most type classes come with additional requirements, or laws, that should hold for the instances.
+
+In this sense, the constraint in the type signature of `isSorted` should not be read as “for any type `a` that implements the signature of the `Ord` type class…”, but rather as “for any type `a` that is ordered…”. Not the *interface* matters, but rather the *semantic meaning* behind it.
+
+Conversely, if you come across a type class without any semantic meaning, i.e. one that just overloads a name, then that is clearly fishy. Nothing good will come out of a type class like, say
+```haskell
+class IntAble a where toInteger :: a -> Integer
+```
+if it does not also come with an abstract meaning that should be shared by all instances.
+
+::: Exercise
+Look up the `Monoid` type class, and find its laws.
+:::
+
+::: Solution
+The `Monoid` type class could be defined as
+```haskell
+class Monoid a where
+  mempty :: a
+  (<>) :: a -> a -> a
+```
+with the additional requirement that the `(<>)` operation is associative, and that `mempty` is its neutral element.
+(The [actual definition](http://hackage.haskell.org/package/base/docs/Data-Monoid.html) these days splits this into a `Semigroup` and a `Monoid` class, but that is not very important to users of this type class.)
+:::
+
+::: Exercise
+Can you think of a `Monoid (Tree a)` instance? Or maybe even more than one? How can you be sure it is a lawful instance?
+:::
+
+::: Solution
+There are (at least) two sensible instances for the `Monoid` type class for trees:
+
+1. The first one concatenates two trees, so that an in-order traversal first visits the value of the left and then of the right tree:
+
+    ```haskell
+    instance Monoid (Tree a) where
+        mempty = Leaf
+        Leaf <> t = t
+        (Node x l r) t = Node x l (r <> t)
+    ```
+    There are variations of this code that are more likely to produce a balance tree.
+
+2. Another one traverses both trees together, using a `Monoid` instance for the elements to combine values that are present in the same position in both:
+
+    ```haskell
+    instance Monoid a => Monoid (Tree a) where
+        mempty = Leaf
+        Leaf <> t = t
+        t <> Leaf = t
+        Node x l1 r1 <> Node y l2 r2 = Node (x <> y) (l1 <> l2) (r1 <> r2)
+    ```
+
+    Here, the instance head itself has a constraint: This instance for `Tree a` only exists if there is a `Monoid` instance for the type of values. (And, in fact, `Semigroup a` would suffice).
+
+Which instance is the right one? That depends on the purpose of the `Tree` data structure in the code; and maybe neither is the right one, in which case it might be better to have *no* instance at all, and use other mechanisms to select the right behavior.
+:::
+
+::: Exercise
+Given a function signature `summarize :: Monoid a => Tree a -> a`, can you guess what it does? What would be the implementation you expect?
+
+With that implementation, can you use `summarize` to distinguish trees that differ in shape, but have the same elements in the same order? What does this imply for search trees?
+:::
+
+::: Solution
+One might expect this code:
+```haskell
+summarize Leaf = mempty
+summarize (Node x l r) = summarize l <> x <> summarize r
+```
+(at least if everything we did so far considered in-order traversals.)
+
+If we have two trees with the same elements in the same order, but in a different shape, e.g.
+```haskell
+t1 = Tree x Leaf (Tree y Leaf (Tree z Leaf))
+t2 = Tree y (Tree x Leaf Leaf) (Tree z Leaf Leaf)
+```
+for some values `x`, `y` and `z`, then we will always have `summarize t1 = summarize t2`, assuming that the `Monoid` instance for the type of values is lawful. This is important if we use these trees as search trees, where the internal shape should be an implementation detail that should not be visible from the outside.
+:::
+
+
+Type-driven code synthesis
+--------------------------
+
+Let us turn to the most sophisticated use of type classes (within this lecture): Type driven code synthesis! Again, this is a fancy word for something rather simple, but it is very powerful, and a driving idiom for many problems in the Haskell space.
+
+In the previous chapter we have seen a number of common types that can be combined to build larger types -- `Maybe`, tuples, `Either`, list, etc. If there is functionality that we want to provide at many different types, then we can use type classes to describe how to get that functionality for each of these building blocks, assuming we have it for the argument types, and then the user automatically gets the functionality for any complex type they build.
+
+Typical examples for such functionality are parsers, pretty-printers, serialization libraries, substitutions of sorts, random values, test case generation...
+
+Let us define a type class that describes *finite* types, i.e. types with a finite number of values, and a function that returns the number of values in the type:
+```haskell
+class Finite a where
+    size :: Integer
+```
+Is this a good type class, i.e. does it have *meaning*? Yes, it does: When a type has an instance of `Finite`, it means that the type is finite, and that `size` designates the number of elements. Unfortunately Haskell does not prevent you from writing an instance that does not adhere to that, but that would then simply be wrong.
+
+This definition is a bit weird: The type signature of `size` does not mention the type `a` anywhere. On the one hand, this makes sense: We do not need a concrete element in our hand to ask the question “how many elements are there in `a`”, nor do we expect to receive a concrete element. On the other hand, when we use `size` somewhere, how will the compiler know for which type we want it?
+
+Therefore, this would be prohibited in plain Haskell. But as mentioned before, contemporary Haskell often uses language extensions supported by the compiler, and that is what we will do here, namely
+```haskell
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+```
+(in `ghci` you can type `:set -XAllowAmbiguousTypes -XTypeApplications -XScopedTypeVariables`). Now this class declaration is accepted, and we can use the syntax `size @Bool` to say which instance to use.
+
+Now we can start writing instances for some primitive types:
+```haskell
+instance Finite Bool where size = 2
+instance Finite () where size = 1
+instance Finite Suit where size = 4
+```
+
+More interesting are the instances for the types that build on other types. These are not always `Finite`, but only if the types therein are themselves `Finite`, so we constrain the instance itself:
+```haskell
+instance Finite a => Finite (Maybe a) where
+    size = size @a + 1
+instance (Finite a, Finite b) => Finite (a,b) where
+    size = size @a * size @b
+instance (Finite a, Finite b) => Finite (Either a b) where
+    size = size @a + size @b
+```
+
+Even the function type is finite, if both domain and codomain are finite:
+```haskell
+instance (Finite a, Finite b) => Finite (a -> b) where
+    size = size @b ^ size @a
+```
+
+Note that for obvious reasons we do not have an instance for `Integer`, or the list type.
+
+Now that we have sowed the seed, we want to reap the fruit: Whatever complex type we build out of these constructors, we can evaluate `size` that that type:
+
+```
+Prelude> size @(Maybe Bool)
+3
+Prelude> size @(Suit -> Bool)
+16
+Prelude> size @(Suit -> Bool, Bool -> Suit)
+256
+Prelude> size @((Suit -> Suit) -> Maybe Bool)
+139008452377144732764939786789661303114218850808529137991604824430036072629766435941001769154109609521811665540548899435521
+```
+
+The utility of such a `size` function is questionable (but not completely absent), but I hope you understand the power behind this approach, and also recognize the pattern if you see in the wild.
+
+In fact, instances of the `Eq` and `Ord` class for the container types like tuples and lists etc. are also instances of this pattern.
+
