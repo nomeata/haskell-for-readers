@@ -1,4 +1,4 @@
-personal_ws-1.1 en 118 
+personal_ws-1.1 en 120 
 templating
 fixBy
 Haskellers
@@ -30,6 +30,7 @@ fmap
 isRound
 ParseError
 Bool
+TuringMachine
 GHCi
 ghci
 hs
@@ -54,8 +55,8 @@ isEven
 haskell
 everyValue
 someDigits
-xcafe
 formers
+xcafe
 syntaxes
 polymorphism
 NeedInput
@@ -111,6 +112,7 @@ pubkey
 Hackage
 Breitner
 sumSumDigits
+turing
 parametricity
 addR
 codomain

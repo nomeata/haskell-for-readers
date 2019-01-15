@@ -1370,8 +1370,31 @@ sumDigitsWith f n
 ```
 (note that `d` is used in both right-hand sides) if we wanted.
 
-Comments (TODO)
---------
+Comments ★
+----------
+
+Like every programming language, Haskell supports comments. There are line comments and multi-line comments:
+```haskell
+answer = 42 -- but what is the question?
+
+{-
+In the following code, we write a function that correctly tells
+us whether a Turing machine halts:
+-}
+halts :: TuringMachine -> Bool
+halts turing_machine = halts turing_machine
+```
+
+The `haddock` Haskell documentation tool uses specially marked comments for documentation, so the above could better be written as (note the vertical bar):
+```haskell
+{- |
+In the following code, we write a function that correctly tells
+us whether a turing machine halts:
+-}
+halts :: TuringMachine -> Bool
+halts turing_machine = halts turing_machine
+```
+
 
 The structure of a module
 -------------------------
