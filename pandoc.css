@@ -16,7 +16,6 @@ p {
         padding-left: 1em;
         border-left: 1px solid black;
         border-right: 1px solid black;
-        color: #333;
     }
 }
 @media only print {
@@ -74,7 +73,14 @@ p {
     margin-left: 0em;
     padding-left: 1em;
 }
-
+#TOC a {
+    text-decoration: none;
+    color: blue;
+}
+#TOC a:visited {
+    text-decoration: none;
+    color: blue;
+}
 pre {
     border: 1px dotted gray;
     background-color: #ececec;
