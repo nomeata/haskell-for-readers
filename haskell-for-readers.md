@@ -1234,7 +1234,7 @@ and it is always possible to use `Employee` as a normal prefix function in terms
 
 Curiously, the record creation or update syntax binds closer than function applications: `g x { f = y }` is `g (x { f = y })`, and *not* `(g x) { f = y }`.
 
-With the language extension `RecordWildCards` enabled, it is even possible to write `Employee{..}` in a pattern, and get *all* fields of the employee record into scope, as variables, as if one had written `Employee { name = name; room = room; pubkey = pubkey }`.
+With the language extension `RecordWildCards` enabled, it is even possible to write `Employee{..}` in a pattern, and get *all* fields of the employee record into scope, as variables, as if one had written `Employee { name = name; room = room; pubkey = pubkey }` (although some say that’s bad style, because it is too implicit).
 
 
 Newtypes ★
@@ -1496,8 +1496,30 @@ By excluding the constructors of a data type from the export list, as we did in 
 Proper user of abstract types greatly helps to make code more readable, more maintainable and more robust, quite similar to how polymorphism does it on a smaller scale.
 
 
-Language extensions (TODO)
+Language extensions
 -------------------
+
+Haskell is a language with a reasonably precise specification, the *Haskell Report*. When someone mentions Haskell 98, they refer to Haskell as specified in the [Haskell Report from 1998](https://www.haskell.org/onlinereport/). There was one revision, the [Haskell Report from 2010](https://www.haskell.org/onlinereport/haskell2010/), with only rather small changes.
+
+But Haskell developers and implementors wanted to add more and more features to the language. But the report was written, and the compiler writers wanted to support Haskell, as specified, by default. Therefore, the system of *language extensions* was introduced.
+
+A language extension is a feature that extends Haskell98 in some way. It could add more syntactic sugar, additional features on the type system or enable whole meta-programming facilities. A Haskell source file needs to explicitly declare the extensions they are using, right at the top before the `module` header, and a typical Haskell file these days might start with a number of them, and look like this:
+```haskell
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeFamilies #-}
+module Foo where
+````
+
+You can also enable language extensions on the GHCi prompt, e.g. using `:set -XRecordWildCards`.
+
 
 Haskell packages ★
 ------------------

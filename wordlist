@@ -1,4 +1,5 @@
-personal_ws-1.1 en 120 
+personal_ws-1.1 en 130 
+DataKinds
 templating
 fixBy
 Haskellers
@@ -8,6 +9,7 @@ fixEq
 safeMod
 sumDigitsWith
 rle
+implementors
 parseFoo
 ByteString
 everyNode
@@ -31,11 +33,12 @@ isRound
 ParseError
 TuringMachine
 Bool
-ghci
 GHCi
+ghci
 hs
 nontermination
 unlessZero
+CPP
 const
 digitSum
 absoluteValue
@@ -60,6 +63,7 @@ xcafe
 syntaxes
 polymorphism
 NeedInput
+PartialTypeSignatures
 XScopedTypeVariables
 getters
 xAllowAmbiguousTypes
@@ -69,10 +73,12 @@ wat
 isReal
 subexpression
 Booleans
+MonoLocalBinds
 TwoIntegers
 GHC
 Newtypes
 backticks
+FlexibleContexts
 RecordWildCards
 hasLastDigit
 TODO
@@ -81,6 +87,7 @@ mempty
 xs
 namespacing
 infixr
+XRecordWildCards
 XTypeApplications
 isHalfRound
 ys
@@ -96,6 +103,7 @@ eqComplex
 Baz
 safeDiv
 Num
+ApplicativeDo
 toEitherUnit
 Ord
 addC
@@ -108,12 +116,14 @@ crosslinked
 DFINITY
 deserializes
 precedences
+TypeFamilies
 pubkey
 Hackage
 Breitner
 sumSumDigits
 turing
 parametricity
+OverloadedStrings
 addR
 codomain
 isSorted
