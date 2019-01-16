@@ -1518,6 +1518,8 @@ A language extension is a feature that extends Haskell98 in some way. It could a
 module Foo where
 ````
 
+These language extensions (and there are many of them) are [documented in the GHC user’s guide](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#language-options).
+
 You can also enable language extensions on the GHCi prompt, e.g. using `:set -XRecordWildCards`.
 
 
