@@ -1666,49 +1666,53 @@ class IntAble a where toInteger :: a -> Integer
 ```
 if it does not also come with an abstract meaning that should be shared by all instances.
 
+By the way, did you notice the `Eq` constraint in the head of the declaration of the `Ord` type class:
+```haskell
+class Eq a => Ord a where
+```
+This means that only types that are an instance of `Eq` may have an instance of `Ord`. The upshot is that a function with a `Ord a` constraint may also use `(==)`, without explicitly listing the `Eq` constraint.
+
+
 ::: Exercise
-Look up the `Monoid` type class, and find its laws.
+Look up the `Semigroup` type class, and find its laws.
 :::
 
 ::: Solution
-The `Monoid` type class could be defined as
+The `Semigroup` type class is defined as
 ```haskell
-class Monoid a where
-  mempty :: a
+class Semigroup a where
   (<>) :: a -> a -> a
 ```
 with the additional requirement that the `(<>)` operation is associative, and that `mempty` is its neutral element.
-(The [actual definition](http://hackage.haskell.org/package/base/docs/Data-Monoid.html) these days splits this into a `Semigroup` and a `Monoid` class, but that is not very important to users of this type class.)
+(The [actual definition](http://hackage.haskell.org/package/base/docs/Data-Monoid.html) has additional methods, not relevant here.)
 :::
 
 ::: Exercise
-Can you think of a `Monoid (Tree a)` instance? Or maybe even more than one? How can you be sure it is a lawful instance?
+Can you think of a `Semigroup (Tree a)` instance? Or maybe even more than one? How can you be sure it is a lawful instance?
 :::
 
 ::: Solution
-There are (at least) two sensible instances for the `Monoid` type class for trees:
+There are (at least) two sensible instances for the `Semigroup` type class for trees:
 
 1. The first one concatenates two trees, so that an in-order traversal first visits the value of the left and then of the right tree:
 
     ```haskell
-    instance Monoid (Tree a) where
-        mempty = Leaf
+    instance Semigroup (Tree a) where
         Leaf <> t = t
         (Node x l r) t = Node x l (r <> t)
     ```
-    There are variations of this code that are more likely to produce a balance tree.
+    There are variations of this code that are more likely to produce a balance tree -- although then one has to think about whether associativity holds only when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
 
-2. Another one traverses both trees together, using a `Monoid` instance for the elements to combine values that are present in the same position in both:
+2. Another one traverses both trees together, using a `Semigroup` instance for the elements to combine values that are present in the same position in both:
 
     ```haskell
-    instance Monoid a => Monoid (Tree a) where
-        mempty = Leaf
+    instance Semigroup a => Semigroup (Tree a) where
         Leaf <> t = t
         t <> Leaf = t
         Node x l1 r1 <> Node y l2 r2 = Node (x <> y) (l1 <> l2) (r1 <> r2)
     ```
 
-    Here, the instance head itself has a constraint: This instance for `Tree a` only exists if there is a `Monoid` instance for the type of values. (And, in fact, `Semigroup a` would suffice).
+    Here, the instance head itself has a constraint: This instance for `Tree a` only exists if there is a `Semigroup` instance for the type of values.
 
 Which instance is the right one? That depends on the purpose of the `Tree` data structure in the code; and maybe neither is the right one, in which case it might be better to have *no* instance at all, and use other mechanisms to select the right behavior.
 :::
@@ -1722,10 +1726,11 @@ With that implementation, can you use `summarize` to distinguish trees that diff
 ::: Solution
 One might expect this code:
 ```haskell
+summarize :: Monoid a => Tree a -> a
 summarize Leaf = mempty
 summarize (Node x l r) = summarize l <> x <> summarize r
 ```
-(at least if everything we did so far considered in-order traversals.)
+(at least given everything we did so far considered in-order traversals.)
 
 If we have two trees with the same elements in the same order, but in a different shape, e.g.
 ```haskell

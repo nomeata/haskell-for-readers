@@ -29,10 +29,10 @@ href
 fmap
 isRound
 ParseError
-Bool
 TuringMachine
-GHCi
+Bool
 ghci
+GHCi
 hs
 nontermination
 unlessZero
