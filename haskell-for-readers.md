@@ -731,7 +731,7 @@ isRound :: Integer -> Bool
 Polymorphism
 ------------
 
-Let us consider `twice` for a moment, and think about what expect from its type. It is a function that takes two arguments, the and the first ought to be a function itself... and here is how GHC writes this:
+Let us consider `twice` for a moment, and think about what to expect from its type. It is a function that takes two arguments, and the first argument ought to be a function itself... and here is how GHC writes this:
 ```
 *Main> :t twice
 twice :: (t -> t) -> t -> t
