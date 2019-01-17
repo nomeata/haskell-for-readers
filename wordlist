@@ -1,9 +1,12 @@
-personal_ws-1.1 en 130 
+personal_ws-1.1 en 142 
 DataKinds
+writeFile
 templating
+don'tignore
 fixBy
 Haskellers
 accessors
+fileSize
 scrutinee
 fixEq
 safeMod
@@ -15,6 +18,7 @@ ByteString
 everyNode
 toInteger
 sumDigits
+copyFile
 PEMDAS
 Eq
 ScopedTypeVariables
@@ -37,11 +41,12 @@ GHCi
 ghci
 hs
 nontermination
-unlessZero
 CPP
+unlessZero
 const
 digitSum
 absoluteValue
+monads
 namespaces
 countDigits
 RealFloat
@@ -72,15 +77,18 @@ Wat
 wat
 isReal
 subexpression
-Booleans
 MonoLocalBinds
+Booleans
 TwoIntegers
-GHC
+ghc
 Newtypes
 backticks
+readFile
 FlexibleContexts
 RecordWildCards
+nilly
 hasLastDigit
+getLine
 TODO
 infixl
 mempty
@@ -93,6 +101,7 @@ isHalfRound
 ys
 isMultipleOf
 countCountDigits
+bak
 eval
 equational
 fst
@@ -106,6 +115,7 @@ Num
 ApplicativeDo
 toEitherUnit
 Ord
+putStrLn
 addC
 Joachim
 subtrees
@@ -113,11 +123,12 @@ backend
 Semigroup
 splitLastDigit
 crosslinked
-DFINITY
+dfinity
 deserializes
 precedences
 TypeFamilies
 pubkey
+FilePath
 Hackage
 Breitner
 sumSumDigits
@@ -127,5 +138,6 @@ OverloadedStrings
 addR
 codomain
 isSorted
+theAnswer
 eqRiemann
 pre

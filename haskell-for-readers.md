@@ -1889,7 +1889,7 @@ of methods and other documentation:
 
 * [`Num`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Num): Numeric operations (`(+)`, `(-)`, `(*)` and others). There are more numerical type classes (`Real`, `Integral`, `Fractional`, `RealFloat`).
 
-* [`Show`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Show): Provides `show :: Show a => a -> String` to serialize a value to a textual representation that (ideally) is valid source code. Should be used for debugging mostly.
+* [`Show`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Show): Provides `show :: Show a => a -> String` to serialize a value to a textual representation that is (supposed to be) valid source code. Should be used for debugging mostly, or to convert numbers to strings.
 
 * [`Read`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Read): Provides `read :: Read a => String -> a`, which goes the other way. Again, not ideal for production use, but can sometimes be used with `Show` to scaffold serialization. If you have to use `Read`, please use [`readMaybe`](http://hackage.haskell.org/package/base/docs/Text-Read.html#v:readMaybe).
 
@@ -1897,4 +1897,302 @@ of methods and other documentation:
 
 * [`Applicative`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Applicative) and [`Monad`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Monad), also of kind `(* -> *) -> Constraint`, are used to model effects of sorts, for example to hide bookkeeping (in a parser) or safely allow side-effects (in IO code). These deserve their own chapter.
 
-* [`Foldable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Foldable) and [`Traversable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Traversable), also of kind `(* -> *) -> Constraint`, are abstractions over containers where elements can be visited in sequence. 
+* [`Foldable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Foldable) and [`Traversable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Traversable), also of kind `(* -> *) -> Constraint`, are abstractions over containers where elements can be visited in sequence.
+
+Monads
+======
+
+Haskell is famous for *monads*, and to those who are scared by sophisticated sounding words, it is even infamous. Judging by the number of “monad tutorials” and other noise about this topic, these monads must indeed be crazy arcane black magic.
+
+So what’s the deal? What is a monad?
+
+Really, the concept of a monad is surprisingly small. It is a pattern of abstraction, expressed as a type class with merely two essential methods and a small number of laws. That’s it, the rest is just applications. But this small idea turns to be amazingly powerful and expressive.
+
+I can’t help but notice that monads are like burritos: What is a burrito? It is a bunch of protein and seasoning, neatly wrapped in a flour tortilla. That's it. But with just that knowledge, it is impossible to fully appreciate or recreate the wealth and richness of Mexican cuisine. The idea is simple, but the applications are rich and manifold and require skills.
+
+(Oh, and of course, sometimes a taco would do better than of a burrito. Monads are not always the right tool.)
+
+This is a cute analogy, but it does not help the aspiring Haskell reader. So how to we proceed from here? I offer two choices:
+
+ * A quick path to understanding “imperative Haskell code”, i.e. Haskell code that uses the `IO` monad and `do` notation, and looks similar to, say, Python code. This path avoids almost all technical details about monads, and simply gives you a way to decipher the syntax.
+
+ * A slow path where we actually look at the `Monad` type class, the idea behind it, and some of the more advanced (but still common) applications of it.
+
+Imperative code with `do` notation
+----------------------------------
+
+**Beware:** This section is full of half-truths and glossing over technical details. Imagine plenty of “it looks as if” and “one can think of this as” sprinkled throughout it. Nevertheless, it is useful, though, to get you started.
+
+Previously we said that Haskell functions are pure functions in the mathematical sense: Given some input, they calculate some output, but nothing else can happen, and nothing besides the arguments can influence the result. This is great, but how can Haskell programs then write to files, or respond to network requests, or come up with random numbers?
+
+The solution are `IO`-functions. These functions can be *executed*, and when  such a function is executed, it can do all these nasty things, before returning a value. Here is a selection of `IO`-functions available by default:
+```haskell
+getLine :: IO String
+putStrLn :: String -> IO ()
+
+readFile :: FilePath -> IO String
+writeFile :: FilePath -> String -> IO ()
+```
+
+You can see that these functions may have arguments, just as normal functions. The important bit is the return type, which is `IO Something`. This indicates that these functions can be executed, and that they have to be executed before we get our hands on the result.
+
+Not all functions have an interesting result (e.g. `putStrLn` does not); this is where the unit type comes in handy.
+
+### The `main` function and `do` notation
+
+To execute these functions, we have to use a special syntax, called `do`-notation, that allows us to write code in an imperative style. Here is an example:
+```haskell
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+    putStrLn "Done copying."
+```
+we can compile and run this program, and it indeed copies a file:
+```
+$ ghc --make copy.hs
+[1 of 1] Compiling Main             ( copy.hs, copy.o )
+Linking copy ...
+$ ./copy
+Which file do you want to copy?
+copy.hs
+Where do you want to copy it to?
+copy2.hs
+Read 287 bytes.
+Done copying.
+$ diff copy.hs copy2.hs
+```
+
+Looking at the code, it doesn’t look much different than the equivalent in  a language like C or Python. Things to notice:
+
+* The `main` function of a module is special. Just like in C, it is the entry point for a compiled Haskell program. When we run the program, then the `main` function is executed. This is the only way to start executing `IO`-functions -- we cannot do that just nilly-willy within other code.
+* The body of the `main` function is written as a `do` block, which clearly signposts the imperative nature of this code: It is a sequence of things to `do`.
+* Every line below the `do` block is one execution of an `IO`-function. The first one, for example, prints a question on the terminal.
+* Some of these `IO`-functions return values that we want to use later on. These we *bind* to variables, using the `<-` syntax. (The last line of a `do` block is never such a binding, can you imagine why?)
+* The `main` function has type `IO ()`. So it one of these `IO`-functions as well.
+
+
+### Writing `IO` functions
+
+We do not only want to execute `IO` functions, but also define our own. This is not hard, and we have actually seen that before -- the `main` function is one. We can add parameters without further problems:
+
+```haskell
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile from to = do
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    copyFile from to
+    putStrLn "Done copying."
+```
+
+All our knowledge about defining functions -- parameters, pattern matching, recursion -- applies here as well.
+
+### The `return` function
+
+The last `IO` function executed in a `do` block of an `IO` function also determines its return value. Therefore we need the little function
+```haskell
+return :: a -> IO a
+```
+if, at the end of an `IO` function, we *only* want to return something:
+
+```haskell
+fileSize :: FilePath -> IO Integer
+fileSize path = do
+  content <- readFile path
+  return (length content)
+```
+
+**Important:** Note that `return` does *not* alter the control flow. It does not make the function return. It merely specifies the return values of the current *line*.
+
+::: Exercise
+What does this program print?
+```haskell
+theAnswer :: IO Integer
+theAnswer = do
+  putStrLn "Pondering the question..."
+  return 23
+  return 42
+
+main :: IO ()
+main = do
+  a <- theAnswer
+  putStrLn (show a)
+```
+:::
+
+
+::: Solution
+```
+Pondering the question...
+42
+```
+The line `return 23` doesn’t do anything: There is no side-effect, and the result (the value `23`) is not bound to any variable and hence ignored.
+:::
+
+### Passing `IO` functions around
+
+Just passing arguments to `copyFile` does not actually do anything: we really have to execute it, and execution happens when a function is executed from `main` (directly or indirectly). Let me demonstrate this point:
+
+```haskell
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile from to = do
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+
+ignore :: a -> IO ()
+ignore unused = putStrLn "I ignore my argument!"
+
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    ignore (copyFile from to)
+    putStrLn "Done copying."
+```
+
+Executing this program will ask for the filenames, but it will not actually copy anything. This is because although we passed all arguments to `copyFile`, we did not actually execute it.
+
+That said, the problem was not that we passed `copyFile from to` as an argument to a function. Rather, the problem was that `ignore` did not do anything with it. We can fix that easily (and rename the function to `don'tignore` along the way):
+
+```haskell
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile from to = do
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+
+don'tignore :: IO () -> IO ()
+don'tignore action = do
+    putStrLn "About to execute the action."
+    action
+    putStrLn "I executed the action."
+
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    don'tignore (copyFile from to)
+    putStrLn "Done copying."
+```
+
+This way, the `copyFile from to` function receives its parameters in the `main` function, but *is not yet executed*. It is then passed to `don'tignore`, which does something else first (it prints `"About to execute the action."`), and *then* executes the action.
+
+```
+$ ./copy
+Which file do you want to copy?
+copy.hs
+Where do you want to copy it to?
+copy2.hs
+About to execute the action.
+Read 549 bytes.
+I executed the action.
+Done copying.
+```
+
+Being able to abstract over `IO`-functions just like over anything else, and having precise control when they are *executed* (rather than just passed around), is again a very powerful tool.
+
+::: Exercise
+What does this program do?
+```haskell
+foo :: Integer -> IO () -> IO ()
+foo 0 a = putStrLn "Done"
+foo n a = do
+   if n == 1 then putStrLn "Almost done"
+             else return ()
+   a
+   foo (n-1) a
+
+main :: IO ()
+main = do
+   foo 4 (putStrLn "Hooray!")
+   foo 0 (putStrLn "And up she rises.")
+```
+:::
+
+::: Solution
+```
+Hooray!
+Hooray!
+Hooray!
+Almost done
+Hooray!
+Done
+Done
+```
+Note that the `putStrLn "And up she rises."` is never executed.
+:::
+
+
+### `let` expressions in `do` blocks ★
+
+You can use `let` expressions in do blocks, omitting the `in`. These work like normal `let` expressions, i.e. simply give a name to an expression:
+
+```haskell
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    let to = from ++ ".bak"
+    copyFile from to
+    putStrLn ("Created backup at " ++ to)
+```
+
+Note that it does *not* execute anything, as this example shows:
+
+```haskell
+main :: IO ()
+main = do
+    putStrLn "Please press enter."
+    input1 <- getLine
+    putStrLn "Enter pressed."
+
+    putStrLn "Please press enter."
+    let input2 = getLine
+    putStrLn "Enter pressed."
+```
+If we run this only the first occurrence to `getLine` actually does something:
+```
+$ ghc --make let-do.hs
+[1 of 1] Compiling Main             ( let-do.hs, let-do.o )
+Linking let-do ...
+$ ./let-do
+Please press enter.
+
+Enter pressed.
+Please press enter.
+Enter pressed.
+```
+The variable `input2` is named misleadingly: It does not name any user input, it is now merely an alternative name for the `IO` function `getLine`.
+
+### The `<$>` operator ★
+
+You will come across code that wants to execute an `IO` function *and* apply some normal (pure) function to its result in one go, like the `fileSize` function above. We can use the `<$>` operator to write that in one line, without giving a name to the intermediate value:
+```haskell
+fileSize :: FilePath -> IO Integer
+fileSize path = length <$> readFile path
+```
+
+When reading such code, you can think of `<$>` as a variant `$`, but the *return value* of the expression on the right hand side is passed to the function on the left, rather than the `IO` function as a whole.
+
+
+Monads, for real
+----------------
+
+The previous section we only looked at a facade of monads in Haskell, both in the sense that we went along with how things looked, not how things are, and that there is much more behind. In the remainder of the Chapter, we give a more principled introduction of the concept.
