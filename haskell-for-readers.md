@@ -960,7 +960,7 @@ A data type that has more than one constructor is commonly called a *sum type*. 
 
 ### Recursive data types
 
-It it worth pointing out that it is completely fine to haven a constructor argument of the type that we are currently defining. This way, we obtain a *recursive data type*, and this is the foundation for many important data structures, in particular lists and trees of various sorts. Here is a simple example, a binary tree with numbers on all internal nodes:
+It it worth pointing out that it is completely fine to have a constructor argument of the type that we are currently defining. This way, we obtain a *recursive data type*, and this is the foundation for many important data structures, in particular lists and trees of various sorts. Here is a simple example, a binary tree with numbers on all internal nodes:
 ```haskell
 data Tree = Leaf | Node Integer Tree Tree
 ```
