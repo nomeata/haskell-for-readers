@@ -1096,7 +1096,7 @@ This gives us the same robustness benefits of `Maybe`, but also a more helpful e
 
 ### Tuples
 
-Imagine you are writing a function that wants to return two numbers -- say, the last digit the rest of the number. The way to do that that you know so far would require defining a data type:
+Imagine you are writing a function that wants to return two numbers -- say, the last digit and the rest of the number. The way to do that that you know so far would require defining a data type:
 ```haskell
 data TwoIntegers = TwoIntegers Integer Integer
 splitLastDigit :: Integer -> TwoIntegers
