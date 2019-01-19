@@ -16,7 +16,7 @@ This document is work in progress (but whatever chapters and sections are there 
 
 This goal implies a higher focus on syntax (because you can *write* programs ignoring most syntactic gadgets available to you, but if you read code, you have to deal with them), types and type signatures (because they are the key to understanding Haskell code) and abstraction patterns (because it is key to understanding well-written code, and Haskell excels at abstraction).
 
-On the other hand, less words will be spent on how to approach writing the program, e.g. how to set up your tooling, how to please Haskell’s layout rules, how to design your data type, which libraries to pick, how to read error messages. That said, we hope that even Haskell programmers will gain useful insight from tutorial.
+On the other hand, less words will be spent on how to approach writing the program, e.g. how to set up your tooling, how to please Haskell’s layout rules, how to design your data type, which libraries to pick, how to read error messages. That said, we hope that even Haskell programmers will gain useful insight from this tutorial.
 
 Nevertheless it is hard to understand a programming paradigm without writing any code, so there will some amount of hands-on work to be done, especially early on, when we start with a introduction to basic functional programming.
 
@@ -32,9 +32,9 @@ This makes these notes less ideal for independent study, but that said, it shoul
 
 I expect the audience to be familiar with programming and computer science in general, but do not assume prior knowledge of functional program (or, in case you are worried about this, category theory).
 
-The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them. The exercises are not sufficient in number and depths to provide the reader the experience needed to really learn Haskell.
+The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them. The exercises are not sufficient in number and depth to provide the reader with the experience needed to really learn Haskell.
 
-Some sections are marked with ★. These are optional in the sense that the following material does not rely heavily on them. If time is short, e.g. during a workshop, they can be skipped, and the participants can be invited to come back to them on their own.
+Some sections are marked with a “★”. These are optional in the sense that the following material does not rely heavily on them. If time is short, e.g. during a workshop, they can be skipped, and the participants can be invited to come back to them on their own.
 
 ### Acknowledgments and license {.unnumbered}
 
@@ -43,7 +43,7 @@ The creation of this material was sponsored by the [DFINITY Foundation](http://d
 The basics of functional programming
 ====================================
 
-Functional program is the the art of thinking about *data* and how the new data is calculated from old data, rather than thinking about how to *modify* data.
+Functional programming is the the art of thinking about *data* and how the new data is calculated from old data, rather than thinking about how to *modify* data.
 
 Numbers and arithmetic operators
 --------------------------------
@@ -101,7 +101,7 @@ What associativity do you expect for `(+)` and `(-)`? Verify your expectation.
 :::
 
 ::: Solution
-Both operator are left-associative, so that `10 - 2 + 3 - 4` means `((10 - 2) + 3) - 4` as expected.
+Both operators are left-associative, so that `10 - 2 + 3 - 4` means `((10 - 2) + 3) - 4` as expected.
 :::
 
 ::: Exercise
@@ -109,7 +109,7 @@ Look up the precedences of the other arithmetic operations, and see how that cor
 :::
 
 ::: Solution
-The precedences of `(+)` and `(-)` are the same, and smaller than the precedence of `(*)`, which is again shorter than the precedence of `(^)`.
+The precedences of `(+)` and `(-)` are the same, and smaller than the precedence of `(*)`, which is again smaller than the precedence of `(^)`.
 :::
 
 Applying Functions
@@ -126,7 +126,7 @@ Prelude> mod 123 100
 23
 ```
 
-We observe that to apply a function, we just write the function, followed by the arguments; no parenthesis or commas needed. This not only makes for more elegant and less noise code; but there is also a very deep and beautiful reason for this, which we will come to later.
+We observe that to apply a function, we just write the function, followed by the arguments; no parentheses or commas needed. This not only makes for more elegant and less noisy code; but there is also a very deep and beautiful reason for this, which we will come to later.
 
 At this point, surely someone wants to know what happens when we divide by 0:
 ```
@@ -140,7 +140,7 @@ Of course, if the argument is not just a single number, we somehow have to make 
 Prelude> div (120 + 3) (10 ^ 2)
 1
 ```
-(If you leave out the parenthesis, you get a horrible error messages). In technical terms, we can say that function application behaves like a left-associative operator of highest precedence. But it is easier to just remember **function application binds most tightly**. (Exception: Record construction and update binds even more tightly, although some consider that a design flaw.)
+(If you leave out the parentheses, you get a horrible error message.) In technical terms, we can say that function application behaves like a left-associative operator of highest precedence. But it is easier to just remember **function application binds most tightly**. (Exception: Record construction and update binds even more tightly, although some consider that a design flaw.)
 
 Just to have more examples, here are two other functions that we can play around with:
 
@@ -210,9 +210,9 @@ Passing a piece of data through a number of functions is very common, and some (
 ```
 f5 $ f4 $ f3 $ f2 $ f1 42
 ```
-This operator takes a function as the first argument, an argument as the second argument, and applies the function to the argument. In that way, it is exactly the same as function application. But it is *right-associative* (instead of left-associative) and has the *lowest precedence* (instead of the highest precedence). An easier way of reading such code is to read `($)` as “the same as parenthesis around the rest of the line”.
+This operator takes a function as the first argument, an argument as the second argument, and applies the function to the argument. In that way, it is exactly the same as function application. But it is *right-associative* (instead of left-associative) and has the *lowest precedence* (instead of the highest precedence). An easier way of reading such code is to read `($)` as “the same as parentheses around the rest of the line”.
 
-I call this non-syntactic sugar, because the dollar operator it is not part of the built-in language, but can be define by anyone.
+I call this non-syntactic sugar, because the dollar operator is not part of the built-in language, but can be defined by anyone.
 
 
 ::: Exercise
@@ -324,7 +324,7 @@ Write a function `isHalfRound` that checks if a number is divisible by 5, by che
 
 ::: Solution
 ```haskell
-isHalfRound x = x `div` 10 == 0 || x `div` 10 == 5
+isHalfRound x = x `mod` 10 == 0 || x `mod` 10 == 5
 ```
 :::
 
@@ -334,14 +334,14 @@ Write a function `isEven` that checks if a number is divisible by 2, by checking
 
 ::: Solution
 ```haskell
-isEven x = x `div` 10 == 0 || x `div` 10 == 2 || x `div` 10 == 4 || x `div` 10 == 6 || x `div` 10 == 8
+isEven x = x `mod` 10 == 0 || x `mod` 10 == 2 || x `mod` 10 == 4 || x `mod` 10 == 6 || x `mod` 10 == 8
 ```
 :::
 
-Of course, you can abstract over more than one parameter. In the last exercise, you had to write something like ``x `div` 10 == y`` a lot. So it makes sense to abstract over that:
+Of course, you can abstract over more than one parameter. In the last exercise, you had to write something like ``x `mod` 10 == y`` a lot. So it makes sense to abstract over that:
 
 ```
-Prelude> hasLastDigit x y = x `div` 10 == y
+Prelude> hasLastDigit x y = x `mod` 10 == y
 ```
 
 This allows us to define `isHalfRound` as follows:
@@ -516,7 +516,7 @@ fixEq f x = if x == f x then x else fixEq f (f x)
 :::
 
 ::: Exercise
-Use this function and `countDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `countDigits` to `x` results in 3 or 9.
+Use this function and `sumDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `sumDigits` to `x` results in 3 or 9.
 :::
 
 ::: Solution
@@ -564,7 +564,7 @@ Prelude> sumSumDigits = twice sumDigits
 Currying
 --------
 
-We have already seen functions that *receive* a function as an argument. The way we use `twice` or `sumDigitsWith` here, we can think of them as a function that *return* functions. And this brings us to the deep and beautiful explanation we write multiple arguments to functions the way we do: Because really, every function only ever has one argument, and returns another one.
+We have already seen functions that *receive* a function as an argument. The way we use `twice` or `sumDigitsWith` here, we can think of them as a function that *return* functions. And this brings us to the deep and beautiful explanation why we write multiple arguments to functions the way we do: Because really, every function only ever has one argument, and returns another one.
 
 We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function that takes one argument (the function `f`), and returns another function, that then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
 
@@ -595,13 +595,13 @@ Now imagine we want to abstract over 42:
 ```
 many_fs x = f5 (f4 (f3 (f2 (f1 x))))
 ```
-This function really is just the composition of a bunch of function. So an idiomatic way of writing it would be
+This function really is just the composition of a bunch of functions. So an idiomatic way of writing it would be
 ```
 many_fs  = f5 . f4 . f3 . f2 . f1
 ```
 where again, the actual value is no longer the emphasis, but rather the functions.
 
-The value `x` is sometimes called the point (as in geometry), and this style of programming is called *points-free* (or sometimes *pointless*).
+The value `x` is sometimes called the point (as in geometry), and this style of programming is called *point-free* (or sometimes *pointless*).
 
 
 Laziness ★
@@ -672,7 +672,7 @@ At this point, we should switch from working exclusively in the REPL to writing 
 
 ```haskell
 isRound x = x `mod` 10 == 0
-hasLastDigit x y = x `div` 10 == y
+hasLastDigit x y = x `mod` 10 == y
 isHalfRound x = x `hasLastDigit` 0 || x `hasLastDigit` 5
 x `divides` y = x `div` y == 0
 twice f x = f (f x)
@@ -1461,7 +1461,7 @@ import Data.Maybe (mapMaybe)
 ```
 This makes it easier for someone reading the code to locate where a certain function is from, and it makes the code more robust against breakage when a new version of the other module starts exporting additional names. These would not silently override other names, but cause compiler errors about ambiguous names.
 
-When including an operator in this list, include it in parenthesis:
+When including an operator in this list, include it in parentheses:
 ```haskell
 import Data.Function ((&), on)
 ```
