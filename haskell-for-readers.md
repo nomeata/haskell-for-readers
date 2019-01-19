@@ -929,7 +929,7 @@ addC (C x1 y1) (C x2 y2) = C (x1 + x2) (y1 + y2)
 The parameter in a pattern -- the `x1` here -- can itself be a pattern, for example `0` (which matches only the number 0), or underscore:
 ```haskell
 isReal :: Complex -> Bool
-isReal (C 0 _) = True
+isReal (C _ 0) = True
 isReal _ = False
 ```
 
