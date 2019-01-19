@@ -1569,7 +1569,7 @@ So what we really want is to use the nice `(==)` syntax, but we want it to mean 
 In order to do that, we first have to declare that `(==)` is a function we can overload, by declaring a class with it as a method:
 ```haskell
 class Eq a where
-    (==) :: a -> a -> a
+    (==) :: a -> a -> Bool
 ```
 Of course, the `Eq` class is already defined. From now on, I can use `(==)` with every type that is an *instance* of `Eq`. We can declare instances for `Complex` and `Riemann`:
 ```haskell
