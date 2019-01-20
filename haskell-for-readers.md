@@ -1707,8 +1707,7 @@ The `Semigroup` type class is defined as
 class Semigroup a where
   (<>) :: a -> a -> a
 ```
-with the additional requirement that the `(<>)` operation is associative, and that `mempty` is its neutral element.
-(The [actual definition](http://hackage.haskell.org/package/base/docs/Data-Monoid.html) has additional methods, not relevant here.)
+with the additional requirement that the `(<>)` operation is associative.
 :::
 
 ::: Exercise
@@ -1742,6 +1741,8 @@ Which instance is the right one? That depends on the purpose of the `Tree` data 
 :::
 
 ::: Exercise
+The [`Monoid` class](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid)  extends the `Semigroup` class with an operation `mempty :: Monoid a => a` that is supposed to be a neutral element of `(<>)`.
+
 Given a function signature `summarize :: Monoid a => Tree a -> a`, can you guess what it does? What would be the implementation you expect?
 
 With that implementation, can you use `summarize` to distinguish trees that differ in shape, but have the same elements in the same order? What does this imply for search trees?
