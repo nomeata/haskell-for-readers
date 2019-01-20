@@ -1973,7 +1973,7 @@ Looking at the code, it doesn’t look much different than the equivalent in  a 
 * The body of the `main` function is written as a `do` block, which clearly signposts the imperative nature of this code: It is a sequence of things to `do`.
 * Every line below the `do` block is one execution of an `IO`-function. The first one, for example, prints a question on the terminal.
 * Some of these `IO`-functions return values that we want to use later on. These we *bind* to variables, using the `<-` syntax. (The last line of a `do` block is never such a binding, can you imagine why?)
-* The `main` function has type `IO ()`. So it one of these `IO`-functions as well.
+* The `main` function has type `IO ()`. So it is one of these `IO`-functions as well.
 
 
 ### Writing `IO` functions
