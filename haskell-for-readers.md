@@ -34,7 +34,7 @@ I expect the audience to be familiar with programming and computer science in ge
 
 The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them. The exercises are not sufficient in number and depth to provide the reader with the experience needed to really learn Haskell.
 
-Some sections are marked with a “★”. These are optional in the sense that the following material does not rely heavily on them. If time is short, e.g. during a workshop, they can be skipped, and the participants can be invited to come back to them on their own.
+Some sections are marked with a “☆”. These are optional in the sense that the following material does not rely heavily on them. If time is short, e.g. during a workshop, they can be skipped, and the participants can be invited to come back to them on their own.
 
 ### Acknowledgments and license {.unnumbered}
 
@@ -192,7 +192,7 @@ class (Real a, Enum a) => Integral a where
 infixl 7 `div`
 ```
 
-**Prefix operator application (syntactic sugar) ★**:
+**Prefix operator application (syntactic sugar) ☆**:
 We can also go the other way, and use any operator as if it were a function, by wrapping it in parentheses:
 ```
 Prelude> 1 + 1
@@ -201,7 +201,7 @@ Prelude> (+) 1 1
 2
 ```
 
-**The dollar operator (non-syntactic sugar) ★**:
+**The dollar operator (non-syntactic sugar) ☆**:
 Consider an expression that takes a number, and applies a number of functions , maybe with arguments, to it, such as:
 ```
 f5 (f4 (f3 (f2 (f1 42))))
@@ -568,7 +568,7 @@ We have already seen functions that *receive* a function as an argument. The way
 
 We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function that takes one argument (the function `f`), and returns another function, that then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
 
-The composition operator ★
+The composition operator ☆
 --------------------------
 
 Because writing code that passes functions around and modifies them (like in `twice` or `sumDigitsWith`) is so important in this style of programming, I should at this point introduce the composition operator. It is already pre-defined, but we can define it ourselves:
@@ -604,7 +604,7 @@ where again, the actual value is no longer the emphasis, but rather the function
 The value `x` is sometimes called the point (as in geometry), and this style of programming is called *point-free* (or sometimes *pointless*).
 
 
-Laziness ★
+Laziness ☆
 ----------
 
 As a final bit in this section, let’s talk about laziness. Most often this can be ignored when reading Haskell code, and in general laziness is not as important (or as bad) as some people say it is. But it plays an important role in Haskell’s support for abstraction, so let’s briefly look at it.
@@ -665,12 +665,12 @@ In fact, many Haskellers prefer to do type-driven development: First think about
 
 Besides communicating with the compiler, types are also crucial in communicating with your fellow developers and/or users of your API. For many functions, the type alone, or the type and the name, is sufficient to tell you what it does.
 
-Tooling interlude: Editing files ★
+Tooling interlude: Editing files ☆
 ----------------------------------
 
 At this point, we should switch from working exclusively in the REPL to writing an actual Haskell file. We can start by creating a file `Types.hs`, and put in the code from the previous section:
 
-```haskell
+``` {.haskell .slide file=types.hs}
 isRound x = x `mod` 10 == 0
 hasLastDigit x y = x `mod` 10 == y
 isHalfRound x = x `hasLastDigit` 0 || x `hasLastDigit` 5
@@ -839,7 +839,7 @@ A great example for the power of polymorphism is the following type signature:
 ```
 (a -> b -> c) -> b -> a -> c
 ```
-There is a function of that type in the standard library. Can you tell what it does? Can you guess its name? You can use a type-based search engine like [Hoogle](https://www.haskell.org/hoogle/?hoogle=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c) to find the function.
+There is a function of that type in the standard library. Can you tell what it does? Can you guess its name? You can use a type-based search engine like [Hoogle](https://www.haskell.org/hoogle/?hoogle=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c) or [Hayoo](http://hayoo.fh-wedel.de/?query=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c) to find the function.
 :::
 
 ::: Solution
@@ -857,7 +857,7 @@ We can declare new data types using the `data` keyword, the name of the type, th
 
 In the simplest case, we can use this to declare an enumeration type:
 
-```haskell
+``` {.haskell  file=suit.hs}
 data Suit = Diamonds | Clubs | Hearts | Spades
 ```
 
@@ -867,7 +867,7 @@ Note that `Suit` is a *type*, i.e. something you can use in type signatures, whi
 
 When we have a value of type `Suit` then the only thing we can really do with it is to find out which of these four constructors it actually is. The way to do that is using *pattern matching*, for example using the `case … of …` syntax:
 
-```haskell
+``` {.haskell  file=suit.hs}
 isRed :: Suit -> Bool
 isRed s = case s of
   Diamonds -> True
@@ -901,7 +901,7 @@ The only reason to have `if … then … else …`  is that it is a bit more rea
 
 So far, the constructors were just plain values. But we can also turn them into “containers” of sort, where we can store other values. As an basic example, maybe we want to introduce complex numbers:
 
-```
+```haskell
 data Complex = C Integer Integer
 ```
 (Mathematically educated readers please excuse the use of `Integers` here.)
@@ -961,13 +961,13 @@ A data type that has more than one constructor is commonly called a *sum type*. 
 ### Recursive data types
 
 It it worth pointing out that it is completely fine to have a constructor argument of the type that we are currently defining. This way, we obtain a *recursive data type*, and this is the foundation for many important data structures, in particular lists and trees of various sorts. Here is a simple example, a binary tree with numbers on all internal nodes:
-```haskell
+``` {.haskell file=tree.hs}
 data Tree = Leaf | Node Integer Tree Tree
 ```
 Again, this can be read as “a value of type `Tree` is either a `Leaf`, or it is a `Node` that contains a value of type `Integer` and references to two subtrees.”
 
 There is nothing particularly interesting about constructing such a tree (use `Leaf` and `Node`) and traversing it (use pattern matching).  Here is a piece of idiomatic code that inserts a new number into a tree:
-```haskell
+``` {.haskell file=tree.hs}
 insert :: Integer -> Tree -> Tree
 insert x Leaf = Node x Leaf Leaf
 insert x (Node y t1 t2)
@@ -995,7 +995,7 @@ wat = Wat wat
 ### Polymorphic data types
 
 The tree data type declared in the previous section ought to be useful not just for integers, but maybe for any type. But it would be seriously annoying to have to create a new tree data type for each type we want to store in the tree. Therefore, we haven have *polymorphic data types*. In the example of the tree, we can write:
-```haskell
+```{.haskell file=PolyTree.hs}
 data Tree a = Leaf | Node a (Tree a) (Tree a)
 ```
 
@@ -1013,10 +1013,10 @@ size (Node _ t1 t2) = 1 + size t1 + size t2
 ```
 Again, parametricity makes the type signature of such a function more useful than it seems at first: Just from looking at the type signature of `size` we *know* that this function does not look at the values stored in the nodes. Together with the name, that is really all the documentation we might need. Compare this to `size :: Tree Integer -> Integer` -- now it could just as well be that this function includes the number stored in the node in the result somehow.
 
-### Functions in data types ★
+### Functions in data types ☆
 
 Maybe this is obvious to you, after the emphasis on functions in the first chapter, but it is still worth pointing out that data type can also store functions. This blurs the distinction between data and code some more, as this nice example shows:
-```haskell
+``` {.haskell file=stream.hs}
 data Stream a b
     = NeedInput (a -> Stream a b)
     | HasOutput b (Stream a b)
@@ -1030,7 +1030,7 @@ The type `Stream a b` models a state machine that consumes values of type `a`, p
 
 We can create a state machine that does run-length encoding this way. This one does not ever stop, but that’s fine:
 
-```haskell
+``` {.haskell file=stream.hs}
 rle :: Eq a => Stream a (Integer,a)
 rle = NeedInput rle_start
 
@@ -1047,10 +1047,10 @@ Predefined data types
 
 We intentionally discussed the mechanisms of algebraic data types first, so that we can explain the most common data types in the standard library easily.
 
-### Booleans ★
+### Booleans ☆
 
 As mentioned before, the values `True` and `False` are simply the constructors of a data type defined as
-```haskell
+``` {.haskell .slide}
 data Bool = False | True
 ```
 
@@ -1059,12 +1059,12 @@ There is nothing magic about the definition of `Bool`. But this type plays a spe
 ### `Maybe`
 
 A very common use case for algebraic data types is to capture the idea of a type whose values “maybe contain nothing, or just a value of type `a`”. Because this is so common, such a data type is predefined:
-```haskell
+``` {.haskell .slide}
 data Maybe a = Nothing | Just a
 ```
 
 You might see `Maybe`, for example, in the return type of a function that deserializes a binary or textual representation of a type, for example:
-```haskell
+``` {.haskell .slide}
 parseFoo :: String -> Maybe Foo
 ```
 Such an operation can fail, and if the input is invalid, it would return `Nothing`. As a user of such a function, the only way to get to the value of type `a` therein is to pattern-match on the result, which forces me to think about and handle the case where the result is `Nothing`.
@@ -1081,15 +1081,15 @@ How many values are there of type `Maybe (Maybe Bool)`. When can it be useful to
 There are four: `Nothing`, `Just Nothing`, `Just False` and `Just True`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more speaking names could be preferred here.
 :::
 
-### `Either` ★
+### `Either` ☆
 
 With maybe we can express “one or none”. Sometimes we want “one or another” type. For this, the standard library provides
-```haskell
+``` {.haskell .slide}
 data Either a b = Left a | Right b
 ```
 
 Commonly, this type is used for computations that can fail, but that provide some useful error messages when they fail:
-```haskell
+``` {.haskell .slide}
 parseFoo :: String -> Either ParseError Foo
 ```
 This gives us the same robustness benefits of `Maybe`, but also a more helpful error messages. If used in this way, then the `Left` value is always used for the error or failure case, and the `Right` value for when everything went all right.
@@ -1097,22 +1097,22 @@ This gives us the same robustness benefits of `Maybe`, but also a more helpful e
 ### Tuples
 
 Imagine you are writing a function that wants to return two numbers -- say, the last digit and the rest of the number. The way to do that that you know so far would require defining a data type:
-```haskell
+``` {.haskell .slide file=tuples.hs}
 data TwoIntegers = TwoIntegers Integer Integer
 splitLastDigit :: Integer -> TwoIntegers
 splitLastDigit n = TwoIntegers (n `div` 10) (n `mod` 10)
 ```
 
 Clearly, the concept of “passing around two values together“ is not particularly tied to `Integer`, and we can use polymorphism to generalize this definition:
-```haskell
+``` {.haskell .slide}
 data Two a b = Two a b
 splitLastDigit :: Integer -> Two Integer Integer
 splitLastDigit n = Two (n `div` 10) (n `mod` 10)
 ```
 
 And because this is so useful, Haskell comes with built-in support for such pairs, including a nice and slim syntax:
-```haskell
-data (a,b) = (a,b) -- morally this is how it is defined
+``` {.haskell .slide}
+data (a,b) = (a,b)
 splitLastDigit :: Integer -> (Integer, Integer)
 splitLastDigit n = (n `div` 10, n `mod` 10)
 ```
@@ -1132,7 +1132,7 @@ Maybe (Integer, Integer)
 :::
 
 Useful predefined functions related to tuples are
-```haskell
+``` {.haskell .slide}
 fst :: (a,b) -> a
 snd :: (a,b) -> b
 ```
@@ -1141,8 +1141,8 @@ and because of their type I do not have to tell you what they do.
 ### The unit type
 
 There is also a zero-tuple, so to say: The unit type written `()` with only the value `()`:
-```haskell
-data () = () -- morally this is how it is defined
+``` {.haskell .slide}
+data () = ()
 ```
 While this does not look very useful yet, we will see that it plays a crucial role later. Until then, you can think of it as a good choice when we have something polymorphic, but we do not actually need an “interesting” type there.
 
@@ -1166,12 +1166,12 @@ We can make `fromEitherUnit` more polymorphic; it can simply ignore the argument
 ### Lists
 
 In the previous section we defined trees using a recursive data type. It should be obvious that we can define lists in a very analogous way:
-```haskell
+``` {.haskell .slide}
 data List a = Empty | Link a (List a)
 ```
 
 This data structure is so ubiquitous in functional programming that it not only comes with the standard library, it also has very special, magic syntax:
-```haskell
+``` {.haskell .slide}
 data [a] = [] | a : [a]
 ```
 In words: The type `[a]` is the type of lists with values of type `a`. Such a list is either the empty list, written as `[]`, or it is a non-empty list containing of a head `x` of type `a`, and a tail `xs`, and is written as `x:xs`. Note that the constructor `(:)`, called “cons”, is using operator syntax.
@@ -1186,7 +1186,7 @@ Common operations on lists worth knowing are `(++)` to concatenate two lists.
 
 Lists are very useful for many applications, but they are not a particularly high-performance data structure -- random access and concatenation is expensive, and they use quite a bit of memory. Depending on the application, other types like arrays/vectors, finger trees, difference lists might be more suitable.
 
-### Characters and strings ★
+### Characters and strings ☆
 
 Unexpectedly, Haskell has built-in support for characters and text. A single character has type `Char`, and is written in single quotes, e.g. `'a'`, `'☃'`, `'\''`, `'\0'`, `'\xcafe'`. These character are Unicode code points, and not just 7 or 8 bit characters.
 
@@ -1204,55 +1204,67 @@ Because `String` is built on the list type, all the usual list operations, in pa
 
 But `String` also has the same performance issues as lists: While it is fine to use them  in non-critical parts of the code (diagnostic and error messages, command line and configuration file parsing, filenames), `String` is usually the wrong choice if large amounts of strings need to be processed, e.g. in a templating library. Additionally libraries provide more suitable data structures, in particular `ByteString` for binary data and `Text` for human-readable text.
 
-Records ★
+Records ☆
 ---------
 
 Assume you want to create a type that represents an employee in a HR database. There are a fair number of field to store -- name, date of birth, employee number, room, login handle, public key etc. You could use a tuple with many fields, or create your own data type with a constructor with many fields, but either way you will have to address the various fields by their position, which is verbose, easy to get wrong, and hard to extend.
 
-In such a case, you can use records. These allow you to give names to the *field* of a constructor, and get some convenience functions along the way. The syntax to declare the record is
-```haskell
+In such a case, you can use records. These allow you to give names to the *field* of a constructor, and get some convenience functions along the way. Here we see how to declare and use them
+``` {.haskell .slide}
 data Employee = Employee
     { name :: String
     , room :: Integer
     , pubkey :: ByteString
     }
+
+theBoss :: Employee
+theBoss = Employee { name = "Don Vito Corleone", room = 101, pubkey = "0xAD…" }
+
+willDrownWhenTheFloodComes :: Employee -> Bool
+willDrownWhenTheFloodComes Employee { room = r } = r < 200
+
+moveOneLevelUp :: Employee -> Employee
+moveOneLevelUp e = e { room = new_room }
+  where new_room = room e + 100
 ```
 
-In terms of the constructor `Employee`, this is equivalent to
-```
-data Employee = Employee String Integer ByteString
-```
-and it is always possible to use `Employee` as a normal prefix function in terms and patterns. But the record syntax declaration enables the following nicer syntaxes:
+Record syntax has five aspects:
 
-1. Record creation: Instead of `Employee n r p` you can write `Employee { name = n; room = r; pubkey = p }`, and of course the order of the fields is irrelevant.
+1. The declaration has special syntax. In terms of the constructor `Employee`, the declaration is equivalent to
+    ```haskell
+    data Employee = Employee String Integer ByteString
+    ```
+    and it is always possible to use `Employee` as a normal prefix function in terms and patterns. But the record syntax declaration enables the following nice syntactic devices:
 
-2. Record pattern matching. You can also write `Employee { name = n; room = r; pubkey = p }` in a pattern, to match on `Employee` and get `n`, `r` and `p` into scope.
+2. Record creation: Instead of `Employee n r p` you can write `Employee { name = n; room = r; pubkey = p }`, and of course the order of the fields is irrelevant.
 
-3. Record update syntax: If we have `e :: Employee`, then `e { room = r' }` is like an `Employee` and all fields are the same as `e` with the exception of `room`.
+3. Record pattern matching. You can also write `Employee { name = n; room = r; pubkey = p }` in a pattern, to match on `Employee` and get `n`, `r` and `p` into scope.
 
-4. The names of the fields are available as getters, i.e. after the above definition of `Employee`, there is a function `name :: Employee -> String` etc.
+4. Record update syntax: If we have `e :: Employee`, then `e { room = r' }` is like an `Employee` and all fields are the same as `e` with the exception of `room`.
+
+5. The names of the fields are available as getters, i.e. after the above definition of `Employee`, there is a function `room :: Employee -> Integer` etc.
 
 Curiously, the record creation or update syntax binds closer than function applications: `g x { f = y }` is `g (x { f = y })`, and *not* `(g x) { f = y }`.
 
 With the language extension `RecordWildCards` enabled, it is even possible to write `Employee{..}` in a pattern, and get *all* fields of the employee record into scope, as variables, as if one had written `Employee { name = name; room = room; pubkey = pubkey }` (although some say that’s bad style, because it is too implicit).
 
 
-Newtypes ★
+Newtypes ☆
 ----------
 
 Sometimes you will see a type declaration that uses `newtype` instead of `data`:
-```haskell
+``` {.haskell .slide}
 newtype Riemann = Riemann (Maybe (Integer, Integer))
 ```
 
 For all purposes relevant to us so far you can mentally replace `newtype` with `data`. There are difference in memory representation (a `newtype` is “free” in some sense), but none that relevant at our current level.
 
 
-Type synonyms ★
+Type synonyms ☆
 ---------------
 
 Haskell allows you to introduce new names for existing types. One example is the type `String`, which is defined as
-```haskell
+``` {.haskell .slide}
 type String = [Char]
 ```
 
@@ -1260,7 +1272,7 @@ With this declaration, you can use `String` instead of `[Char]` in your type sig
 
 So type synonyms do not introduce any kind of type safety, they merely make types more readable.
 
-Haddock ★
+Haddock ☆
 ---------
 
 Because knowing the type of a function is already a big step towards understanding what it does, the usual way of documenting a Haskell API is very much centered around types. The tool `haddock` creates HTML pages from Haskell source files that list all functions with their type, and -- if present -- the documentation that is attached to it via a comment.
@@ -1273,7 +1285,7 @@ From this documentation you will also find links labeled “Source” that take 
 Code structure small and large
 ==============================
 
-The next big topic we need to learn about are the ways with which the programmer structures the code. This happens on multiple levels
+The next big topic we need to learn is how programmers structure their code. This happens on multiple levels
 
  * in a function: intermediate results are named, local helper functions are defined.
  * within a file: functions, type signatures, and documentation is arranged.
@@ -1321,7 +1333,7 @@ rle :: Eq a => Stream a (Integer,a)
 rle =
   let start x = NeedInput (count x 1)
       count x n x' | x == x' = NeedInput (count x (n + 1))
-                       | otherwise = HasOutput (n, x) (start x')
+                   | otherwise = HasOutput (n, x) (start x')
   in NeedInput start
 ```
 One advantage of this is that the “internal” functions `start` and `count` are now no longer available from the outside, and so a reader of this code knows for sure that these are purely internal. We can also drop the `rle_` prefix.
@@ -1340,7 +1352,7 @@ rle stop =
 In `start` we can now access `stop` just fine. If `start` and `count` were not local functions, then we would have to add `stop` as an explicit parameter to *both* local functions, significantly cluttering the code with administrative details.
 
 
-`where`-clauses ★
+`where`-clauses ☆
 -----------------
 
 I think few syntactic features show that Haskell’s syntax is designed with readability in mind, valuing that higher than syntactic minimalism, as well as the `where` clauses.
@@ -1354,13 +1366,14 @@ rle stop = NeedInput start
   where
     start x | x == stop = Done
             | otherwise = NeedInput (count x 1)
+
     count x n x' | x == x' = NeedInput (count x (n + 1))
                  | otherwise = HasOutput (n, x) (start x')
 ```
 
 It is not a huge change, but one that – in my humble opinion – improves readability by a small but noticeable bit.
 
-If you have a function with multiple guards on one equation, such as `start`, then a `where` clause would scope over all such guards. So we could write
+If you have a function with multiple guards on one equation, such as `start`, then a `where` clause scopes over all such guards. So we could write
 ```haskell
 sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
 sumDigitsWith f n
@@ -1370,11 +1383,11 @@ sumDigitsWith f n
 ```
 (note that `d` is used in both right-hand sides) if we wanted.
 
-Comments ★
+Comments ☆
 ----------
 
 Like every programming language, Haskell supports comments. There are line comments and multi-line comments:
-```haskell
+``` {.haskell .slide}
 answer = 42 -- but what is the question?
 
 {-
@@ -1386,7 +1399,7 @@ halts turing_machine = halts turing_machine
 ```
 
 The `haddock` Haskell documentation tool uses specially marked comments for documentation, so the above could better be written as (note the vertical bar):
-```haskell
+``` {.haskell .slide}
 {- |
 In the following code, we write a function that correctly tells
 us whether a turing machine halts:
@@ -1402,7 +1415,8 @@ The structure of a module
 As we zoom out one step, we get to look at a Haskell file as a whole. In Haskell, every file is also a Haskell *module*, and modules serve to provide namespacing support.
 
 Normally, a Haskell module named `Foo.Bar.Baz` lives in a file `Foo/Bar/Baz.hs`, and begins with
-```haskell
+``` {.haskell .slide}
+-- in file Foo/Bar/Baz.hs
 module Foo.Bar.Baz where
 ```
 Haskell module names are always capitalized.
@@ -1417,13 +1431,15 @@ Importing other modules
 Obviously, the point of having multiple files of Haskell code is to use the code from one in the other. This is achieved using `import` statements, which *must* come right after the `module` header, and before any declarations.
 
 So if we have a file `Target.hs` with content
-```haskell
+``` {.haskell .slide file=Target.hs}
+-- file Target.hs
 module Target where
 who :: String
 who = "world"
 ```
 and another file `Tropes.hs` with content
-```haskell
+``` {.haskell .slide file=Tropes.hs}
+-- file Tropes.hs
 module Tropes where
 
 import Target
@@ -1452,40 +1468,41 @@ and write `T.who`. This is a common idiom for modules like `Data.Text` that expo
 
 The standard library, called `base`, comes with [many modules you can import](http://hackage.haskell.org/package/base) in addition to the `Prelude` module, which is always imported implicitly.
 
-Import lists ★
+Import lists ☆
 --------------
 
 If we do not want to import *all* names of another module, we can import just a specific selection, e.g.:
-```haskell
+``` {.haskell .slide}
 import Data.Maybe (mapMaybe)
 ```
 This makes it easier for someone reading the code to locate where a certain function is from, and it makes the code more robust against breakage when a new version of the other module starts exporting additional names. These would not silently override other names, but cause compiler errors about ambiguous names.
 
 When including an operator in this list, include it in parentheses:
-```haskell
+``` {.haskell .slide}
 import Data.Function ((&), on)
 ```
 
 You can import types just as well, just include them in the list. To import *constructors* (which look like types), you have to list them after the type they belong to. So if we put our definitions of `Complex` and `Riemann` into a file `Riemann.hs`, namely
-```haskell
+``` {.haskell .slide file=Riemann.hs}
+-- file Riemann.hs
 module Riemann where
 data Complex = C Integer Integer
 data Riemann = Complex Complex | Infinity
 ```
 then you can import everything using
-```haskell
+``` {.haskell .slide}
 import Riemann (Complex(C), Riemann(Complex, Infinity))
 ```
 or, shorter,
-```haskell
+``` {.haskell .slide}
 import Riemann (Complex(..), Riemann(..))
 ```
 
-Export lists and abstract types ★
+Export lists and abstract types ☆
 ---------------------------------
 
 You can not only restrict what you import, but also what you export. To do so, you list the names of functions, types, etc. that you want to export after the module name:
-```
+``` {.haskell .slide}
 module Riemann (Complex, Riemann(..)) where
 …
 ```
@@ -1504,7 +1521,7 @@ Haskell is a language with a reasonably precise specification, the *Haskell Repo
 But Haskell developers and implementors wanted to add more and more features to the language. But the report was written, and the compiler writers wanted to support Haskell, as specified, by default. Therefore, the system of *language extensions* was introduced.
 
 A language extension is a feature that extends Haskell98 in some way. It could add more syntactic sugar, additional features on the type system or enable whole meta-programming facilities. A Haskell source file needs to explicitly declare the extensions they are using, right at the top before the `module` header, and a typical Haskell file these days might start with a number of them, and look like this:
-```haskell
+``` {.haskell .slide}
 {-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DataKinds #-}
@@ -1523,13 +1540,310 @@ These language extensions (and there are many of them) are [documented in the GH
 You can also enable language extensions on the GHCi prompt, e.g. using `:set -XRecordWildCards`.
 
 
-Haskell packages ★
+Haskell packages ☆
 ------------------
 
 Zooming out some more, we come across packages: A *package* is a collection of modules that are bundled under a single package name. A package contains meta-data (name, version number, author, license...). Packages declare which other packages they depend upon, together with version ranges. All this meta-data can be found in the *Cabal file* called `foo.cabal` in the root directory of the project.
 
 Almost all publicly available Haskell packages are hosted centrally on [Hackage](http://hackage.haskell.org/packages/), including the haddock-generated documentation and cross-linked source code. They can be easily installed using the [`cabal` tool](https://www.haskell.org/cabal/), or alternative systems like [`stack`](https://www.haskellstack.org/) or [`nix`](https://nixos.org/nixpkgs/manual/#users-guide-to-the-haskell-infrastructure).
 The packages on Hackage cover many common needs and it is expected that a serious Haskell project depends on dozen of Haskell packages from Hackage.
+
+The IO monad for imperative code {#io}
+================================
+
+Haskell is famous for *monads*, and to those who are scared by sophisticated sounding words, it is even infamous. Judging by the number of “monad tutorials” and other noise about this topic, these monads must indeed be crazy arcane black magic.
+
+So what’s the deal? What is a monad?
+
+Really, the concept of a monad is surprisingly small. It is a pattern of abstraction, expressed as a type class with merely two essential methods and a small number of laws. That’s it, the rest is just applications. But this small idea turns to be amazingly powerful and expressive.
+
+I can’t help but notice that monads are like burritos: What is a burrito? It is a bunch of protein and seasoning, neatly wrapped in a flour tortilla. That's it. But with just that knowledge, it is impossible to fully appreciate or recreate the wealth and richness of Mexican cuisine. The idea is simple, but the applications are rich and manifold and require skills.
+
+(Oh, and of course, sometimes a taco would do better than of a burrito. Monads are not always the right tool.)
+
+This is a cute analogy, but it does not help the aspiring Haskell reader. So how to we proceed from here? I offer two choices:
+
+ * A quick path to understanding “imperative Haskell code”, i.e. Haskell code that uses the `IO` monad and `do` notation, and looks similar to, say, Python code. This path avoids almost all technical details about monads, and simply gives you a way to decipher the syntax. This is this chapter.
+
+ * A slow path where we actually look at the `Monad` type class, the idea behind it, and some of the more advanced (but still common) applications of it. This is part of the [chapter on type classes](#type-classes). You can skip the present chapter and go to the real deal right away.
+
+**Beware:** This chapter is full of half-truths and glossing over technical details. Imagine plenty of “it looks as if” and “one can think of this as” sprinkled throughout it. Nevertheless, it is useful, though, to get you started.
+
+`IO`-function
+-------------
+
+Previously we said that Haskell functions are pure functions in the mathematical sense: Given some input, they calculate some output, but nothing else can happen, and nothing besides the arguments can influence the result. This is great, but how can Haskell programs then write to files, or respond to network requests, or come up with random numbers?
+
+The solution are `IO`-functions. These functions can be *executed*, and when  such a function is executed, it can do all these nasty things, before returning a value. Here is a selection of `IO`-functions available by default:
+```haskell
+getLine :: IO String
+putStrLn :: String -> IO ()
+
+readFile :: FilePath -> IO String
+writeFile :: FilePath -> String -> IO ()
+```
+
+You can see that these functions may have arguments, just as normal functions. The important bit is the return type, which is `IO Something`. This indicates that these functions can be executed, and that they have to be executed before we get our hands on the result.
+
+Not all functions have an interesting result (e.g. `putStrLn` does not); this is where the unit type comes in handy.
+
+The `main` function and `do` notation
+-------------------------------------
+
+To execute these functions, we have to use a special syntax, called `do`-notation, that allows us to write code in an imperative style. Here is an example:
+```haskell
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+    putStrLn "Done copying."
+```
+we can compile and run this program, and it indeed copies a file:
+```
+$ ghc --make copy.hs
+[1 of 1] Compiling Main             ( copy.hs, copy.o )
+Linking copy ...
+$ ./copy
+Which file do you want to copy?
+copy.hs
+Where do you want to copy it to?
+copy2.hs
+Read 287 bytes.
+Done copying.
+$ diff copy.hs copy2.hs
+```
+
+Looking at the code, it doesn’t look much different than the equivalent in  a language like C or Python. Things to notice:
+
+* The `main` function of a module is special. Just like in C, it is the entry point for a compiled Haskell program. When we run the program, then the `main` function is executed. This is the only way to start executing `IO`-functions -- we cannot do that just nilly-willy within other code.
+* The body of the `main` function is written as a `do` block, which clearly signposts the imperative nature of this code: It is a sequence of things to `do`.
+* Every line below the `do` block is one execution of an `IO`-function. The first one, for example, prints a question on the terminal.
+* Some of these `IO`-functions return values that we want to use later on. These we *bind* to variables, using the `<-` syntax. (The last line of a `do` block is never such a binding, can you imagine why?)
+* The `main` function has type `IO ()`. So it is one of these `IO`-functions as well.
+
+Writing `IO` functions
+----------------------
+
+We do not only want to execute `IO` functions, but also define our own. This is not hard, and we have actually seen that before -- the `main` function is one. We can add parameters without further problems:
+
+```haskell
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile from to = do
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    copyFile from to
+    putStrLn "Done copying."
+```
+
+All our knowledge about defining functions -- parameters, pattern matching, recursion -- applies here as well.
+
+The `return` function
+---------------------
+
+The last `IO` function executed in a `do` block of an `IO` function also determines its return value. Therefore we need the little function
+```haskell
+return :: a -> IO a
+```
+if, at the end of an `IO` function, we *only* want to return something:
+
+```haskell
+fileSize :: FilePath -> IO Integer
+fileSize path = do
+  content <- readFile path
+  return (length content)
+```
+
+**Important:** Note that `return` does *not* alter the control flow. It does not make the function return. It merely specifies the return values of the current *line*.
+
+::: Exercise
+What does this program print?
+```haskell
+theAnswer :: IO Integer
+theAnswer = do
+  putStrLn "Pondering the question..."
+  return 23
+  return 42
+
+main :: IO ()
+main = do
+  a <- theAnswer
+  putStrLn (show a)
+```
+:::
+
+
+::: Solution
+```
+Pondering the question...
+42
+```
+The line `return 23` doesn’t do anything: There is no side-effect, and the result (the value `23`) is not bound to any variable and hence ignored.
+:::
+
+Passing `IO` functions around
+-----------------------------
+
+Just passing arguments to `copyFile` does not actually do anything: we really have to execute it, and execution happens when a function is executed from `main` (directly or indirectly). Let me demonstrate this point:
+
+```haskell
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile from to = do
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+
+ignore :: a -> IO ()
+ignore unused = putStrLn "I ignore my argument!"
+
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    ignore (copyFile from to)
+    putStrLn "Done copying."
+```
+
+Executing this program will ask for the filenames, but it will not actually copy anything. This is because although we passed all arguments to `copyFile`, we did not actually execute it.
+
+That said, the problem was not that we passed `copyFile from to` as an argument to a function. Rather, the problem was that `ignore` did not do anything with it. We can fix that easily (and rename the function to `don'tignore` along the way):
+
+```haskell
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile from to = do
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+
+don'tignore :: IO () -> IO ()
+don'tignore action = do
+    putStrLn "About to execute the action."
+    action
+    putStrLn "I executed the action."
+
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    don'tignore (copyFile from to)
+    putStrLn "Done copying."
+```
+
+This way, the `copyFile from to` function receives its parameters in the `main` function, but *is not yet executed*. It is then passed to `don'tignore`, which does something else first (it prints `"About to execute the action."`), and *then* executes the action.
+
+```
+$ ./copy
+Which file do you want to copy?
+copy.hs
+Where do you want to copy it to?
+copy2.hs
+About to execute the action.
+Read 549 bytes.
+I executed the action.
+Done copying.
+```
+
+Being able to abstract over `IO`-functions just like over anything else, and having precise control when they are *executed* (rather than just passed around), is again a very powerful tool.
+
+::: Exercise
+What does this program do?
+```haskell
+foo :: Integer -> IO () -> IO ()
+foo 0 a = putStrLn "Done"
+foo n a = do
+   if n == 1 then putStrLn "Almost done"
+             else return ()
+   a
+   foo (n-1) a
+
+main :: IO ()
+main = do
+   foo 4 (putStrLn "Hooray!")
+   foo 0 (putStrLn "And up she rises.")
+```
+:::
+
+::: Solution
+```
+Hooray!
+Hooray!
+Hooray!
+Almost done
+Hooray!
+Done
+Done
+```
+Note that the `putStrLn "And up she rises."` is never executed.
+:::
+
+
+`let` in `do` ☆
+-------------
+
+You can use `let` expressions in `do` blocks, omitting the `in`. These work like normal `let` expressions, i.e. simply give a name to an expression:
+
+```haskell
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    let to = from ++ ".bak"
+    copyFile from to
+    putStrLn ("Created backup at " ++ to)
+```
+
+Note that it does *not* execute anything, as this example shows:
+
+```haskell
+main :: IO ()
+main = do
+    putStrLn "Please press enter."
+    input1 <- getLine
+    putStrLn "Enter pressed."
+
+    putStrLn "Please press enter."
+    let input2 = getLine
+    putStrLn "Enter pressed."
+```
+If we run this only the first occurrence to `getLine` actually does something:
+```
+$ ghc --make let-do.hs
+[1 of 1] Compiling Main             ( let-do.hs, let-do.o )
+Linking let-do ...
+$ ./let-do
+Please press enter.
+
+Enter pressed.
+Please press enter.
+Enter pressed.
+```
+The variable `input2` is named misleadingly: It does not name any user input, the way it is define it is merely an alternative name for the `IO` function `getLine`.
+
+The `<$>` operator ☆
+------------------
+
+You will come across code that wants to execute an `IO` function *and* apply some normal (pure) function to its result in one go, like the `fileSize` function above. We can use the `<$>` operator to write that in one line, without giving a name to the intermediate value:
+```haskell
+fileSize :: FilePath -> IO Integer
+fileSize path = length <$> readFile path
+```
+
+When reading such code, you can think of `<$>` as a variant of `$`, with the difference that the *return value* of the expression on the right hand side is passed to the function on the left, and not the `IO` function as a whole.
 
 
 Type classes
@@ -1552,7 +1866,7 @@ Overloading
 -----------
 
 Assume, for a moment, that `(==)` operator we have seen already only works on `Integer`. But surely, it is no problem to define equality on, say, `Complex` and `Riemann`:
-```haskell
+``` {.haskell .slide file=Riemann.hs}
 eqComplex :: Complex -> Complex -> Bool
 eqComplex (C x1 y1) (C x2 y2) = x1 == x2 && y1 == y2
 
@@ -1567,12 +1881,12 @@ Similarly, we can define comparisons, numeric operators etc.  This is good enoug
 So what we really want is to use the nice `(==)` syntax, but we want it to mean *different things at different types* -- overloading!
 
 In order to do that, we first have to declare that `(==)` is a function we can overload, by declaring a class with it as a method:
-```haskell
+```{.haskell .slide}
 class Eq a where
     (==) :: a -> a -> Bool
 ```
 Of course, the `Eq` class is already defined. From now on, I can use `(==)` with every type that is an *instance* of `Eq`. We can declare instances for `Complex` and `Riemann`:
-```haskell
+```{.haskell .slide file=Riemann.hs}
 instance Eq Complex where
     C x1 y1 == C x2 y2 = x1 == x2 && y1 == y2
 instance Eq Riemann where
@@ -1580,7 +1894,7 @@ instance Eq Riemann where
 ```
 and with this in place, we can use `(==)` not only for `Integer`, but also `Complex` and `Riemann`. In fact, we can use `(==)` instead of `eqComplex` in the definition of `eqRiemann` -- remember that the order of declarations is irrelevant in a Haskell module.
 
-Now can hopefully better understand the type signature of `(==)`:
+Now we can hopefully better understand the type signature of `(==)`:
 ```
 Prelude> :t (==)
 (==) :: Eq a => a -> a -> Bool
@@ -1614,12 +1928,12 @@ Implicit dependency injection
 Sometimes type classes are used for implicit dependency injection. Which is just a fancy way of saying “I don’t want to pass an extra argument and instead want the compiler do that implicitly for me, based on the types”.
 
 Recall our definition of `fixEq`:
-```haskell
+```{.haskell .slide}
 fixEq :: Eq a => (a -> a) -> a -> a
 fixEq f x = if x == f x then x else fixEq f (f x)
 ```
 which “iterates `f` on `x` until the value is equal to the one before.”. Compare this to the following version:
-```haskell
+```{.haskell .slide}
 fixBy :: (a -> a -> Bool) -> (a -> a) -> a -> a
 fixBy p f x = if x `p` f x then x else fixEq p f (f x)
 ```
@@ -1628,7 +1942,7 @@ This function iterates until a user-specified function tells it to stop. This mi
 Note that this is a form of dependency injection: The caller of `fixBy` passes the dependency “stopping function” along. In general, this can be of course much more complex, e.g. a storage backend.
 
 It is clearly more general than the other, as we can implement `fixEq` using `fixBy`, by specifying `p` to be equality:
-```haskell
+```{.haskell .slide}
 fixEq :: Eq a => (a -> a) -> a -> a
 fixEq = fixBy (==)
 ```
@@ -1642,7 +1956,7 @@ Polymorphism over types with structure
 Similar to the `Eq` type class, there is an `Ord` type class that overloads the comparisons operators `(<)` `(<=)`, `(>)` and `(>=)`.
 
 Using them, we can define a predicate on polymorphic trees that checks whether the tree is sorted, i.e. every value is less than or equal to every value further right. One way of implementing this is:
-```haskell
+```{.haskell .slide file=PolyTree.hs}
 everyNode :: (a -> Tree a -> Tree a -> Bool) -> Tree a -> Bool
 everyNode p (Node x t1 t2) = p x t1 t2 && everyNode p t1 && everyNode p t2
 everyNode _ Leaf = True
@@ -1658,9 +1972,9 @@ isSorted = everyNode $ \y t1 t2 ->
 (Can you make sense of this code? It is a good exercise to make sure you can read this code. If you find this code to be inefficient, then you are right: It is algorithmically bad, but serves nicely as a high-level specification.)
 
 Does this correctly implement the specification? Yes and no! If we have a tree of `Integer`, then `isSorted` will indeed return `True` if every element is smaller or equal to every element further on the right. But here is a counter example, for which we need to define a type:
-```haskell
+```{.haskell .slide file=PolyTree.hs}
 data ABC = A | B | C deriving Eq
-instance Ord a where
+instance Ord ABC where
   x <= y | x == y = True
   A <= B = True
   B <= C = True
@@ -1685,7 +1999,7 @@ And if we look at the [documentation of the `Ord`](http://hackage.haskell.org/pa
 In this sense, the constraint in the type signature of `isSorted` should not be read as “for any type `a` that implements the signature of the `Ord` type class…”, but rather as “for any type `a` that is ordered…”. Not the *interface* matters, but rather the *semantic meaning* behind it.
 
 Conversely, if you come across a type class without any semantic meaning, i.e. one that just overloads a name, then that is clearly fishy. Nothing good will come out of a type class like, say
-```haskell
+```{.haskell .slide}
 class IntAble a where toInteger :: a -> Integer
 ```
 if it does not also come with an abstract meaning that should be shared by all instances.
@@ -1785,7 +2099,7 @@ Is this a good type class, i.e. does it have *meaning*? Yes, it does: When a typ
 This definition is a bit weird: The type signature of `size` does not mention the type `a` anywhere. On the one hand, this makes sense: We do not need a concrete element in our hand to ask the question “how many elements are there in `a`”, nor do we expect to receive a concrete element. On the other hand, when we use `size` somewhere, how will the compiler know for which type we want it?
 
 Therefore, this would be prohibited in plain Haskell. But as mentioned before, contemporary Haskell often uses language extensions supported by the compiler, and that is what we will do here, namely
-```haskell
+``` {.haskell file=Finite-pragmas}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -1834,55 +2148,13 @@ Prelude> size @((Suit -> Suit) -> Maybe Bool)
 
 The utility of such a `size` function is questionable (but not completely void), but I hope you understand the power behind this approach, and also recognize the pattern if you see in the wild.
 
-In fact, instances of the `Eq` and `Ord` class for the container types like tuples and lists etc. are also instances of this pattern.
+In fact, instances of the `Eq` and `Ord` class for the container types like tuples and lists etc. also follow this pattern.
 
-Interlude: Kinds ★
-------------------
 
-This section is not directly related to type classes, but the concept of *kinds* shows up first here.
-
-You might have already noticed that there is a fundamental difference between a type like `Bool` and a type like `Maybe`. The former has values, e.g. `True`, and it can be an argument or a return value of a function. That is not true for `Maybe`. There is no value that has type `Maybe`! Only when we say what type we maybe have, do we get a proper type. So `Maybe` is not a normal type in that sense, but `Maybe Bool` is, or in general `Maybe a` for any normal type `a`.
-
-So what is `Maybe`? It is a type former! It takes a normal type, with values (like `Bool`) and creates a new normal type form it (namely `Maybe Bool`).
-
-We can apply `Maybe` multiple times: `Maybe (Maybe Bool)` is also a normal type. But we cannot apply `Maybe` to itself: `Maybe Maybe` is nonsense.
-
-This is all very similar to the term level, where `True` is a Boolean, but `not` is not a Boolean. But `not` can be applied to a Boolean, and `not True` is another Boolean. We can apply it multiple times `not (not True)`, but we cannot apply it to itself `not not`.
-
-On the term level, terms have *types* that describe what compositions make sense and which compositions are disallowed. `True` has type `Bool`, and `not` has type `Bool -> Bool`, which explains why you can apply `not` to `True`, but not to `not`.
-
-We find the same on the type level: Types have *kinds* that describe which compositions make sense and which compositions are disallowed. `Bool` has kind `*` (pronounced “star” or simply type), and `Maybe` has kind `* -> *`, which explains why you can apply `Maybe` to `Bool`, but not to `Maybe`.
-
-The kind `*` is the kind of all the normal types, who have values, and which can be the argument or return type of a function. `* -> *` is the kind of simple type formers like `Maybe`, or `Tree`, or the list type. These are also called *type constructors*. Some have more than one argument, e.g. `Either` has kind `* -> * -> *`. GHCi happily tells you the kind of a type constructor using the `:kind` command:
-```
-Prelude> :kind Bool
-Bool :: *
-Prelude> :kind Maybe
-Maybe :: * -> *
-Prelude> :kind Either
-Either :: * -> * -> *
-```
-
-In mundane code, kinds do not get more complicated than that, but there are good uses for higher kinds, such as
-```haskell
-newtype Fix f = Fix (f (Fix f))
--- Kind of Fix:
--- Fix :: (* -> *) -> *
-```
-
-Type classes also have a kind, only these do not construct types of kind `*`, but rather of kind `Constraint`:
-```
-Prelude> :kind Eq
-Eq :: * -> Constraint
-Prelude> :kind Monoid
-Monoid :: * -> Constraint
-```
-
-Common pre-defined type classes ★
+Common pre-defined type classes ☆
 ---------------------------------
 
-You should know the following common type classes. Follow the links for a list
-of methods and other documentation:
+You should know the following common type classes. Follow the links for the list of methods and other documentation:
 
 * [`Eq`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Eq): Equality (or equivalence)
 
@@ -1894,306 +2166,308 @@ of methods and other documentation:
 
 * [`Read`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Read): Provides `read :: Read a => String -> a`, which goes the other way. Again, not ideal for production use, but can sometimes be used with `Show` to scaffold serialization. If you have to use `Read`, please use [`readMaybe`](http://hackage.haskell.org/package/base/docs/Text-Read.html#v:readMaybe).
 
-* [`Functor`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Functor): Provides `fmap :: Functor f => (a -> b) -> f a -> f b`. This type class had kind `(* -> *) -> Constraint`, i.e. can only be instantiated for type formers like `Maybe` and the list type. It provides the ability to apply a function to each value within the container (for types that are a container, of sorts).
+* [`Functor`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Functor): Provides `fmap :: Functor f => (a -> b) -> f a -> f b`. This type class can only be instantiated for type constructors (`Maybe`, the list type, etc.). It provides the ability to apply a function to each value within the container (for types that are a container, of sorts).
 
-* [`Applicative`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Applicative) and [`Monad`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Monad), also of kind `(* -> *) -> Constraint`, are used to model effects of sorts, for example to hide bookkeeping (in a parser) or safely allow side-effects (in IO code). These deserve their own chapter.
+* [`Applicative`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Applicative) and [`Monad`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Monad), are used to model effects of sorts, for example to hide bookkeeping (in a parser) or safely allow side-effects (in IO code). These will be discussed later in detail.
 
-* [`Foldable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Foldable) and [`Traversable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Traversable), also of kind `(* -> *) -> Constraint`, are abstractions over containers where elements can be visited in sequence.
+* [`Foldable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Foldable) and [`Traversable`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Traversable) are abstractions over containers where elements can be visited in sequence, i.e. a generation of lists.
 
-Monads
-======
-
-Haskell is famous for *monads*, and to those who are scared by sophisticated sounding words, it is even infamous. Judging by the number of “monad tutorials” and other noise about this topic, these monads must indeed be crazy arcane black magic.
-
-So what’s the deal? What is a monad?
-
-Really, the concept of a monad is surprisingly small. It is a pattern of abstraction, expressed as a type class with merely two essential methods and a small number of laws. That’s it, the rest is just applications. But this small idea turns to be amazingly powerful and expressive.
-
-I can’t help but notice that monads are like burritos: What is a burrito? It is a bunch of protein and seasoning, neatly wrapped in a flour tortilla. That's it. But with just that knowledge, it is impossible to fully appreciate or recreate the wealth and richness of Mexican cuisine. The idea is simple, but the applications are rich and manifold and require skills.
-
-(Oh, and of course, sometimes a taco would do better than of a burrito. Monads are not always the right tool.)
-
-This is a cute analogy, but it does not help the aspiring Haskell reader. So how to we proceed from here? I offer two choices:
-
- * A quick path to understanding “imperative Haskell code”, i.e. Haskell code that uses the `IO` monad and `do` notation, and looks similar to, say, Python code. This path avoids almost all technical details about monads, and simply gives you a way to decipher the syntax.
-
- * A slow path where we actually look at the `Monad` type class, the idea behind it, and some of the more advanced (but still common) applications of it.
-
-Imperative code with `do` notation
-----------------------------------
-
-**Beware:** This section is full of half-truths and glossing over technical details. Imagine plenty of “it looks as if” and “one can think of this as” sprinkled throughout it. Nevertheless, it is useful, though, to get you started.
-
-Previously we said that Haskell functions are pure functions in the mathematical sense: Given some input, they calculate some output, but nothing else can happen, and nothing besides the arguments can influence the result. This is great, but how can Haskell programs then write to files, or respond to network requests, or come up with random numbers?
-
-The solution are `IO`-functions. These functions can be *executed*, and when  such a function is executed, it can do all these nasty things, before returning a value. Here is a selection of `IO`-functions available by default:
-```haskell
-getLine :: IO String
-putStrLn :: String -> IO ()
-
-readFile :: FilePath -> IO String
-writeFile :: FilePath -> String -> IO ()
-```
-
-You can see that these functions may have arguments, just as normal functions. The important bit is the return type, which is `IO Something`. This indicates that these functions can be executed, and that they have to be executed before we get our hands on the result.
-
-Not all functions have an interesting result (e.g. `putStrLn` does not); this is where the unit type comes in handy.
-
-### The `main` function and `do` notation
-
-To execute these functions, we have to use a special syntax, called `do`-notation, that allows us to write code in an imperative style. Here is an example:
-```haskell
-main = do
-    putStrLn "Which file do you want to copy?"
-    from <- getLine
-    putStrLn "Where do you want to copy it to?"
-    to <- getLine
-    content <- readFile from
-    putStrLn ("Read " ++ show (length content) ++ " bytes.")
-    writeFile to content
-    putStrLn "Done copying."
-```
-we can compile and run this program, and it indeed copies a file:
-```
-$ ghc --make copy.hs
-[1 of 1] Compiling Main             ( copy.hs, copy.o )
-Linking copy ...
-$ ./copy
-Which file do you want to copy?
-copy.hs
-Where do you want to copy it to?
-copy2.hs
-Read 287 bytes.
-Done copying.
-$ diff copy.hs copy2.hs
-```
-
-Looking at the code, it doesn’t look much different than the equivalent in  a language like C or Python. Things to notice:
-
-* The `main` function of a module is special. Just like in C, it is the entry point for a compiled Haskell program. When we run the program, then the `main` function is executed. This is the only way to start executing `IO`-functions -- we cannot do that just nilly-willy within other code.
-* The body of the `main` function is written as a `do` block, which clearly signposts the imperative nature of this code: It is a sequence of things to `do`.
-* Every line below the `do` block is one execution of an `IO`-function. The first one, for example, prints a question on the terminal.
-* Some of these `IO`-functions return values that we want to use later on. These we *bind* to variables, using the `<-` syntax. (The last line of a `do` block is never such a binding, can you imagine why?)
-* The `main` function has type `IO ()`. So it is one of these `IO`-functions as well.
-
-
-### Writing `IO` functions
-
-We do not only want to execute `IO` functions, but also define our own. This is not hard, and we have actually seen that before -- the `main` function is one. We can add parameters without further problems:
-
-```haskell
-copyFile :: FilePath -> FilePath -> IO ()
-copyFile from to = do
-    content <- readFile from
-    putStrLn ("Read " ++ show (length content) ++ " bytes.")
-    writeFile to content
-
-main :: IO ()
-main = do
-    putStrLn "Which file do you want to copy?"
-    from <- getLine
-    putStrLn "Where do you want to copy it to?"
-    to <- getLine
-    copyFile from to
-    putStrLn "Done copying."
-```
-
-All our knowledge about defining functions -- parameters, pattern matching, recursion -- applies here as well.
-
-### The `return` function
-
-The last `IO` function executed in a `do` block of an `IO` function also determines its return value. Therefore we need the little function
-```haskell
-return :: a -> IO a
-```
-if, at the end of an `IO` function, we *only* want to return something:
-
-```haskell
-fileSize :: FilePath -> IO Integer
-fileSize path = do
-  content <- readFile path
-  return (length content)
-```
-
-**Important:** Note that `return` does *not* alter the control flow. It does not make the function return. It merely specifies the return values of the current *line*.
-
-::: Exercise
-What does this program print?
-```haskell
-theAnswer :: IO Integer
-theAnswer = do
-  putStrLn "Pondering the question..."
-  return 23
-  return 42
-
-main :: IO ()
-main = do
-  a <- theAnswer
-  putStrLn (show a)
-```
-:::
-
-
-::: Solution
-```
-Pondering the question...
-42
-```
-The line `return 23` doesn’t do anything: There is no side-effect, and the result (the value `23`) is not bound to any variable and hence ignored.
-:::
-
-### Passing `IO` functions around
-
-Just passing arguments to `copyFile` does not actually do anything: we really have to execute it, and execution happens when a function is executed from `main` (directly or indirectly). Let me demonstrate this point:
-
-```haskell
-copyFile :: FilePath -> FilePath -> IO ()
-copyFile from to = do
-    content <- readFile from
-    putStrLn ("Read " ++ show (length content) ++ " bytes.")
-    writeFile to content
-
-ignore :: a -> IO ()
-ignore unused = putStrLn "I ignore my argument!"
-
-main :: IO ()
-main = do
-    putStrLn "Which file do you want to copy?"
-    from <- getLine
-    putStrLn "Where do you want to copy it to?"
-    to <- getLine
-    ignore (copyFile from to)
-    putStrLn "Done copying."
-```
-
-Executing this program will ask for the filenames, but it will not actually copy anything. This is because although we passed all arguments to `copyFile`, we did not actually execute it.
-
-That said, the problem was not that we passed `copyFile from to` as an argument to a function. Rather, the problem was that `ignore` did not do anything with it. We can fix that easily (and rename the function to `don'tignore` along the way):
-
-```haskell
-copyFile :: FilePath -> FilePath -> IO ()
-copyFile from to = do
-    content <- readFile from
-    putStrLn ("Read " ++ show (length content) ++ " bytes.")
-    writeFile to content
-
-don'tignore :: IO () -> IO ()
-don'tignore action = do
-    putStrLn "About to execute the action."
-    action
-    putStrLn "I executed the action."
-
-main :: IO ()
-main = do
-    putStrLn "Which file do you want to copy?"
-    from <- getLine
-    putStrLn "Where do you want to copy it to?"
-    to <- getLine
-    don'tignore (copyFile from to)
-    putStrLn "Done copying."
-```
-
-This way, the `copyFile from to` function receives its parameters in the `main` function, but *is not yet executed*. It is then passed to `don'tignore`, which does something else first (it prints `"About to execute the action."`), and *then* executes the action.
-
-```
-$ ./copy
-Which file do you want to copy?
-copy.hs
-Where do you want to copy it to?
-copy2.hs
-About to execute the action.
-Read 549 bytes.
-I executed the action.
-Done copying.
-```
-
-Being able to abstract over `IO`-functions just like over anything else, and having precise control when they are *executed* (rather than just passed around), is again a very powerful tool.
-
-::: Exercise
-What does this program do?
-```haskell
-foo :: Integer -> IO () -> IO ()
-foo 0 a = putStrLn "Done"
-foo n a = do
-   if n == 1 then putStrLn "Almost done"
-             else return ()
-   a
-   foo (n-1) a
-
-main :: IO ()
-main = do
-   foo 4 (putStrLn "Hooray!")
-   foo 0 (putStrLn "And up she rises.")
-```
-:::
-
-::: Solution
-```
-Hooray!
-Hooray!
-Hooray!
-Almost done
-Hooray!
-Done
-Done
-```
-Note that the `putStrLn "And up she rises."` is never executed.
-:::
-
-
-### `let` expressions in `do` blocks ★
-
-You can use `let` expressions in do blocks, omitting the `in`. These work like normal `let` expressions, i.e. simply give a name to an expression:
-
-```haskell
-main :: IO ()
-main = do
-    putStrLn "Which file do you want to copy?"
-    from <- getLine
-    let to = from ++ ".bak"
-    copyFile from to
-    putStrLn ("Created backup at " ++ to)
-```
-
-Note that it does *not* execute anything, as this example shows:
-
-```haskell
-main :: IO ()
-main = do
-    putStrLn "Please press enter."
-    input1 <- getLine
-    putStrLn "Enter pressed."
-
-    putStrLn "Please press enter."
-    let input2 = getLine
-    putStrLn "Enter pressed."
-```
-If we run this only the first occurrence to `getLine` actually does something:
-```
-$ ghc --make let-do.hs
-[1 of 1] Compiling Main             ( let-do.hs, let-do.o )
-Linking let-do ...
-$ ./let-do
-Please press enter.
-
-Enter pressed.
-Please press enter.
-Enter pressed.
-```
-The variable `input2` is named misleadingly: It does not name any user input, it is now merely an alternative name for the `IO` function `getLine`.
-
-### The `<$>` operator ★
-
-You will come across code that wants to execute an `IO` function *and* apply some normal (pure) function to its result in one go, like the `fileSize` function above. We can use the `<$>` operator to write that in one line, without giving a name to the intermediate value:
-```haskell
-fileSize :: FilePath -> IO Integer
-fileSize path = length <$> readFile path
-```
-
-When reading such code, you can think of `<$>` as a variant `$`, but the *return value* of the expression on the right hand side is passed to the function on the left, rather than the `IO` function as a whole.
-
-
-Monads, for real
+Interlude: Kinds
 ----------------
 
-The previous section we only looked at a facade of monads in Haskell, both in the sense that we went along with how things looked, not how things are, and that there is much more behind. In the remainder of the Chapter, we give a more principled introduction of the concept.
+This section is not directly related to type classes, but the concept of *kinds* becomes relevant at this point.
+
+You might have already noticed that there is a fundamental difference between a type like `Bool` and a type like `Maybe`. The former has values, e.g. `True`, and it can be an argument or a return value of a function. That is not true for `Maybe`. There is no value that has type `Maybe`! Only when we say what type we maybe have, do we get a proper type. So `Maybe` is not a normal type in that sense, but `Maybe Bool` is, or in general `Maybe a` for any normal type `a`.
+
+So what is `Maybe`? It is a type constructor! It takes a normal type, with values (like `Bool`) and constructs a new normal type from it (namely `Maybe Bool`).
+
+We can apply `Maybe` multiple times: `Maybe (Maybe Bool)` is also a normal type. But we cannot apply `Maybe` to itself: `Maybe Maybe` is nonsense.
+
+This is all very similar to the term level, where `True` is a Boolean, but `not` is not a Boolean. But `not` can be applied to a Boolean, and `not True` is another Boolean. We can apply it multiple times `not (not True)`, but we cannot apply it to itself `not not`.
+
+On the term level, terms have *types* that describe what compositions make sense and which compositions are disallowed. `True` has type `Bool`, and `not` has type `Bool -> Bool`, which explains why you can apply `not` to `True`, but not to `not`.
+
+We find the same on the type level: Types have *kinds* that describe which compositions make sense and which compositions are disallowed. `Bool` has kind `*` (pronounced “star” or simply type), and `Maybe` has kind `* -> *`, which explains why you can apply `Maybe` to `Bool`, but not to `Maybe`.
+
+The kind `*` is the kind of all the normal types, who have values, and which can be the argument or return type of a function. `* -> *` is the kind of simple *type constructors* like `Maybe`, or `Tree`, or the list type. Some have more than one argument, e.g. `Either` has kind `* -> * -> *`. GHCi happily tells you the kind of a type constructor using the `:kind` command:
+```
+Prelude> :kind Bool
+Bool :: *
+Prelude> :kind Maybe
+Maybe :: * -> *
+Prelude> :kind Either
+Either :: * -> * -> *
+```
+
+In mundane code, kinds do not get more complicated than that, but there are good uses for higher kinds, such as
+```
+Prelude> newtype Fix f = Fix (f (Fix f))
+Prelude> :kind Fix
+Fix :: (* -> *) -> *
+```
+
+The kind of type classes
+------------------------
+
+Type classes are also kinded. You can have a constraint `Eq Bool`, or `Eq (Maybe Bool)`, but not `Eq Maybe` -- that does not make sense. So `Eq` takes a parameter of kind `*`, and produces a constraint:
+```
+Prelude> :kind Eq
+Eq :: * -> Constraint
+Prelude> :kind Monoid
+Monoid :: * -> Constraint
+```
+
+Most type classes that we saw in the previous section have that kind (`Eq`, `Ord`, `Num`, `Show`, `Read`, `Monoid`). But there are also type classes that characterize type constructors, in particular the infamous `Monad`:
+```
+Prelude> :kind Functor
+Functor :: (* -> *) -> Constraint
+Prelude> :kind Monad
+Monad :: (* -> *) -> Constraint
+```
+Because monads are a powerful, ubiquitous and somewhat tricky concept, we will look at them next. But in order to understand them properly, we have to have a closer look at the kind `(* -> *)`.
+
+A close look at `* -> *`
+------------------------
+
+According to the kind of `Monad`, only type constructors of kind `* -> *` can be instances of a monad. And I believe that one way towards grasping monads is to get a good handle on the concept of a type constructor, both concretely, and the concept. Once we have seen enough concrete examples of them, worked out the common patterns, we can appreciate an *abstraction over type constructors*, which the monad concepts, along with functor and others, is.
+
+Let us start abstractly, and consider a type constructor `m` with kind `* -> *`. So for every type `a` (of kind `*`), there is a type `m a`. The meaning of `m a` is (usually) very different from, but still somehow related, to the meaning of `a`. It could be “extra data”, it could be additional behavior, some kind of bookkeeping, or effects of sorts.
+
+To make this more concrete, let us look at some examples of type constructors with kind `(* -> *)`, and how they change the meaning of a type.
+
+``` {.haskell .slide}
+data Maybe a = Nothing | Just a
+data Either e a = Left e | Right a
+data [a] = [] | a : [a]
+newtype Identity a = Identity a
+data Proxy a = Proxy
+newtype Reader r a = Reader (r -> a))
+newtype State s a = State (s -> (a, s))
+newtype Parser a = Parser (String -> [(a,String)])
+data IO a =  ¯\_(ツ)_/¯
+data Two a = Two a a
+newtype Printer a = Printer (a -> String)
+```
+
+* The first example is the `Maybe` type that we have looked at before. A value of type `Maybe a` is either `Just` a value of type `a`, or it is `Nothing`. So it takes a type `a` and adjoins an extra element to it.  This is typically used to model failure of sorts -- parse failures, lookup failure etc.
+
+   `Maybe` has kind `* -> *`, so it “fits” the `Monad` type class, and an `instance Monad Maybe` would make sense.
+
+* The next example, `Either`, is a close relative of `Maybe`. It also commonly models “`a` with failure”, but the failure can carry additional data of type `e`.
+
+   Because it takes two type arguments, the kind of `Either` is `* -> * -> *`, and there cannot be an `instance Monad Either`. But we can make it fit by providing *one* type argument. For each type `e`, `Either e` has kind `* -> *`, and it would make sense to have an `instance Monad (Either e)`.
+
+* The list type has kind `* -> *`. The meaning of `[a]` is “zero, one or more values of type `a`” and shows that it is *not* the case that a value of type `m a` always contains a value of type `a`.
+
+   This example becomes immediately more interesting if we *interpret* a list differently. Instead of considering it a container of many values, we can also think of it as a non-deterministic computation, i.e. a computation with multiple possible results.
+
+* A bit vacuous, but we can create a type constructor that does not actually change the meaning of the type; that would be the `Identity` type constructor.
+
+* Since we are looking at corner cases, let us introduce the `Proxy` type constructor. It is an example where `m a` really never contains a value of type `a`. In fact, a value of type `m a` is always just `Proxy`. The type `a` is merely a phantom that spooks on the type level.
+
+* Back to more useful examples: The meaning of `Reader r a` is “a value of type `a` -- if you give me an `r`”.  Again, no value of type `a` is contained in `Reader r a`; if anything, there is a promise for one. Or, actually, for many: it has one for each possible value of type `r`.
+
+  Incidentally, the `Reader` type is just an alternative name for the function arrow `(->)`, and if we partially apply the function arrow to a type, i.e. `(->) r`, we get something of kind `* -> *` just as well.
+
+* A similar idea is behind the `State` type constructor. Here, a value of type `State s a` is “a value of type `a`, if you give me an `s`, and by the way, I will also give you a new value of type `s`”, or, maybe more helpfully, “a computation that accesses state of type `s` and produces a value of type `a`”.
+
+* The `Parser` type constructor implements a backtracking parser. Let us skip looking at the definition too closely, and just appreciate that going from `a` to “something that can parse a value of type `a`” can be modeled as a type constructor.
+
+* Then there is the `IO a` type constructor, for which the definition is opaque. But it still has a clear meaning: A value of type `IO a` is a computation that, after interacting with the external world (terminal, files, network, etc.), produces a value of type `a`. (See the [chapter on imperative code](#io) if you want a diversion.)
+
+* The last two examples will be useful later as counter examples. `Two` is again a container, not unlike `Maybe` and lists: A value of type `Two a` contains always exactly to values of type `a`.
+
+* And a `Printer a` is simply a function from `a` to `String`, obviously with the connotation that it is some form of pretty-printing.
+
+This was a long list, and I could have easily extended it with many more. So what is the point? The point is that there are a large number of very different concepts that can be naturally expressed as a type constructor. If we now venture out to find similarities between them, we will stumble upon monads.
+
+The `Monad` type class
+----------------------
+
+If we look at the list above, we might notice that many, in fact all but the last two, have something in common: When working with these objects, we often want to *compose* in the following way.
+
+* If I have a computation that returns an `a` or fails, and one that takes an `a` and returns a `b` or fails, I want to compose them to get a `b` (or failure).
+* If I have a computation that accesses state and produces a value of type `a`, and one that -- given a value of type `a` -- accesses state and produces a value of type `b`, I want to compose them to get a computation that accesses state and returns a `b`.
+* If I have a parser that parses a number, and a parser that parses a string of a given length, I want to compose them to parse a string-with-length data format.
+* If I have a computation that reads from a file and returns the content as a string, and one that takes a string and writes it to another file, I want to compose them to one that copies a file.
+* etc.
+
+
+We could implement this composition separately for each of these, and obtain a long list of functions
+``` {.haskell .slide}
+andThen :: Maybe a -> (a -> Maybe b) -> Maybe b
+andThenEither :: Either e a -> (a -> Either e b) -> Either e b
+flipConcatMap :: [a] -> (a -> [b]) -> [b]
+bindIdentity :: Identity a -> (a -> Identity b) -> Identity b
+bindProxy :: Proxy a -> (a -> Proxy b) -> Proxy b
+bindReader :: Reader r a -> (a -> Reader r b) -> Reader r b
+bindState :: State s a -> (a -> State s b) -> State s b
+bindParser :: Parser a -> (a -> Parser b) -> Parser b
+bindIO :: IO a -> (a -> IO b) -> IO b
+```
+This would suffice for many applications, but it is not nice -- I even ran out of names to use.
+
+Haskell is all about abstraction, and clearly, there *is* a common pattern here. If distill the abstract type here, using `m` to stand for the type constructor, we get `m a -> (a -> m b) -> m b`. Remember that for a moment.
+
+For all the type constructors, there is something else that we want to do. When we have a value `x` of type `a`, we want to be able to treat it as
+
+* a computation that could fail (but doesn’t), or
+* a computation that accesses state of type `s` before returning `x`,
+* a parser that does not touch the input, but simply always produces `x`, etc.
+* etc.
+
+Again, we could have separate function for each of these, say, injection functions, but that would be tedious. So if we try to phrase this as an abstract type, in terms of `m`, we get `a -> m a`.
+
+This brings us to the concept of a monad: A type constructor that allows composition and injection in this way is a monad.
+
+### The definition
+
+Finally, this is a good time to look at the actual [definition of the `Monad` type class](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Prelude.html#t:Monad) (with optional and obsolete methods removed):
+```{.haskell .slide}
+class Applicative m => Monad m where
+    return :: a -> m a
+    (>>=)  :: m a -> (a -> m b) -> m b
+
+-- Laws:
+-- return a >>= k = k a
+-- m >>= return = m
+-- m >>= (\x -> k x >>= h) = (m >>= k) >>= h
+```
+The most important bit of information is actually only implicit: The fact that the argument `m` has kind `* -> *`. We can infer that from the fact that it is applied to `a` in the type signature of the methods.
+
+### The operations
+
+What we do find very explicitly, however, are the two type signatures that we have just distilled:
+
+ * The operator with the funny arrow does the kind of composition that we wanted. It is also called *bind* or the *monad composition operator*.
+ * The function `return` (also available as `pure`) injects a value into the monad.
+
+In this context, when `m` is a monad, we call a value of type `m a` “a monadic action returning a value of type `a`”.
+
+For additional intuition, squint at these type signatures, and imagine the `m` were not there:
+
+ * Then the bind operator would simply have type `a -> (a -> b) -> b`, and due to parametricity it is clear what such an operator does: It is function application! (i.e. `($)` with parameters flipped, also available as [`(&)`](http://hackage.haskell.org/package/base/docs/Data-Function.html#v:-38-) in `Data.Function`.) The bind operator does morally the same, while at the same taking care of the particular meaning that is introduced by the type constructor `m`.
+
+ * Similarly, `return` has squinted type `a -> a` and thus simply becomes the identity function. So `return` doesn’t do anything interesting to its argument, it just makes it look like it *could* have additional meaning.
+
+### The laws
+
+As discussed before, a type class is more than just a set of function signatures: The laws that come with it are equally important.
+
+ * The first two laws can be summarized as “`return` is the neutral element of bind”. Notice how `return` is a function that perfectly fits as the second argument to bind? If we do so, the bind operator composes the particular meaning of the first argument of type `m a` with the particular meaning introduced by `return`. The second law says that this this does *not* actually affect the meaning, we could have just used the original `m a`. In that sense, `return` turns an `a` into something that has the shape of an `m a`, without giving it any interesting meaning beyond the value of type `a` itself.
+
+ * The last law expresses that the bind operator is associative. Composing monadic operations -- `m`, `k` and `h` in the law -- we get the same result independent of whether we combine `m` with `k` first or `k` with `h` first.
+
+   Note that the *order* of these operations still matters -- in general, the bind operator is not commutative.
+
+### No escape?
+
+Let me point out two things that are notably missing from this type class:
+
+1. There is no method that takes a monadic action `m a`  and returns just the `a`. Hence the slogan “You can’t escape the monad.”.
+
+   The slogan is only half true, and should better be “You can't escape an arbitrary monad”, as you can escape concrete monads (think of `Identity`, or `Reader r`, if you supply the `r`). But in general it is not possible; think of `Proxy` or, most confusingly for novice Haskell writers, `IO`.
+
+2. There is no method that creates any *interesting* monad actions. We already deduced that the `return` method cannot actually do anything interesting, and the bind operator merely combines what is there.
+
+This shows that the monad abstraction is *only* concerned with the composition of these extras, but to do anything interesting, we need additional functions for a concrete monad.
+
+More monad operations ☆
+-----------------------
+
+It suffices to define `return` and `(>>=)` to define a monad, but when working with monads, there a number of other operations in common use:
+
+``` {.haskell .slide}
+(>>) :: Monad m => m a -> m b -> m b
+fmap :: Functor f => (a -> b) -> f a -> f b
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+(<$) :: Functor f => a -> f b -> f a
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+(<*) :: Applicative f => f a -> f b -> f a
+(*>) :: Applicative f => f a -> f b -> f b
+liftA2 :: Applicative f => (a -> b -> c) -> f a -> f b -> f c
+(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
+join :: Monad m => m (m a) -> m a
+mapM :: Monad m => (a -> m b) -> [a] -> m [b]
+forM :: Monad m => [a] -> (a -> m b) -> m [b]
+mapM_ :: Monad m => (a -> m b) -> [a] -> m ()
+forM_ :: Monad m => [a] -> (a -> m b) -> m ()
+when :: Applicative f => Bool -> f () -> f ()
+unless :: Applicative f => Bool -> f () -> f ()
+forever :: Applicative f => f a -> f b
+```
+
+For now, pretend that instead of `Applicative` or `Functor` it would read `Monad`, we will discuss the difference later.
+
+* The first bunch of operators are simply for all the various combinations of
+
+  - is an argument an action or a pure value
+  - is one argument a function? If not, which value is used.
+
+  and you tell which it is from the type.  Note that `<$>` is simply a different name for `fmap`.
+
+  Here are concrete examples:
+  ``` {.haskell .slide}
+  getName :: IO String
+  getName = putStr "What is your name? " >> getLine
+
+  -- parses the format `23+42i` as a complex number
+  parseComplex :: Parser Complex
+  parseComplex = C <$> parseInteger <* parseStr "+" <*> parseInteger <* parseStr "i"
+  ```
+
+  ::: Exercise
+  Give definitions of the operators up to `join` using `(>>=)`, `return`, and operators you already defined. (You will have to change the constraints to `Monad` for this to type check.)
+  :::
+  ::: Solution
+  ```haskell
+  (>>) :: Monad m => m a -> m b -> m b
+  a >> b = a >>= (\_ -> b)
+  fmap :: Monad f => (a -> b) -> f a -> f b
+  fmap f a = a >>= (return . f)
+  (<$>) :: Monad f => (a -> b) -> f a -> f b
+  (<$>) = fmap
+  (<$) :: Monad f => a -> f b -> f a
+  x <$ a = const x <$> a
+  liftA2 :: Monad f => (a -> b -> c) -> f a -> f b -> f c
+  liftA2 f a b = a >>= (\x -> b >>= (\y -> return (f x y)))
+  (<*>) :: Monad f => f (a -> b) -> f a -> f b
+  (<*>) = liftA2 (\f x -> f x)
+  (<*) :: Monad f => f a -> f b -> f a
+  (<*) = liftA2 (\x y -> x)
+  (*>) :: Monad f => f a -> f b -> f b
+  (*>) = liftA2 (\x y -> y)
+  (>=>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
+  (a >=> b) x = a x >>= b
+  join :: Monad m => m (m a) -> m a
+  join a = a >>= id
+  ```
+  :::
+
+
+* The `(>=>)` operator is very similar to `(>>=)`, only that both arguments have the same type. With this operator, the monad laws are much more accessible:
+
+  ``` {.haskell .slide}
+  return >=> m = m
+  m >=> return = m
+  (a >=> b) >=> c = a >=> (b >=> c)
+  ```
+* `mapM` and `forM` apply a monadic action to each element of a list, collecting the results. The variant with underscore do not collect the results, e.g. when you are only interested in the monadic effect, and are more efficient.
+
+   These functions show for the first time the kind of benefit we get from monads (besides some petty operator overloading): It distills (still simple, but non-trivial) the concept of “traversing a list while doing *something* on the side” once, and then we can use it in all these different contexts, whether that is handling failures, manipulating state, consuming parser input and backtracking or exploring all possibilities of non-deterministic computation.
+
+* `when` and `unless` are pretty simple one: If the Boolean argument is true (respectively false), the action is executed, otherwise not.
+
+  ::: Exercise
+  Why is the type not `when :: Bool -> m a -> m a`?
+  :::
+
+  ::: Solution
+  Since `when False action` is not supposed to execute `action`, it has no way of producing a `m a`. But it can always create a `m ()` using `return ()`.
+  :::
+
+`do` notation ☆
+-------------
+
+`Functor` and `Applicative` ☆
+---------------------------
