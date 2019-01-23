@@ -15,10 +15,11 @@ before_install:
   - cabal install pandoc-types
 
 script:
-  - make haskell-for-readers.html
+  - make
   - mkdir out/
   - touch out/nojekyll
   - mv haskell-for-readers.html out/index.html
+  - mv code-slides.html out/slides.html
   - mv *.css *.png out/
 
 deploy:
