@@ -1,12 +1,19 @@
+/*
+body {
+    counter-reset:exercise;
+}
+
 div.Exercise:before {
-    content:"Exercise";
+    counter-increment:exercise;
+    content:"Exercise " counter(exercise);
     font-weight:bold;
 }
 
 div.Solution:before {
-    content:"Solution";
+    content:"Solution " counter(exercise);
     font-weight:bold;
 }
+*/
 
 @media only screen {
   div.Solution {

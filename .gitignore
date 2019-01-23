@@ -1,2 +1,9 @@
 *.bak
+code-slides.html
 haskell-for-readers.html
+*.hi
+*.o
+only-code
+write-files
+label-exercises
+files/

@@ -1,6 +1,6 @@
 sudo: false
 
-language: generic
+language: haskell
 
 env:
   global:
@@ -12,9 +12,10 @@ before_install:
   - curl -L https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb > "$PANDOC/pandoc.deb"
   - dpkg -x "$PANDOC/pandoc.deb" "$PANDOC"
   - export PATH="$PANDOC/usr/bin:$PATH"
+  - cabal install pandoc-types
 
 script:
-  - make
+  - make haskell-for-readers.html
   - mkdir out/
   - touch out/nojekyll
   - mv haskell-for-readers.html out/index.html
