@@ -2,6 +2,14 @@ sudo: false
 
 language: haskell
 
+ghc:
+  - "8.4"
+
+cache:
+  directories:
+    - $HOME/.ghc
+    - $HOME/.cabal
+
 env:
   global:
     - PANDOC="$HOME/.pandoc"
