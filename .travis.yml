@@ -12,6 +12,8 @@ before_install:
   - curl -L https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb > "$PANDOC/pandoc.deb"
   - dpkg -x "$PANDOC/pandoc.deb" "$PANDOC"
   - export PATH="$PANDOC/usr/bin:$PATH"
+
+install:
   - cabal install pandoc-types
 
 script:
