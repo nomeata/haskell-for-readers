@@ -2261,8 +2261,6 @@ newtype Reader r a = Reader (r -> a))
 newtype State s a = State (s -> (a, s))
 newtype Parser a = Parser (String -> [(a,String)])
 data IO a =  ¯\_(ツ)_/¯
-data Two a = Two a a
-newtype Printer a = Printer (a -> String)
 ```
 
 * The first example is the `Maybe` type that we have looked at before. A value of type `Maybe a` is either `Just` a value of type `a`, or it is `Nothing`. So it takes a type `a` and adjoins an extra element to it.  This is typically used to model failure of sorts -- parse failures, lookup failure etc.
@@ -2289,11 +2287,8 @@ newtype Printer a = Printer (a -> String)
 
 * The `Parser` type constructor implements a backtracking parser. Let us skip looking at the definition too closely, and just appreciate that going from `a` to “something that can parse a value of type `a`” can be modeled as a type constructor.
 
-* Then there is the `IO a` type constructor, for which the definition is opaque. But it still has a clear meaning: A value of type `IO a` is a computation that, after interacting with the external world (terminal, files, network, etc.), produces a value of type `a`. (See the [chapter on imperative code](#io) if you want a diversion.)
+* And finally there is the `IO a` type constructor, for which the definition is opaque. But it still has a clear meaning: A value of type `IO a` is a computation that, after interacting with the external world (terminal, files, network, etc.), produces a value of type `a`. (See the [chapter on imperative code](#io) if you want a diversion.)
 
-* The last two examples will be useful later as counter examples. `Two` is again a container, not unlike `Maybe` and lists: A value of type `Two a` contains always exactly to values of type `a`.
-
-* And a `Printer a` is simply a function from `a` to `String`, obviously with the connotation that it is some form of pretty-printing.
 
 This was a long list, and I could have easily extended it with many more. So what is the point? The point is that there are a large number of very different concepts that can be naturally expressed as a type constructor. If we now venture out to find similarities between them, we will stumble upon monads.
 
@@ -2388,34 +2383,34 @@ Let me point out two things that are notably missing from this type class:
 
 This shows that the monad abstraction is *only* concerned with the composition of these extras, but to do anything interesting, we need additional functions for a concrete monad.
 
-More monad operations ☆
+More monad operations ☆ {#monad-ops}
 -----------------------
 
 It suffices to define `return` and `(>>=)` to define a monad, but when working with monads, there a number of other operations in common use:
 
 ``` {.haskell .slide}
-(>>) :: Monad m => m a -> m b -> m b
-fmap :: Functor f => (a -> b) -> f a -> f b
-(<$>) :: Functor f => (a -> b) -> f a -> f b
-(<$) :: Functor f => a -> f b -> f a
-(<*>) :: Applicative f => f (a -> b) -> f a -> f b
-(<*) :: Applicative f => f a -> f b -> f a
-(*>) :: Applicative f => f a -> f b -> f b
-liftA2 :: Applicative f => (a -> b -> c) -> f a -> f b -> f c
-(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
-join :: Monad m => m (m a) -> m a
-mapM :: Monad m => (a -> m b) -> [a] -> m [b]
-forM :: Monad m => [a] -> (a -> m b) -> m [b]
-mapM_ :: Monad m => (a -> m b) -> [a] -> m ()
-forM_ :: Monad m => [a] -> (a -> m b) -> m ()
-when :: Applicative f => Bool -> f () -> f ()
-unless :: Applicative f => Bool -> f () -> f ()
+(>>)    :: Monad m       => m a        -> m b -> m b
+fmap    :: Functor f     =>   (a -> b) -> f a -> f b
+(<$>)   :: Functor f     =>   (a -> b) -> f a -> f b
+(<$)    :: Functor f     =>   a        -> f b -> f a
+(<*>)   :: Applicative f => f (a -> b) -> f a -> f b
+(<*)    :: Applicative f => f a        -> f b -> f a
+(*>)    :: Applicative f => f a        -> f b -> f b
+liftA2  :: Applicative f => (a -> b -> c) -> f a -> f b -> f c
+(>=>)   :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
+join    :: Monad m => m (m a) -> m a
+mapM    :: Monad m => (a -> m b) -> [a] -> m [b]
+mapM_   :: Monad m => (a -> m b) -> [a] -> m ()
+forM    :: Monad m => [a] -> (a -> m b) -> m [b]
+forM_   :: Monad m => [a] -> (a -> m b) -> m ()
+when    :: Applicative f => Bool -> f () -> f ()
+unless  :: Applicative f => Bool -> f () -> f ()
 forever :: Applicative f => f a -> f b
 ```
 
 For now, pretend that instead of `Applicative` or `Functor` it would read `Monad`, we will discuss the difference later.
 
-* The first bunch of operators are simply for all the various combinations of
+* The first bunch of operators are simply for the various combinations of
 
   - is an argument an action or a pure value
   - is one argument a function? If not, which value is used.
@@ -2482,6 +2477,8 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   ::: Solution
   Since `when False action` is not supposed to execute `action`, it has no way of producing a `m a`. But it can always create a `m ()` using `return ()`.
   :::
+
+* `forever` just keeps executing the same action over and over. This does not make sense for every monad, but is useful for some -- including `IO`, where you might find an event loop wrapped in `forever`. The return type `b` is completely unconstrained, because it never “returns” anyways.
 
 `do` notation ☆
 -------------
@@ -2574,3 +2571,77 @@ forM (x:xs) f = do
 
 `Functor` and `Applicative` ☆
 ---------------------------
+
+In the [listing of derived monad operations](#monad-ops), some type signatures had a `Functor` or `Applicative` constraint instead of `Monad` constraint. What are these?
+
+Well, they are type classes, and here are their definitions, including laws
+``` {.haskell .slide}
+class Functor f where
+  fmap :: (a -> b) -> f a -> f b
+
+-- Laws:
+-- fmap id = i
+-- fmap f . fmap g = fmap (f . g)
+
+class Functor f => Applicative f where
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
+
+-- Laws:
+-- pure id <*> v = v
+-- pure (.) <*> u <*> v <*> w = u <*> (v <*> w)
+-- pure f <*> pure x = pure (f x)
+-- u <*> pure y = pure ($ y) <*> u
+```
+
+Like `Monad`, these are type classes of kind `(* -> *) -> Constraint`, i.e. the `f` here is a type constructor.
+
+* The `Functor` type class allows you to apply a (pure) function to the (resp. all) `a` in an `f a`. This is most intuitive when `f` is a container data structure like `Maybe` or lists. In fact, if `f` is simply the list type constructor, then `fmap` becomes the normal `map` function. For a type constructor with a more computational interpretation, such as `Parser` or `IO`, `fmap` simply “keeps the extra meaning, and applies the function to the result”.
+
+   The laws also express that `fmap` does not actually change the extra meaning of ifs argument.
+
+* The `Applicative` type class is very similar to `Monad`: It has `pure` instead of `return`, but they are essentially the same. And it has a binary operation, sometimes called *ap*,  that takes two values with extra meaning and composes them. The crucial difference is: With `(>>=)`, you choose which action to do as the second argument based on the *return value* of the action of the first argument. With `(<*>)`, both action need to be given separately and independently, and only their results are combined. Therefore, there there is strictly less you can do with the `Applicative` interface than with the `Monad` interface.
+
+   The laws are analogous to the monad laws: Essentially, `(<*>)` is associative and `pure` is its unit.
+
+Every `Monad` is both an `Applicative` and a `Functor`, as we have seen in the exercise in the previous section, and `Monad` is strictly more expressive. So why do we bother with creating separate type classes for then? Because less expressive interfaces are more widely applicable! If the users of an interface can do less, then you have more freedom when implementing the interface. So what can we do with that freedom?
+
+* Consider the following type constructor:
+  ``` {.haskell .slide}
+  data Two a = Two a a
+  ```
+  It is a container, not unlike `Maybe` and lists, that stores exactly two values of type `a`. It is impossible to have a (lawful) `Monad` instance for this type. But it can have a `Functor` instance, and it is a very useful instance that we would often want:
+  ``` {.haskell .slide}
+  instance Functor Two where fmap f (Two x y) = Two (f x) (f y)
+  ```
+  Incidentally, this type constructor can also be given an `Applicative` instance, so it serves as a proof that `Applicative` more general than `Monad`.
+
+* To see that `Functor` is more general than `Applicative` we can use the following type:
+  ```haskell
+  data Tagged t a = Tagged t a
+  ```
+  that is a value `a` with a tag `t`. This is easily a functor (just apply the function to the second parameter of `Tagged`), but there is no function `pure :: a -> Tagged t a`, because it would have to come up with an value of type `t` out of thin air, so there cannot be an `instance Applicative (Tagged t)`.
+
+  ::: Exercise
+  You might observe that `Tagged` is simply the existing pair type. There is an `Applicative` instance for pairs. Look it up! How does that fit to what I just said?
+  :::
+
+  ::: Solution
+  The instance is
+  ```haskell
+  instance Monoid r => Applicative ((,) r)
+  ```
+  and the `Monoid` constraint on `r` gives us exactly the operations needed to to implement `pure` and `(<*>)`. Try it yourself!
+  :::
+
+* And since we are discussing counter-examples, the type constructor
+  ```
+  newtype Printer a = Printer (a -> String)
+  ```
+  is not even a `Functor`: Since a `Printer a` *expects* a value of type `a`, you can’t apply a function `a -> b` anywhere. (You could apply a function `b -> a`, and this means that `Printer` is a *contravariant functor*.)
+
+At a high level, the main advantage of an applicative computation over a monadic is that the *structure of the computation* is static, and can be known ahead of times. This is not the case in a monadic computation, because the second argument to `(>>=)` is an opaque function, and only once a concrete `a` was extracted from the first argument do we know what kind of computation comes out of the second.
+
+As a concrete example, consider a library that provides a type constructor `AParser` that is an instance of `Applicative`, but *not* of `Monad`. You write a parser `p :: AParser a` using this interface. Then the library can “run” this parser without actual input, and learn everything it *would* do. It could use that to provide a function `describe :: AParser a -> String` that produces a grammar for the given parser, which you can use as documentation, and thus these can never go out of sync.
+
+
