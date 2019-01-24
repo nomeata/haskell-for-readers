@@ -9,10 +9,13 @@ addons:
   apt:
     packages:
       - texlive-latex-extra
+      - texlive-latex-recommended
       - texlive-xetex
       - lmodern
       - fonts-freefont-ttf
       - fonts-freefont-otf
+      - unifont
+      - fonts-texgyre
 
 cache:
   directories:

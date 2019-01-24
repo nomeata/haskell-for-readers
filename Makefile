@@ -30,6 +30,25 @@ only-solutions: only-solutions.hs
 only-exercises: only-exercises.hs
 	ghc --make -O $<
 
+TEX_OPTIONS=\
+  --pdf-engine xelatex \
+  -V documentclass=scrartcl \
+  -V lang=en-US \
+  -V classoption=DIV13 \
+  -V colorlinks \
+  -V links-as-notes \
+  -V "mainfont=TeX Gyre Pagella" \
+  -V "monofont=Inconsolata" \
+  --include-in-header=<(echo '\usepackage{newunicodechar}') \
+  --include-in-header=<(echo '\newfontfamily{\fallbackfont}{Unifont}[Scale=MatchLowercase]') \
+  --include-in-header=<(echo '\DeclareTextFontCommand{\textfallback}{\fallbackfont}') \
+  --include-in-header=<(echo '\newunicodechar{☆}{\textrm{\textfallback{☆}}}') \
+  --include-in-header=<(echo '\newunicodechar{λ}{\textrm{\textfallback{λ}}}') \
+  --include-in-header=<(echo '\newunicodechar{∘}{\textrm{\textfallback{∘}}}') \
+  --include-in-header=<(echo '\newunicodechar{☃}{\textrm{\textfallback{☃}}}') \
+  --include-in-header=<(echo '\newunicodechar{█}{\textrm{\textfallback{█}}}') \
+  --include-in-header=<(echo '\newunicodechar{ツ}{\textrm{\textfallback{ツ}}}') \
+
 haskell-for-readers.pdf: haskell-for-readers.md label-exercises move-solutions
 	pandoc \
 	  --toc \
@@ -38,45 +57,24 @@ haskell-for-readers.pdf: haskell-for-readers.md label-exercises move-solutions
 	  --section-divs \
 	  --filter ./label-exercises \
 	  --filter ./move-solutions \
-	  --pdf-engine xelatex \
-	  -V documentclass=scrartcl \
-	  -V lang=en-US \
-	  -V classoption=DIV13 \
-	  -V colorlinks \
-	  -V links-as-notes \
-	  -V "mainfont=FreeSerif" \
-	  -V "sansfont=FreeSans" \
-	  -V "monofont=Inconsolata" \
+	  $(TEX_OPTIONS) \
 	  $< -o $@
+
+	  -V "sansfont=TeX Gyre Heros" \
+	  # -V "sansfont=FreeSans" \
 
 haskell-for-readers-solutions.pdf: haskell-for-readers.md label-exercises only-solutions
 	pandoc \
 	  --filter ./label-exercises \
 	  --filter ./only-solutions \
-	  --pdf-engine xelatex \
-	  -V documentclass=scrartcl \
-	  -V lang=en-US \
-	  -V classoption=DIV13 \
-	  -V colorlinks \
-	  -V links-as-notes \
-	  -V "mainfont=FreeSerif" \
-	  -V "sansfont=FreeSans" \
-	  -V "monofont=Inconsolata" \
+	  $(TEX_OPTIONS) \
 	  $< -o $@
 
 haskell-for-readers-exercises.pdf: haskell-for-readers.md label-exercises only-exercises
 	pandoc \
 	  --filter ./label-exercises \
 	  --filter ./only-exercises \
-	  --pdf-engine xelatex \
-	  -V documentclass=scrartcl \
-	  -V lang=en-US \
-	  -V classoption=DIV13 \
-	  -V colorlinks \
-	  -V links-as-notes \
-	  -V "mainfont=FreeSerif" \
-	  -V "sansfont=FreeSans" \
-	  -V "monofont=Inconsolata" \
+	  $(TEX_OPTIONS) \
 	  $< -o $@
 
 
