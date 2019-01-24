@@ -1,5 +1,21 @@
 sudo: required
 
+dist: xenial
+addons:
+  apt:
+    sources:
+    - ppa:texlive-backports/ppa
+    packages:
+    - redis-tools
+    - texlive-latex-extra
+    - texlive-latex-recommended
+    - texlive-xetex
+    - lmodern
+    - fonts-freefont-ttf
+    - fonts-freefont-otf
+    - unifont
+    - fonts-texgyre
+
 language: haskell
 
 ghc:
@@ -14,11 +30,6 @@ env:
   global:
     - PANDOC="$HOME/.pandoc"
     - PANDOC_DEB="https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb"
-
-before_install:
-  - sudo add-apt-repository -y ppa:texlive-backports/ppa
-  - sudo apt-get update
-  - sudo apt-get install texlive-latex-extra texlive-latex-recommended texlive-xetex lmodern fonts-freefont-ttf fonts-freefont-otf unifont fonts-texgyre
 
 install:
   - cabal install pandoc-types
