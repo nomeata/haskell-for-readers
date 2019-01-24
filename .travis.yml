@@ -1,10 +1,9 @@
 sudo: required
-
 dist: trusty
 addons:
   apt:
     sources:
-    - ppa:ppa:jonathonf/texlive
+    - sourceline: 'ppa:jonathonf/texlive'
     packages:
     - redis-tools
     - texlive-latex-extra
