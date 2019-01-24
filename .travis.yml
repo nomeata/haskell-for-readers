@@ -1,10 +1,10 @@
 sudo: required
 
-dist: xenial
+dist: trusty
 addons:
   apt:
     sources:
-    - ppa:texlive-backports/ppa
+    - ppa:ppa:jonathonf/texlive
     packages:
     - redis-tools
     - texlive-latex-extra
