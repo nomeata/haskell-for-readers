@@ -5,10 +5,11 @@ language: haskell
 ghc:
   - "8.4"
 
-apt:
-  packages:
-    - texlive-latex-extra
-    - xelatex
+addons:
+  apt:
+    packages:
+      - texlive-latex-extra
+      - xelatex
 
 cache:
   directories:
