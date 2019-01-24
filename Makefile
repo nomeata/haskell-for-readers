@@ -1,4 +1,6 @@
-all: haskell-for-readers.html code-slides.html files
+all: haskell-for-readers.html haskell-for-readers.pdf code-slides.html files
+
+SHELL=/bin/bash
 
 haskell-for-readers.html: haskell-for-readers.md pandoc.css solution.css solution.js label-exercises
 	pandoc \
@@ -21,7 +23,27 @@ label-exercises: label-exercises.hs
 	ghc --make -O $<
 write-files: write-files.hs
 	ghc --make -O $<
+move-solutions: move-solutions.hs
+	ghc --make -O $<
 
+haskell-for-readers.pdf: haskell-for-readers.md label-exercises move-solutions
+	pandoc \
+	  --toc \
+	  --toc-depth 2 \
+	  --number-sections \
+	  --section-divs \
+	  --filter ./label-exercises \
+	  --filter ./move-solutions \
+	  --pdf-engine xelatex \
+	  -V documentclass=scrartcl \
+	  -V lang=en-US \
+	  -V classoption=DIV13 \
+	  -V colorlinks \
+	  -V links-as-notes \
+	  -V "mainfont=FreeSerif" \
+	  -V "sansfont=FreeSans" \
+	  -V "monofont=Inconsolata" \
+	  $< -o $@
 
 
 code-slides.html: haskell-for-readers.md only-code label-exercises

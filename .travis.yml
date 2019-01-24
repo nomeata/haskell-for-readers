@@ -5,6 +5,10 @@ language: haskell
 ghc:
   - "8.4"
 
+apt:
+  packages:
+    - texlive-latex-extra
+
 cache:
   directories:
     - $HOME/.ghc
@@ -29,6 +33,7 @@ script:
   - mkdir out/
   - touch out/nojekyll
   - mv haskell-for-readers.html out/index.html
+  - mv haskell-for-readers.pdf out/
   - mv code-slides.html out/slides.html
   - mv *.css *.png out/
 
