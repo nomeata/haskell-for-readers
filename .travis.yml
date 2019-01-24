@@ -8,6 +8,7 @@ addons:
     - redis-tools
     - texlive-latex-extra
     - texlive-latex-recommended
+    - texlive-fonts-recommended
     - texlive-xetex
     - lmodern
     - fonts-freefont-ttf
