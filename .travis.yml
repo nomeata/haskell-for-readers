@@ -12,6 +12,7 @@ addons:
     - lmodern
     - fonts-freefont-ttf
     - fonts-freefont-otf
+    - fonts-inconsolata
     - unifont
     - fonts-texgyre
 
