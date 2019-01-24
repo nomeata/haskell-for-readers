@@ -40,8 +40,8 @@ isRound
 ParseError
 TuringMachine
 Bool
-ghci
 GHCi
+ghci
 hs
 io
 nontermination
@@ -78,8 +78,8 @@ syntaxes
 liftA
 polymorphism
 NeedInput
-contravariant
 PartialTypeSignatures
+contravariant
 XScopedTypeVariables
 getters
 AParser
