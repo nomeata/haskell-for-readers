@@ -608,15 +608,15 @@ Purity
 
 We have seen most important fundamental concepts of functional programming here. So let me point out a few things that we have not seen, and not due to lack of time, because they are not there:
 
-We have not seen variables that you declare to hold one value, and later you update them to another value. We have not seen how to get a variable that has a random value, or one that the user has input. We have not seen ways of deleting files or launching missles.
+We have not seen variables that you declare to hold one value, and later you update them to another value. We have not seen how to get a variable that has a random value, or one that the user has input. We have not seen ways of deleting files or launching missiles.
 
-This is because, fundamentally, those things do not exist in Haskell. A Haskell expression simply denotes a value -- e.g. a number, a boolean, maybe a function. And it always denotes the same value. Evaluating the same expression a second time will not give different results, nor will it delete your backups. We say that Haskell is a *pure* language, and it has no *side-effects*.
+This is because, fundamentally, those things do not exist in Haskell. A Haskell expression simply denotes a value -- e.g. a number, a Boolean, maybe a function. And it always denotes the same value. Evaluating the same expression a second time will not give different results, nor will it delete your backups. We say that Haskell is a *pure* language, and it has no *side-effects*.
 
 Granted, there are some Haskell expressions do not denote a value: Some go into an infinite loop, or raise an exception (e.g. division by zero). But there are still no side-effects here.
 
 Because functions a simply abstracted expressions, they are also pure: The return value depends *only* on the value of the arguments to the function; not on the time of day, the user’s mood or the system’s random number generator. In that sense they behave just like mathematical functions.
 
-But if expressions and functions can’t *do* anything, how can we write useful programs? Programs that respond to network requests, or do an in-place array sort, or use concurency?
+But if expressions and functions can’t *do* anything, how can we write useful programs? Programs that respond to network requests, or do an in-place array sort, or use concurrency? Can we do that, and still have a pure language? Yes, we can, and Haskell’s solution to this dilemma are monads. We will handle that topic in a quick-and-dirty way in [the chapter on imperative code](#io) and more properly [within the chapter on type classes](#monads).
 
 
 
@@ -2297,7 +2297,7 @@ newtype Printer a = Printer (a -> String)
 
 This was a long list, and I could have easily extended it with many more. So what is the point? The point is that there are a large number of very different concepts that can be naturally expressed as a type constructor. If we now venture out to find similarities between them, we will stumble upon monads.
 
-The `Monad` type class
+The `Monad` type class {#monads}
 ----------------------
 
 If we look at the list above, we might notice that many, in fact all but the last two, have something in common: When working with these objects, we often want to *compose* in the following way.
