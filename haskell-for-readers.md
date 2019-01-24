@@ -2436,7 +2436,8 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   Give definitions of the operators up to `join` using `(>>=)`, `return`, and operators you already defined. (You will have to change the constraints to `Monad` for this to type check.)
   :::
   ::: Solution
-  ```haskell
+  ``` {.haskell file=monadops.hs}
+  import Prelude hiding (fmap, (<$>))
   (>>) :: Monad m => m a -> m b -> m b
   a >> b = a >>= (\_ -> b)
   fmap :: Monad f => (a -> b) -> f a -> f b
@@ -2484,6 +2485,92 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
 
 `do` notation ☆
 -------------
+
+So monads are powerful and ubiquitous, and we have these expressive monad operators to compose monadic action, both for concrete monads and for abstract monads. This is what this could look like:
+
+``` {.haskell .slide}
+-- parses the format `23+42i` as a complex number
+parseComplex :: Parser Complex
+parseComplex =
+  parseInteger >>= \r ->
+  parseStr "+" >>= \_ ->
+  parseInteger >>= \i ->
+  parseStr "i" >>= \_ ->
+  return (C r i)
+
+-- parses a sequence of such numbers, with the length given before
+parseSequence :: Parser [Complex]
+parseSequence =
+  parseInteger >>= \n ->
+  forM [1..n] (\_ -> parseComplex)
+```
+
+This works, but it is not really pretty. Therefore, Haskell offers syntactic sugar for working with monads that hides the `(>==)` operator. It is called *`do`-notation* and makes the code read almost like imperative code:
+``` {.haskell .slide}
+-- parses the format `23+42i` as a complex number
+parseComplex :: Parser Complex
+parseComplex = do
+  r <- parseInteger
+  parseStr "+"
+  i <- parseInteger
+  parseStr "i"
+  return (C r i)
+
+-- parses a sequence of such numbers, with the length given before
+parseSequence :: Parser [Complex]
+parseSequence = do
+  n <- parseInteger
+  forM [1..n] (\_ -> parseComplex)
+```
+
+But remember, it is really just sugar, and code involving `do` simply gets translated into code using `>>=`. The translation is pretty straight-forward, and essentially as follows:
+``` {.haskell .slide}
+do x <- a     ⟹  a >>= (\x -> …)
+   …
+
+do a          ⟹  a >>= (\_ -> …)
+   …
+
+do let x = e  ⟹  let x = e in …
+   …
+
+do a          ⟹  a
+```
+
+Note the difference between `let x = e` and `x <- a`. The former is simply a pure `let`, i.e. gives a name to a pure expression; no monadic actions are executed here, no bind is involved. The latter invokes `(>>=)` and `x` is bound to the “result” of that monadic actions.
+
+When use use this style with the `IO` monad we end up with code that almost looks like normal, say, Python:
+
+``` {.haskell .slide}
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile from to = do
+    content <- readFile from
+    putStrLn ("Read " ++ show (length content) ++ " bytes.")
+    writeFile to content
+
+main :: IO ()
+main = do
+    putStrLn "Which file do you want to copy?"
+    from <- getLine
+    putStrLn "Where do you want to copy it to?"
+    to <- getLine
+    copyFile from to
+    putStrLn "Done copying."
+```
+
+::: Exercise
+Implement `forM :: Monad m => [a] -> (a -> m b) -> m [b]`  using `do`-notation.
+:::
+::: Solution
+```haskell
+forM :: Monad m => [a] -> (a -> m b) -> m [b]
+forM [] f = return []
+forM (x:xs) f = do
+    y <- f x
+    ys <- forM xs f
+    return (y : ys)
+```
+:::
 
 `Functor` and `Applicative` ☆
 ---------------------------
