@@ -10,6 +10,9 @@ addons:
     packages:
       - texlive-latex-extra
       - texlive-xetex
+      - lmodern
+      - fonts-freefont-ttf
+      - fonts-freefont-otf
 
 cache:
   directories:
