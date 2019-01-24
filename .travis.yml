@@ -9,7 +9,7 @@ addons:
   apt:
     packages:
       - texlive-latex-extra
-      - xelatex
+      - texlive-xetex
 
 cache:
   directories:

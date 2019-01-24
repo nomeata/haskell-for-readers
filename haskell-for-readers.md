@@ -302,6 +302,7 @@ And now we are squarely in the realm of functional programming, as we have just 
 
 Note that we defined the `isRound` by way of an equation. And it really is an equation: Wherever we see `isRound something`, we can obtain its meaning by replacing it with ``something `mod` 10 == 0``. This *equational reasoning*, where you replace equals by equals, is one key technique to make sense of Haskell programs.
 
+
 ::: Exercise
 Discuss: Think of other programming language that have concepts called functions. Can you always replace a function call with the function definition? Does it change the meaning of the program?
 :::
@@ -600,6 +601,23 @@ many_fs  = f5 . f4 . f3 . f2 . f1
 where again, the actual value is no longer the emphasis, but rather the functions.
 
 The value `x` is sometimes called the point (as in geometry), and this style of programming is called *point-free* (or sometimes *pointless*).
+
+
+Purity
+------
+
+We have seen most important fundamental concepts of functional programming here. So let me point out a few things that we have not seen, and not due to lack of time, because they are not there:
+
+We have not seen variables that you declare to hold one value, and later you update them to another value. We have not seen how to get a variable that has a random value, or one that the user has input. We have not seen ways of deleting files or launching missles.
+
+This is because, fundamentally, those things do not exist in Haskell. A Haskell expression simply denotes a value -- e.g. a number, a boolean, maybe a function. And it always denotes the same value. Evaluating the same expression a second time will not give different results, nor will it delete your backups. We say that Haskell is a *pure* language, and it has no *side-effects*.
+
+Granted, there are some Haskell expressions do not denote a value: Some go into an infinite loop, or raise an exception (e.g. division by zero). But there are still no side-effects here.
+
+Because functions a simply abstracted expressions, they are also pure: The return value depends *only* on the value of the arguments to the function; not on the time of day, the user’s mood or the system’s random number generator. In that sense they behave just like mathematical functions.
+
+But if expressions and functions can’t *do* anything, how can we write useful programs? Programs that respond to network requests, or do an in-place array sort, or use concurency?
+
 
 
 Laziness ☆
