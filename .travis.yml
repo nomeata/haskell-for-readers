@@ -1,21 +1,9 @@
-sudo: false
+sudo: required
 
 language: haskell
 
 ghc:
   - "8.4"
-
-addons:
-  apt:
-    packages:
-      - texlive-latex-extra
-      - texlive-latex-recommended
-      - texlive-xetex
-      - lmodern
-      - fonts-freefont-ttf
-      - fonts-freefont-otf
-      - unifont
-      - fonts-texgyre
 
 cache:
   directories:
@@ -28,13 +16,24 @@ env:
     - PANDOC_DEB="https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb"
 
 before_install:
+  - sudo add-apt-repository -y ppa:texlive-backports/ppa
+  - sudo add-apt-repository -y ppa:hvr/ghc
+  - sudo apt-get update
+
+  - sudo apt-get install cabal-install-head ghc-8.4
+  - export PATH=/opt/ghc/bin:$PATH
+
+  - sudo apt-get install texlive-latex-extra texlive-latex-recommended texlive-xetex lmodern fonts-freefont-ttf fonts-freefont-otf unifont fonts-texgyre
+
+
+install:
+  - cabal install pandoc-types
+
   - mkdir -p "$PANDOC"
   - curl -L https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb > "$PANDOC/pandoc.deb"
   - dpkg -x "$PANDOC/pandoc.deb" "$PANDOC"
   - export PATH="$PANDOC/usr/bin:$PATH"
 
-install:
-  - cabal install pandoc-types
 
 script:
   - make
