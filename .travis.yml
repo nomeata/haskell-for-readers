@@ -8,6 +8,7 @@ ghc:
 apt:
   packages:
     - texlive-latex-extra
+    - xelatex
 
 cache:
   directories:
@@ -33,7 +34,7 @@ script:
   - mkdir out/
   - touch out/nojekyll
   - mv haskell-for-readers.html out/index.html
-  - mv haskell-for-readers.pdf out/
+  - mv *.pdf out/
   - mv code-slides.html out/slides.html
   - mv *.css *.png out/
 

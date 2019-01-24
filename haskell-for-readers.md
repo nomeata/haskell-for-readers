@@ -8,10 +8,6 @@ Preface {.unnumbered}
 
 Welcome to the lecture series “Haskell for Readers”. This workshop is uniquely tailored to those who need to *read*, rather than *write* Haskell code: auditors, scientists, managers, testers etc.
 
-### Status {.unnumbered}
-
-This document is work in progress (but whatever chapters and sections are there ought to be … usable). 
-
 ### Scope {.unnumbered}
 
 This goal implies a higher focus on syntax (because you can *write* programs ignoring most syntactic gadgets available to you, but if you read code, you have to deal with them), types and type signatures (because they are the key to understanding Haskell code) and abstraction patterns (because it is key to understanding well-written code, and Haskell excels at abstraction).
@@ -27,6 +23,8 @@ This document is not (necessarily) a self-contained tutorial; it is rather the b
 This document is also meant to be more on the concise side, assuming the audience is shorter on time than on wits, and in a small, live workshop, the lecturer can add details, come up with more examples and slow down as needed.
 
 This makes these notes less ideal for independent study, but that said, it should be possible to work attentively through them and still learn a lot.
+
+There is a printable versions of [the whole docuument](http://haskell-for-readers.nomeata.de/haskell-for-readers.pdf) (with solutions at the end), of [just the exercises](http://haskell-for-readers.nomeata.de/haskell-for-readers-exercises.pdf) and of [just the solutions](http://haskell-for-readers.nomeata.de/haskell-for-readers-solutions.pdf).
 
 ### Audience {.unnumbered}
 

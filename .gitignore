@@ -1,7 +1,7 @@
 *.bak
 code-slides.html
 haskell-for-readers.html
-haskell-for-readers.pdf
+haskell-for-readers*.pdf
 *.hi
 *.o
 only-code
@@ -9,3 +9,5 @@ write-files
 label-exercises
 files/
 move-solutions
+only-exercises
+only-solutions

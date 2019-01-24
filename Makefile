@@ -1,4 +1,4 @@
-all: haskell-for-readers.html haskell-for-readers.pdf code-slides.html files
+all: haskell-for-readers.html haskell-for-readers.pdf haskell-for-readers-solutions.pdf haskell-for-readers-exercises.pdf code-slides.html files
 
 SHELL=/bin/bash
 
@@ -25,6 +25,10 @@ write-files: write-files.hs
 	ghc --make -O $<
 move-solutions: move-solutions.hs
 	ghc --make -O $<
+only-solutions: only-solutions.hs
+	ghc --make -O $<
+only-exercises: only-exercises.hs
+	ghc --make -O $<
 
 haskell-for-readers.pdf: haskell-for-readers.md label-exercises move-solutions
 	pandoc \
@@ -34,6 +38,36 @@ haskell-for-readers.pdf: haskell-for-readers.md label-exercises move-solutions
 	  --section-divs \
 	  --filter ./label-exercises \
 	  --filter ./move-solutions \
+	  --pdf-engine xelatex \
+	  -V documentclass=scrartcl \
+	  -V lang=en-US \
+	  -V classoption=DIV13 \
+	  -V colorlinks \
+	  -V links-as-notes \
+	  -V "mainfont=FreeSerif" \
+	  -V "sansfont=FreeSans" \
+	  -V "monofont=Inconsolata" \
+	  $< -o $@
+
+haskell-for-readers-solutions.pdf: haskell-for-readers.md label-exercises only-solutions
+	pandoc \
+	  --filter ./label-exercises \
+	  --filter ./only-solutions \
+	  --pdf-engine xelatex \
+	  -V documentclass=scrartcl \
+	  -V lang=en-US \
+	  -V classoption=DIV13 \
+	  -V colorlinks \
+	  -V links-as-notes \
+	  -V "mainfont=FreeSerif" \
+	  -V "sansfont=FreeSans" \
+	  -V "monofont=Inconsolata" \
+	  $< -o $@
+
+haskell-for-readers-exercises.pdf: haskell-for-readers.md label-exercises only-exercises
+	pandoc \
+	  --filter ./label-exercises \
+	  --filter ./only-exercises \
 	  --pdf-engine xelatex \
 	  -V documentclass=scrartcl \
 	  -V lang=en-US \
