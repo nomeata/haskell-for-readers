@@ -46,8 +46,8 @@ script:
   - mkdir out/
   - touch out/nojekyll
   - mv haskell-for-readers.html out/index.html
+  - mv slides.html out/
   - mv *.pdf out/
-  - mv code-slides.html out/slides.html
   - mv *.css *.png out/
 
 deploy:

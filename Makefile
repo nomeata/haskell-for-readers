@@ -1,4 +1,4 @@
-all: haskell-for-readers.html haskell-for-readers.pdf haskell-for-readers-solutions.pdf haskell-for-readers-exercises.pdf code-slides.html files
+all: haskell-for-readers.html haskell-for-readers.pdf haskell-for-readers-solutions.pdf haskell-for-readers-exercises.pdf slides.html files
 
 SHELL=/bin/bash
 
@@ -78,7 +78,7 @@ haskell-for-readers-exercises.pdf: haskell-for-readers.md label-exercises only-e
 	  $< -o $@
 
 
-code-slides.html: haskell-for-readers.md only-code label-exercises
+slides.html: haskell-for-readers.md only-code label-exercises
 	pandoc \
 	  --filter ./label-exercises \
 	  --filter ./only-code \
