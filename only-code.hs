@@ -6,7 +6,7 @@ main = toJSONFilter go
     go :: Pandoc -> Pandoc
     go (Pandoc meta blocks) = Pandoc meta $ concatMap goBlock blocks
 
-    goBlock b@(CodeBlock (_,cs,_) _) | "slide" `elem` cs = [b]
+    goBlock b@(CodeBlock (_,cs,_) _) | "slide" `elem` cs = [pause,b]
     goBlock b@(CodeBlock (_,cs,_) _) | "new-slide" `elem` cs = [HorizontalRule, b]
     goBlock (OrderedList _ bss) = concatMap goBlock (concat bss)
     goBlock (BulletList bss) = concatMap goBlock (concat bss)
@@ -14,7 +14,9 @@ main = toJSONFilter go
     goBlock b@(Header _ (_,cs,_) _) | "unnumbered" `elem` cs = []
     goBlock b@(Header n (_,cs,_) _) | n > 2 = [HorizontalRule, b]
     goBlock b@(Header _ (_,cs,_) _) = [b]
-    goBlock b@(Div (_,cs,_) bs) | "Exercise" `elem` cs = [b]
+    goBlock b@(Div (_,cs,_) bs) | "Exercise" `elem` cs = [pause,b]
     goBlock b@(Div (_,cs,_) bs) | "Solution" `elem` cs = []
     goBlock b@(Div (_,cs,_) bs) = concatMap goBlock bs
     goBlock _ = []
+
+    pause = Para [Str ".", Space, Str ".", Space, Str "."]

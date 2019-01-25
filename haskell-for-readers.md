@@ -1591,9 +1591,9 @@ Imperative (looking) Haskell ☆ {#io}
 
 In the first chapter I explained that [Haskell is pure](#pure); its expressions simply denote values, but they do not *do* anything. Yet people out there write useful programs with Haskell. How is that possible?
 
-The real reason is a beautiful and elegant concept called a monad, and we have a [whole chapter dedicated to monads](#monads). If you plan to read that, you can skip the present chapter. But if you are eager to see how Haskell code can reader user input and write to files, then this chapter provides a quick introduction to reading such imperative code.
+The real reason is a beautiful and elegant concept called a monad, and we have a [whole chapter dedicated to monads](#monads). If you plan to read that, you can skip the present chapter. But if you are eager to see how Haskell code can read user input and write to files, then this chapter provides a quick introduction to reading such imperative code.
 
-**Beware:** This chapter is full of half-truths and glossing over technical details. Imagine plenty of “it looks as if” and “one can think of this as” sprinkled throughout it. Nevertheless, it is useful, though, to get you started.
+**Beware:** This chapter is full of half-truths and glossing over technical details. Imagine plenty of “it looks as if” and “one can think of this as” sprinkled throughout it. Nevertheless, it is useful to get you started.
 
 `IO`-functions
 --------------
@@ -1601,7 +1601,7 @@ The real reason is a beautiful and elegant concept called a monad, and we have a
 Previously we said that Haskell functions are pure functions in the mathematical sense: Given some input, they calculate some output, but nothing else can happen, and nothing besides the arguments can influence the result. This is great, but how can Haskell programs then write to files, or respond to network requests, or come up with random numbers?
 
 The solution are `IO`-functions. These functions can be *executed*, and when  such a function is executed, it can do all these nasty things, before returning a value. Here is a selection of `IO`-functions available by default:
-```haskell
+``` {.haskell .slide}
 getLine :: IO String
 putStrLn :: String -> IO ()
 
@@ -1617,7 +1617,7 @@ The `main` function and `do` notation
 -------------------------------------
 
 To execute these functions, we have to use a special syntax, called `do`-notation, that allows us to write code in an imperative style. Here is an example:
-```haskell
+``` {.haskell .slide file=copy.hs}
 main = do
     putStrLn "Which file do you want to copy?"
     from <- getLine
@@ -1645,7 +1645,7 @@ $ diff copy.hs copy2.hs
 
 Looking at the code, it doesn’t look much different than the equivalent in  a language like C or Python. Things to notice:
 
-* The `main` function of a module is special. Just like in C, it is the entry point for a compiled Haskell program. When we run the program, then the `main` function is executed. This is the only way to start executing `IO`-functions -- we cannot do that just nilly-willy within other code.
+* The `main` function of the module is special. Just like in C, it is the entry point for a compiled Haskell program. When we run the program, then the `main` function is executed. This is the only way to start executing `IO`-functions -- we cannot do that just nilly-willy within other code.
 * The body of the `main` function is written as a `do` block, which clearly signposts the imperative nature of this code: It is a sequence of things to `do`.
 * Every line below the `do` block is one execution of an `IO`-function. The first one, for example, prints a question on the terminal.
 * Some of these `IO`-functions return values that we want to use later on. These we *bind* to variables, using the `<-` syntax. (The last line of a `do` block is never such a binding, can you imagine why?)
@@ -1656,7 +1656,7 @@ Writing `IO` functions
 
 We do not only want to execute `IO` functions, but also define our own. This is not hard, and we have actually seen that before -- the `main` function is one. We can add parameters without further problems:
 
-```haskell
+``` {.haskell .slide file=copy.hs}
 copyFile :: FilePath -> FilePath -> IO ()
 copyFile from to = do
     content <- readFile from
@@ -1679,12 +1679,12 @@ The `return` function
 ---------------------
 
 The last `IO` function executed in a `do` block of an `IO` function also determines its return value. Therefore we need the little function
-```haskell
+``` {.haskell .slide file=copy.hs}
 return :: a -> IO a
 ```
 if, at the end of an `IO` function, we *only* want to return something:
 
-```haskell
+``` {.haskell .slide file=copy.hs}
 fileSize :: FilePath -> IO Integer
 fileSize path = do
   content <- readFile path
@@ -1723,7 +1723,7 @@ Passing `IO` functions around
 
 Just passing arguments to `copyFile` does not actually do anything: we really have to execute it, and execution happens when a function is executed from `main` (directly or indirectly). Let me demonstrate this point:
 
-```haskell
+```{.haskell .slide}
 copyFile :: FilePath -> FilePath -> IO ()
 copyFile from to = do
     content <- readFile from
@@ -1743,11 +1743,11 @@ main = do
     putStrLn "Done copying."
 ```
 
-Executing this program will ask for the filenames, but it will not actually copy anything. This is because although we passed all arguments to `copyFile`, we did not actually execute it.
+Executing this program will ask for the filenames, but it will not actually copy anything. This is because, although we passed all the required arguments to `copyFile`, we did not actually execute it.
 
 That said, the problem was not that we passed `copyFile from to` as an argument to a function. Rather, the problem was that `ignore` did not do anything with it. We can fix that easily (and rename the function to `don'tignore` along the way):
 
-```haskell
+``` {.haskell .slide file=copy-dont-ignore.hs}
 copyFile :: FilePath -> FilePath -> IO ()
 copyFile from to = do
     content <- readFile from
@@ -1784,7 +1784,7 @@ I executed the action.
 Done copying.
 ```
 
-Being able to abstract over `IO`-functions just like over anything else, and having precise control when they are *executed* (rather than just passed around), is again a very powerful tool.
+Being able to abstract over `IO`-functions just like over anything else, and having precise control when they are *executed* (rather than just passed around), is a very powerful tool.
 
 ::: Exercise
 What does this program do?
@@ -1823,7 +1823,7 @@ Note that the `putStrLn "And up she rises."` is never executed.
 
 You can use `let` expressions in `do` blocks, omitting the `in`. These work like normal `let` expressions, i.e. simply give a name to an expression:
 
-```haskell
+``` {.haskell .slide}
 main :: IO ()
 main = do
     putStrLn "Which file do you want to copy?"
@@ -1835,7 +1835,7 @@ main = do
 
 Note that it does *not* execute anything, as this example shows:
 
-```haskell
+``` {.haskell .slide file=let-do.hs}
 main :: IO ()
 main = do
     putStrLn "Please press enter."
@@ -1864,7 +1864,8 @@ The `<$>` operator ☆
 ------------------
 
 You will come across code that wants to execute an `IO` function *and* apply some normal (pure) function to its result in one go, like the `fileSize` function above. We can use the `<$>` operator to write that in one line, without giving a name to the intermediate value:
-```haskell
+
+``` {.haskell .slide}
 fileSize :: FilePath -> IO Integer
 fileSize path = length <$> readFile path
 ```
@@ -1877,7 +1878,7 @@ Type classes
 
 The language features we have seen so far can be found, with slight variations, in most functional programming languages. In this chapter, we will look at a feature that Haskell is particularly renown for: *Type classes*.
 
-Let me start by pointing out what type classes are not: They are not classes as in object oriented programming, so please do not try to attempt to understand them by analogy to that.
+Let me start by pointing out what type classes are not: They are not classes as we know them from object oriented programming, so please do not try to attempt to understand them by analogy to that.
 
 Instead, type classes are a language feature that provides, in sequence of sophistication,
 
@@ -1886,12 +1887,12 @@ Instead, type classes are a language feature that provides, in sequence of sophi
  * polymorphism over types with structure, and
  * type-driven code synthesis.
 
-We have actually already seen most of them:
+We have actually seen most of these applications already:
 
 Overloading
 -----------
 
-Assume, for a moment, that `(==)` operator we have seen already only works on `Integer`. But surely, it is no problem to define equality on, say, `Complex` and `Riemann`:
+Assume, for a moment, that `(==)` operator we have seen already only works on `Integer`. Surely, it is no problem to define equality on, say, `Complex` and `Riemann`:
 ``` {.haskell .slide file=Riemann.hs}
 eqComplex :: Complex -> Complex -> Bool
 eqComplex (C x1 y1) (C x2 y2) = x1 == x2 && y1 == y2
@@ -1904,9 +1905,9 @@ eqRiemann _ _ = False
 
 Similarly, we can define comparisons, numeric operators etc.  This is good enough to express most of the code that we want to write, but it is terribly verbose and annoying to remember the name of the right equality function, and have the type (in the name) be repeated all over the code.
 
-So what we really want is to use the nice `(==)` syntax, but we want it to mean *different things at different types* -- overloading!
+What we really want is to use the nice `(==)` syntax, but we want it to mean *different things at different types* -- overloading!
 
-In order to do that, we first have to declare that `(==)` is a function we can overload, by declaring a class with it as a method:
+In order to do that, we first have to declare that `(==)` is an operator name that can be overloaded, by declaring a class with it as a method:
 ```{.haskell .slide}
 class Eq a where
     (==) :: a -> a -> Bool
@@ -1925,7 +1926,7 @@ Now we can hopefully better understand the type signature of `(==)`:
 Prelude> :t (==)
 (==) :: Eq a => a -> a -> Bool
 ```
-The part after the `=>` indicates the argument and return types of `(==)`. But the type variable `a` cannot just be any type (as it was the case with fully polymorphic functions like `const`): It has to be a type that is an instance of the `Eq` class. This is expressed by the *constraints* on the left of the `=>`.
+The part after the `=>` indicates the argument and return types of `(==)`. But the type variable `a` cannot just be any type (as it was the case with fully polymorphic functions like `const`): It has to be a type that is an instance of the `Eq` class. This is expressed by the *constraint* on the left of the `=>`.
 
 ::: Exercise
 Write an `Eq` instance for `Employee`, using record accessors.
@@ -1940,10 +1941,10 @@ instance Eq Employee where
         room e1 == room e2 &&
         pubkey e1 == pubkey e2
 ```
-The problem is: If the record gains additional fields, this code still compiles, and the programmer is not warned that they should update it. By not using the record accessors, but instead normal constructor syntax, this can be avoided:
+The problem is: If the record gains additional fields, this code still compiles, and the programmer is not warned that they should update it. By not using the record accessors, and using normal constructor syntax instead, this can be avoided:
 ```haskell
 instance Eq Employee where
-    Employee n1 r1 p1 == Employee n2 r2 pr =
+    Employee n1 r1 p1 == Employee n2 r2 p2 =
         n1 == n2 && r1 == r2 && p1 == p2
 ```
 :::
@@ -1965,16 +1966,16 @@ fixBy p f x = if x `p` f x then x else fixEq p f (f x)
 ```
 This function iterates until a user-specified function tells it to stop. This might be useful for some iterative approximation algorithm, where we stop once the difference between subsequent approximations is smaller than some epsilon.
 
-Note that this is a form of dependency injection: The caller of `fixBy` passes the dependency “stopping function” along. In general, this can be of course much more complex, e.g. a storage backend.
+Note that this is a form of dependency injection: The caller of `fixBy` passes along the dependency “stopping function”. In general, this can be of course much more complex, e.g. a storage backend.
 
-It is clearly more general than the other, as we can implement `fixEq` using `fixBy`, by specifying `p` to be equality:
+The function `fixBy` is clearly more general than `fixEq`, as we can implement `fixEq` using `fixBy`, by specifying `p` to be equality:
 ```{.haskell .slide}
 fixEq :: Eq a => (a -> a) -> a -> a
 fixEq = fixBy (==)
 ```
-So whenever a parameter to a polymorphic function is, for the given concrete type, the same, on can use type classes and overloading to make this parameter selection implicit.
+So whenever a parameter to a polymorphic function is, for the given concrete type, the same, one can use type classes and overloading to make this parameter selection implicit.
 
-Note that just because one *can* do that, one does not have to. Often explicit arguments are easier to understand and maintain and more flexible (e.g. if you want different arguments at the same types). I consider this use of type classes less relevant than the other uses presented here.
+Note that just because one *can* do that, one does not have to. Often explicit arguments are easier to understand and maintain and more flexible (e.g. if you might want different argument that have the same types). I consider this application of type classes less relevant than the other application presented here.
 
 Polymorphism over types with structure
 --------------------------------------
@@ -1983,21 +1984,21 @@ Similar to the `Eq` type class, there is an `Ord` type class that overloads the 
 
 Using them, we can define a predicate on polymorphic trees that checks whether the tree is sorted, i.e. every value is less than or equal to every value further right. One way of implementing this is:
 ```{.haskell .slide file=PolyTree.hs}
-everyNode :: (a -> Tree a -> Tree a -> Bool) -> Tree a -> Bool
-everyNode p (Node x t1 t2) = p x t1 t2 && everyNode p t1 && everyNode p t2
-everyNode _ Leaf = True
-
-everyValue :: (a -> Bool) -> Tree a -> Bool
-everyValue p = everyNode (\x _ _ -> p x)
-
 isSorted :: Ord a => Tree a -> Bool
 isSorted = everyNode $ \y t1 t2 ->
     everyValue (\x -> x <= y) t1 &&
     everyValue (\z -> y <= z) t2
-```
-(Can you make sense of this code? It is a good exercise to make sure you can read this code. If you find this code to be inefficient, then you are right: It is algorithmically bad, but serves nicely as a high-level specification.)
 
-Does this correctly implement the specification? Yes and no! If we have a tree of `Integer`, then `isSorted` will indeed return `True` if every element is smaller or equal to every element further on the right. But here is a counter example, for which we need to define a type:
+everyValue :: (a -> Bool) -> Tree a -> Bool
+everyValue p = everyNode (\x _ _ -> p x)
+
+everyNode :: (a -> Tree a -> Tree a -> Bool) -> Tree a -> Bool
+everyNode p (Node x t1 t2) = p x t1 t2 && everyNode p t1 && everyNode p t2
+everyNode _ Leaf = True
+```
+(Can you make sense of this code? It is a good exercise to make sure you can read this code. If you think this code to be inefficient, then you are right: It is algorithmically bad, but serves nicely as a high-level specification.)
+
+Does this correctly implement the specification? Yes and no! If we have a tree of `Integer`, then `isSorted` will indeed return `True` if every element is smaller or equal to every element further on the right. But here is a counter example, involving a three-valued type:
 ```{.haskell .slide file=PolyTree.hs}
 data ABC = A | B | C deriving Eq
 instance Ord ABC where
@@ -2020,7 +2021,7 @@ What is the problem here? The problem is not (really) with the code `isSorted`, 
 *Main> (A <= B && B <= C, A <= C)
 (True,False)
 ```
-And if we look at the [documentation of the `Ord`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Ord) type class, we see that any instance of `Ord` is expected to be, among other things, transitive. And indeed, most type classes come with additional requirements, or laws, that should hold for the instances.
+If we look at the [documentation of the `Ord`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Ord) type class, we see that any instance of `Ord` is expected to be, among other things, transitive. Indeed, most type classes come with additional requirements, or *laws*, that should hold for its instances.
 
 In this sense, the constraint in the type signature of `isSorted` should not be read as “for any type `a` that implements the signature of the `Ord` type class…”, but rather as “for any type `a` that is ordered…”. Not the *interface* matters, but rather the *semantic meaning* behind it.
 
@@ -2064,9 +2065,9 @@ There are (at least) two sensible instances for the `Semigroup` type class for t
         Leaf <> t = t
         (Node x l r) t = Node x l (r <> t)
     ```
-    There are variations of this code that are more likely to produce a balance tree -- although then one has to think about whether associativity holds only when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
+    There are variations of this code that are more likely to produce a balance tree -- although then it might be that associativity holds when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
 
-2. Another one traverses both trees together, using a `Semigroup` instance for the elements to combine values that are present in the same position in both:
+2. Another one traverses both trees in parallel, using a `Semigroup` instance for the elements to combine values that are present in boht trees:
 
     ```haskell
     instance Semigroup a => Semigroup (Tree a) where
@@ -2077,7 +2078,7 @@ There are (at least) two sensible instances for the `Semigroup` type class for t
 
     Here, the instance head itself has a constraint: This instance for `Tree a` only exists if there is a `Semigroup` instance for the type of values.
 
-Which instance is the right one? That depends on the purpose of the `Tree` data structure in the code; and maybe neither is the right one, in which case it might be better to have *no* instance at all, and use other mechanisms to select the right behavior.
+Which instance is the right one? That depends on the purpose of the `Tree` data structure in the code; and maybe neither is the right one, in which case it might be better to have *no* instance at all, and use normal functions for these operations.
 :::
 
 ::: Exercise
@@ -2111,36 +2112,37 @@ Type-driven code synthesis
 
 Let us turn to the most sophisticated use of type classes (within this lecture): Type driven code synthesis! Again, this is a fancy word for something rather simple, but it is very powerful, and a driving idiom for many problems in the Haskell space.
 
-In the previous chapter we have seen a number of common types that can be combined to build larger types -- `Maybe`, tuples, `Either`, list, etc. If there is functionality that we want to provide at many different types, then we can use type classes to describe how to get that functionality for each of these building blocks, assuming we have it for the argument types, and then the user automatically gets the functionality for any complex type they build.
+In the previous chapter we have seen a number of common types that can be combined to build larger types -- `Maybe`, tuples, `Either`, list, etc. If there is functionality that we want to provide at many different types, then we can use type classes to describe how to get that functionality for each of these building blocks, assuming we have it for their argument types, and then the user automatically gets the functionality for any complex type they build.
 
 Typical examples for such functionality are parsers, pretty-printers, serialization libraries, substitutions of sorts, random values, test case generation...
 
 Let us define a type class that describes *finite* types, i.e. types with a finite number of values, and a function that returns the number of values in the type:
-```haskell
+```{.haskell .slide file=Finite.hs}
 class Finite a where
     size :: Integer
 ```
 Is this a good type class, i.e. does it have *meaning*? Yes, it does: When a type has an instance of `Finite`, it means that the type is finite, and that `size` designates the number of elements. Unfortunately Haskell does not prevent you from writing an instance that does not adhere to that, but that would then simply be wrong.
 
-This definition is a bit weird: The type signature of `size` does not mention the type `a` anywhere. On the one hand, this makes sense: We do not need a concrete element in our hand to ask the question “how many elements are there in `a`”, nor do we expect to receive a concrete element. On the other hand, when we use `size` somewhere, how will the compiler know for which type we want it?
+This definition is a bit weird: The type signature of `size` does not mention the type `a` anywhere. On the one hand, this makes sense: We do not need a concrete element in our hand to ask the question “how many elements are there in `a`”. On the other hand, when we use `size` somewhere, how will the compiler know for which type we want to invoke it?
 
 Therefore, this would be prohibited in plain Haskell. But as mentioned before, contemporary Haskell often uses language extensions supported by the compiler, and that is what we will do here, namely
-``` {.haskell file=Finite-pragmas}
+``` {.haskell .slide file=Finite-pragmas}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 ```
-(in `ghci` you can type `:set -XAllowAmbiguousTypes -XTypeApplications -XScopedTypeVariables`). Now this class declaration is accepted, and we can use the syntax `size @Bool` to say which instance to use.
+(in `ghci` you can type `:set -XAllowAmbiguousTypes -XTypeApplications -XScopedTypeVariables`). With these extensions, the class declaration is accepted, and we can use the syntax `size @Bool` to say which instance to use.
 
-Now we can start writing instances for some primitive types:
-```haskell
+We start with instances for some basic types:
+```{.haskell .slide file=Finite.hs}
 instance Finite Bool where size = 2
 instance Finite () where size = 1
+data Suit = Diamonds | Clubs | Hearts | Spades
 instance Finite Suit where size = 4
 ```
 
 More interesting are the instances for the types that build on other types. These are not always `Finite`, but only if the types therein are themselves `Finite`, so we constrain the instance itself:
-```haskell
+```{.haskell .slide file=Finite.hs}
 instance Finite a => Finite (Maybe a) where
     size = size @a + 1
 instance (Finite a, Finite b) => Finite (a,b) where
@@ -2150,7 +2152,7 @@ instance (Finite a, Finite b) => Finite (Either a b) where
 ```
 
 Even the function type is finite, if both domain and codomain are finite:
-```haskell
+```{.haskell .slide file=Finite.hs}
 instance (Finite a, Finite b) => Finite (a -> b) where
     size = size @b ^ size @a
 ```
@@ -2162,6 +2164,8 @@ Now that we have sown the seed, we want to reap the fruit: Whatever complex type
 ```
 Prelude> size @(Maybe Bool)
 3
+Prelude> size @(Maybe (Maybe Bool))
+4
 Prelude> size @(Suit -> Bool)
 16
 Prelude> size @(Suit -> Bool, Bool -> Suit)
@@ -2190,7 +2194,7 @@ You should know the following common type classes. Follow the links for the list
 
 * [`Show`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Show): Provides `show :: Show a => a -> String` to serialize a value to a textual representation that is (supposed to be) valid source code. Should be used for debugging mostly, or to convert numbers to strings.
 
-* [`Read`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Read): Provides `read :: Read a => String -> a`, which goes the other way. Again, not ideal for production use, but can sometimes be used with `Show` to scaffold serialization. If you have to use `Read`, please use [`readMaybe`](http://hackage.haskell.org/package/base/docs/Text-Read.html#v:readMaybe).
+* [`Read`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Read): Provides `read :: Read a => String -> a`, which goes the other way. Again, not ideal for production use, but can sometimes be used with `Show` to scaffold serialization. If you have to use it, consider using [`readMaybe`](http://hackage.haskell.org/package/base/docs/Text-Read.html#v:readMaybe).
 
 * [`Functor`](http://hackage.haskell.org/package/base/docs/Prelude.html#t:Functor): Provides `fmap :: Functor f => (a -> b) -> f a -> f b`. This type class can only be instantiated for type constructors (`Maybe`, the list type, etc.). It provides the ability to apply a function to each value within the container (for types that are a container, of sorts).
 
