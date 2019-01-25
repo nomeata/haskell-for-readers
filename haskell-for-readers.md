@@ -1324,8 +1324,8 @@ Code structure small and large
 The next big topic we need to learn is how programmers structure their code. This happens on multiple levels
 
  * in a function: intermediate results are named, local helper functions are defined.
- * within a file: functions, type signatures, and documentation is arranged.
- * within a project (library, package): code is spread out in different files,and imported from other files.
+ * within a file: functions, type signatures, and documentation fragments are arranged.
+ * within a project (library, package): code is spread out in different files, and imported from other files.
  * between projects: packages are versioned, equipped with meta-data, and depend on each other.
 
 
@@ -1345,15 +1345,15 @@ isMultipleOf3 x =
 which is arguably easier to read.
 
 Be careful: A `let` expression in Haskell can always be recursive, so
-```haskell
+``` {.haskell .slide}
 isMultipleOf3 x =
   let x = fixEq sumDigits x
   in x == 3 || x == 6 || x == 9
 ```
-does *not* work as expected.
+might not do what you expect.
 
 In such a `let` expression, you can also do pattern-matching, e.g. to unpack a tuple:
-```haskell
+``` {.haskell .slide}
 sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
 sumDigitsWith f n
   | n < 10 = f n
@@ -1361,10 +1361,10 @@ sumDigitsWith f n
     let (r,d) = splitLastDigit n
     in sumDigitsWith f r + f d
 ```
-This is a fine and innocent thing to do if the pattern is *irrefutable*, i.e. always succeeds, but is a code smell if it is a pattern that can fail, e.g. `Just x = something`. In the latter case, a `case` statement might be more appropriate.
+This is a fine and innocent thing to do if the pattern is *irrefutable*, i.e. always succeeds, but is a code smell if it is a pattern that can fail, e.g. `let Just x = something in …`. In the latter case, a `case` statement might be more appropriate.
 
 We can also define whole functions in a `let`-expression, just like on the top level. This might improve the code of our run-length-encoding automaton:
-```haskell
+``` {.haskell .slide}
 rle :: Eq a => Stream a (Integer,a)
 rle =
   let start x = NeedInput (count x 1)
@@ -1374,9 +1374,9 @@ rle =
 ```
 One advantage of this is that the “internal” functions `start` and `count` are now no longer available from the outside, and so a reader of this code knows for sure that these are purely internal. We can also drop the `rle_` prefix.
 
-Another important advantage is that such local functions have access to the parameters of the enclosing function. To see this in action, let us extend `rle` with a parameter that indicates a element of the stream that should make the automaton stop:
+Another important advantage is that such local functions have access to the parameters of the enclosing function. To see this in action, let us extend `rle` with a parameter that indicates an element of the stream that should make the automaton stop:
 
-```haskell
+``` {.haskell .slide}
 rle :: Eq a => a -> Stream a (Integer,a)
 rle stop =
   let start x | x == stop = Done
@@ -1393,10 +1393,10 @@ In `start` we can now access `stop` just fine. If `start` and `count` were not l
 
 I think few syntactic features show that Haskell’s syntax is designed with readability in mind, valuing that higher than syntactic minimalism, as well as the `where` clauses.
 
-Looking the previous version of the `rle` program, a very picky reader might complain that it is annoying to have to first read past `start` and `count` to see the last line, when the last line tells the reader how it all starts, and thus should be first.
+Looking the previous version of the `rle` program, a very picky reader might complain that it is annoying to have to first read past `start` and `count` to see the last line, when the last line is logically the first to be executed.
 
 Therefore, the programmer has the option to use a `where`-clause instead of a `let` expression here. A `where`-clause is attached to a function equation (or, more rarely, to a match in a `case` expression), has access to its parameters and – most crucially – is written after or below the right-hand side of the equation:
-```haskell
+``` {.haskell .slide}
 rle :: Eq a => a -> Stream a (Integer,a)
 rle stop = NeedInput start
   where
@@ -1410,7 +1410,7 @@ rle stop = NeedInput start
 It is not a huge change, but one that – in my humble opinion – improves readability by a small but noticeable bit.
 
 If you have a function with multiple guards on one equation, such as `start`, then a `where` clause scopes over all such guards. So we could write
-```haskell
+``` {.haskell .slide}
 sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
 sumDigitsWith f n
   | n < 10 = f d
@@ -1422,7 +1422,7 @@ sumDigitsWith f n
 Comments ☆
 ----------
 
-Like every programming language, Haskell supports comments. There are line comments and multi-line comments:
+Of course, Haskell supports comments. There are line comments and multi-line comments:
 ``` {.haskell .slide}
 answer = 42 -- but what is the question?
 
@@ -1448,7 +1448,7 @@ halts turing_machine = halts turing_machine
 The structure of a module
 -------------------------
 
-As we zoom out one step, we get to look at a Haskell file as a whole. In Haskell, every file is also a Haskell *module*, and modules serve to provide namespacing support.
+As we zoom out one step, we get to look at a Haskell file as a whole. In Haskell, every file is also a Haskell *module*, and modules are used to organize namespaces.
 
 Normally, a Haskell module named `Foo.Bar.Baz` lives in a file `Foo/Bar/Baz.hs`, and begins with
 ``` {.haskell .slide}
@@ -1492,10 +1492,12 @@ greeting = "Hello " ++ Target.who ++ "!"
 ```
 and use the *fully qualified* name of `who`. This can be useful for disambiguation, or simply for clarity. There must not be spaces around the period, or else it would refer to the composition operator.
 
-If we only ever intend to use the things we import from a module in their qualified names, we can use a *qualified* import:
+If we only ever intend to refer the things we import from a module by their qualified names, then we can use a *qualified* import:
 ```haskell
 import qualified Target
 ```
+This does not bring any unqualified names into scope.
+
 And if the module has a long name, we can shorten it:
 ```haskell
 import qualified Target as T
@@ -1542,7 +1544,7 @@ You can not only restrict what you import, but also what you export. To do so, y
 module Riemann (Complex, Riemann(..)) where
 …
 ```
-A short export list is a great help when trying to understand the role and purpose of a module: If it only exports one or a small number of functions, it is clear that these are the (only) entry points to the code, and that all other declarations are purely internal.
+A short export list is a great help when trying to understand the role and purpose of a module: If it only exports one or a small number of functions, it is clear that these are the (only) entry points to the code, and that all other declarations are purely internal, and may be refactored without affecting anything else.
 
 By excluding the constructors of a data type from the export list, as we did in this example with the `Complex` type, we can make this type *abstract*: Users of our module now have no knowledge of the internal structure of `Complex`, and they are unable to create or arbitrarily inspect values of type `Complex`. Instead, they are only able to do so using the *other* functions that we export along with `Complex`. This way we can ensure certain invariant in our types – think of a search tree with the invariant that it is sorted – or reserve the ability to change the shape of the type without breaking depending code.
 
@@ -1554,7 +1556,7 @@ Language extensions
 
 Haskell is a language with a reasonably precise specification, the *Haskell Report*. When someone mentions Haskell 98, they refer to Haskell as specified in the [Haskell Report from 1998](https://www.haskell.org/onlinereport/). There was one revision, the [Haskell Report from 2010](https://www.haskell.org/onlinereport/haskell2010/), with only rather small changes.
 
-But Haskell developers and implementors wanted to add more and more features to the language. But the report was written, and the compiler writers wanted to support Haskell, as specified, by default. Therefore, the system of *language extensions* was introduced.
+Since 1998, Haskell developers and implementors wanted to add more and more features to the language. But the report was written, and the compiler writers wanted to support Haskell, as specified, by default. Therefore, the system of *language extensions* was introduced.
 
 A language extension is a feature that extends Haskell98 in some way. It could add more syntactic sugar, additional features on the type system or enable whole meta-programming facilities. A Haskell source file needs to explicitly declare the extensions they are using, right at the top before the `module` header, and a typical Haskell file these days might start with a number of them, and look like this:
 ``` {.haskell .slide}
