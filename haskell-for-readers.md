@@ -24,7 +24,7 @@ This document is also meant to be more on the concise side, assuming the audienc
 
 This makes these notes less ideal for independent study, but that said, it should be possible to work attentively through them and still learn a lot.
 
-There is a printable versions of [the whole docuument](http://haskell-for-readers.nomeata.de/haskell-for-readers.pdf) (with solutions at the end), of [just the exercises](http://haskell-for-readers.nomeata.de/haskell-for-readers-exercises.pdf) and of [just the solutions](http://haskell-for-readers.nomeata.de/haskell-for-readers-solutions.pdf).
+There is a printable versions of [the whole document](http://haskell-for-readers.nomeata.de/haskell-for-readers.pdf) (with solutions at the end), of [just the exercises](http://haskell-for-readers.nomeata.de/haskell-for-readers-exercises.pdf) and of [just the solutions](http://haskell-for-readers.nomeata.de/haskell-for-readers-solutions.pdf).
 
 ### Audience {.unnumbered}
 

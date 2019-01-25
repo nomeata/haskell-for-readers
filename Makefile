@@ -2,7 +2,7 @@ all: haskell-for-readers.html haskell-for-readers.pdf haskell-for-readers-soluti
 
 SHELL=/bin/bash
 
-haskell-for-readers.html: haskell-for-readers.md pandoc.css solution.css solution.js label-exercises
+haskell-for-readers.html: haskell-for-readers.md pandoc.css solution.css solution.js label-exercises inline-code.css
 	pandoc \
 	  --toc \
 	  --toc-depth 2 \
@@ -12,6 +12,7 @@ haskell-for-readers.html: haskell-for-readers.md pandoc.css solution.css solutio
 	  --include-in-header solution.js \
 	  --css pandoc.css \
 	  --css solution.css \
+	  --css inline-code.css \
 	  --filter ./label-exercises \
 	  --write=html5 \
 	  -V lang=en-US \
@@ -78,10 +79,11 @@ haskell-for-readers-exercises.pdf: haskell-for-readers.md label-exercises only-e
 	  $< -o $@
 
 
-slides.html: haskell-for-readers.md only-code label-exercises
+slides.html: haskell-for-readers.md only-code label-exercises inline-code.css
 	pandoc \
 	  --filter ./label-exercises \
 	  --filter ./only-code \
+	  --css inline-code.css \
 	  --number-sections \
 	  --section-divs \
 	  -t slidy \
