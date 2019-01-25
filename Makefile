@@ -94,4 +94,4 @@ files: haskell-for-readers.md write-files
 	rm -rf files
 	mkdir files
 	pandoc -t json $< | ./write-files
-	cd files; tree -H '.' -L 0 --noreport --charset utf-8 > index.html
+	cd files; tree -H '.' -L 1 --noreport --charset utf-8 > index.html
