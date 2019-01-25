@@ -2229,7 +2229,7 @@ Before we talk about monads, we have to discuss the concept of *kinds*.
 
 You might have already noticed that there is a fundamental difference between a type like `Bool` and a type like `Maybe`. The former has values, e.g. `True`, and it can be an argument or a return value of a function. That is not true for `Maybe`. There is no value that has type `Maybe`! Only when we say what type we maybe have, it gives us a proper type. So `Maybe` is not a normal type in that sense, but `Maybe Bool` is, or in general `Maybe a` for any normal type `a`.
 
-So what is `Maybe`? It is a type constructor! It takes a normal type, with values (like `Bool`) and constructs a new normal type from it (namely `Maybe Bool`).
+So what is `Maybe`? It is a *type constructor*! It takes a normal type (with values, like `Bool`) and constructs a new normal type from it (namely `Maybe Bool`).
 
 We can apply `Maybe` multiple times: `Maybe (Maybe Bool)` is also a normal type. But we cannot apply `Maybe` to itself: `Maybe Maybe` is nonsense.
 
@@ -2237,9 +2237,9 @@ This is all very similar to the term level, where `True` is a Boolean, but `not`
 
 On the term level, terms have *types* that describe what compositions make sense and which compositions are disallowed. `True` has type `Bool`, and `not` has type `Bool -> Bool`, which explains why you can apply `not` to `True`, but not to `not`.
 
-We find the same on the type level: Types have *kinds* that describe which compositions make sense and which compositions are disallowed. `Bool` has kind `*` (pronounced “star” or simply type), and `Maybe` has kind `* -> *`, which explains why you can apply `Maybe` to `Bool`, but not to `Maybe`.
+We find the same on the type level: Types have *kinds* that describe which compositions make sense and which compositions are disallowed. `Bool` has kind `*` (pronounced “star” or simply “type”), and `Maybe` has kind `* -> *`, which explains why you can apply `Maybe` to `Bool`, but not to `Maybe`.
 
-The kind `*` is the kind of all the normal types, who have values, and which can be the argument or return type of a function. `* -> *` is the kind of simple *type constructors* like `Maybe`, or `Tree`, or the list type. Some have more than one argument, e.g. `Either` has kind `* -> * -> *`. GHCi happily tells you the kind of a type constructor using the `:kind` command:
+The kind `*` is the kind of all the normal types, which have values, and which can be the argument or return type of a function. `* -> *` is the kind of simple *type constructors* like `Maybe`, or `Tree`, or the list type. Some have more than one argument, e.g. `Either` has kind `* -> * -> *`. GHCi happily tells you the kind of a type constructor using the `:kind` command:
 ```
 Prelude> :kind Bool
 Bool :: *
@@ -2277,7 +2277,7 @@ Monad :: (* -> *) -> Constraint
 A close look at `* -> *`
 ------------------------
 
-So according to the kind of `Monad`, only type constructors of kind `* -> *` can be instances of `Monad` . And I believe that one way towards grasping monads is to get a good handle on the concept of a type constructor, both concretely, and the abstract concept. Once we have seen enough concrete examples of them, worked out the common patterns, we can appreciate an *abstraction over type constructors*, which monad, along with functor and others, is.
+So according to the kind of `Monad`, only type constructors of kind `* -> *` can be instances of `Monad` . And I believe that one way towards grasping monads is to get a good handle on the concept of a type constructor, both concretely, and the abstract concept. Once we have seen enough concrete examples of them, worked out the common patterns, we can appreciate that *monad is an abstraction over type constructors*.
 
 Let us start abstractly, and consider a type constructor `m` with kind `* -> *`. So for every type `a` (of kind `*`), there is a type `m a`. The meaning of `m a` is (usually) very different from, but still somehow related, to the meaning of `a`. It could be “extra data”, it could be additional behavior, some kind of bookkeeping, or effects of sorts.
 
@@ -2307,7 +2307,7 @@ data IO a =  ¯\_(ツ)_/¯
 
 * The list type has kind `* -> *`. The meaning of `[a]` is “zero, one or more values of type `a`” and shows that it is *not* the case that a value of type `m a` always contains a value of type `a`.
 
-   This example becomes immediately more interesting if we *interpret* a list differently. Instead of considering it a container of many values, we can also think of it as a non-deterministic computation, i.e. a computation with multiple possible results.
+   This example becomes immediately more interesting if we *interpret* a list differently. Instead of considering it to be a container of many values, we can also think of it as a non-deterministic computation, i.e. a computation with multiple possible results of type `a`.
 
 * A bit vacuous, but we can create a type constructor that does not actually change the meaning of the type; that would be the `Identity` type constructor.
 
@@ -2357,11 +2357,11 @@ Haskell is all about abstraction, and clearly, there *is* a common pattern here.
 For all these type constructors, there is something else that we want to do. When we have a value `x` of type `a`, we want to be able to treat it as
 
 * a computation that could fail (but doesn’t), or
-* a computation that could access state of type `s` (but doesn’t actually loo at it) before returning `x`,
+* a computation that could access state of type `s` (but doesn’t actually look at it) before returning `x`,
 * a parser that does not touch the input, but simply always produces `x`,
 * etc.
 
-Again, we could have separate function for each of these, say, injection functions, but that would be tedious. So if we try to phrase this as an abstract type, in terms of `m`, we get `a -> m a`.
+Again, we could have separate functions for each of these injections, but that would be tedious. So if we try to phrase this as an abstract type, in terms of `m`, we get `a -> m a`.
 
 This brings us to the concept of a monad: A type constructor that allows composition and injection in this way is a monad.
 
@@ -2415,7 +2415,7 @@ Let me point out two things that are notably missing from this type class:
 
 2. There is no method that creates any *interesting* monad actions. We already deduced that the `return` method cannot actually do anything interesting, and the bind operator merely combines what is there.
 
-This shows that the monad abstraction is *only* concerned with the composition of these extras, but to do anything interesting, we need additional functions for a concrete monad.
+This shows that the monad abstraction is *only* concerned with the composition of the monadic actions, but to do anything interesting, we need additional functions for a concrete monad.
 
 More monad operations ☆ {#monad-ops}
 -----------------------
@@ -2462,7 +2462,7 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   ```
 
   ::: Exercise
-  Give definitions of the operators up to `join` using `(>>=)`, `return`, and operators you already defined. (You will have to change the constraints to `Monad` for this to type check.)
+  Give definitions of the operators up to `join` using `(>>=)`, `return`, and operators you already defined. (You will have to change the constraints to `Monad` for this to typecheck.)
   :::
   ::: Solution
   ``` {.haskell file=monadops.hs}
@@ -2517,7 +2517,7 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
 `do` notation ☆
 -------------
 
-So monads are powerful and ubiquitous, and we have these expressive monad operators to compose monadic action, both for concrete monads and for abstract monads. Code written using these operations might look like this:
+So monads are powerful and ubiquitous, and we have these expressive monad operators to compose monadic actions, both for a concrete monad, or abstractly. Code written using these operations might look like this:
 
 ``` {.haskell .slide}
 -- parses the format `23+42i` as a complex number
@@ -2627,13 +2627,13 @@ Like `Monad`, these are type classes of kind `(* -> *) -> Constraint`, i.e. `f` 
 
 * The `Functor` type class allows you to apply a (pure) function to the (well, all) `a` in an `f a`. This is most intuitive when `f` is a container data structure like `Maybe` or lists. In fact, if `f` is simply the list type constructor, then `fmap` is the normal `map` function. For a type constructor with a more computational interpretation, such as `Parser` or `IO`, `fmap` simply “keeps the extra meaning, and applies the function to the result”.
 
-   The laws also express that `fmap` does not actually change the extra meaning of ifs argument.
+   The laws also express that `fmap` does not actually change the extra meaning of its argument.
 
-* The `Applicative` type class is very similar to `Monad`: It has `pure` instead of `return`, but they are essentially the same. And it has a binary operation, sometimes called *ap*,  that takes two values with extra meaning and composes them. The crucial difference is: With `(>>=)`, you choose which action to do as the second argument based on the *return value* of the action of the first argument. With `(<*>)`, both action need to be given separately and independently, and only their results are combined. Therefore, there is strictly less you can do with the `Applicative` interface than with the `Monad` interface.
+* The `Applicative` type class is very similar to `Monad`: It has `pure` instead of `return`, but they are essentially the same. And it has a binary operation, sometimes called *ap*,  that takes two values with extra meaning and composes them. The crucial difference is: With `(>>=)`, you choose which action to do as the second argument based on the *return value* of the action of the first argument. With `(<*>)`, both actions need to be given separately and independently, and only their results are combined. Therefore, there is strictly less you can do with the `Applicative` interface than with the `Monad` interface.
 
    The laws are analogous to the monad laws: Essentially, `(<*>)` is associative and `pure` is its unit.
 
-Every `Monad` is both an `Applicative` and a `Functor`, as we have seen in the exercise in the previous section. So `Monad` is more expressive than the other two. So why do we bother with creating separate type classes for them? Because less expressive interfaces are more widely applicable! If the users of an interface can do less, then you have more freedom when implementing the interface.
+Every `Monad` is both an `Applicative` and a `Functor`, as we have seen in the exercise in the previous section. So `Monad` is more expressive than the other two. Why do we bother with separate type classes for them? Because less expressive interfaces are more widely applicable! If the user of an interface can do less, then the implementor of an interface has more freedom.
 
 What can we do with that freedom? Create more instances!
 
@@ -2645,10 +2645,10 @@ What can we do with that freedom? Create more instances!
   ``` {.haskell .slide}
   instance Functor Two where fmap f (Two x y) = Two (f x) (f y)
   ```
-  This type constructor can also be given an `Applicative` instance, so it serves as a proof that `Applicative` more general than `Monad`.
+  This type constructor can also be given an `Applicative` instance, so it serves as a proof that `Applicative` is more general than `Monad`.
 
 * To see that `Functor` is more general than `Applicative` we can use the following type:
-  ```haskell
+  ```{.haskell .slide}
   data Tagged t a = Tagged t a
   ```
   that is a value `a` with a tag `t`. This is easily a functor (just apply the function to the second parameter of `Tagged`), but there is no function `pure :: a -> Tagged t a`, because it would have to come up with a value of type `t` out of thin air, so there cannot be an `instance Applicative (Tagged t)`.
@@ -2666,7 +2666,7 @@ What can we do with that freedom? Create more instances!
   :::
 
 * And since we are discussing counter-examples, the type constructor
-  ```
+  ```{.haskell .slide}
   newtype Printer a = Printer (a -> String)
   ```
   is not even a `Functor`: Since a `Printer a` *expects* a value of type `a`, you can’t apply a function `a -> b` anywhere. (You could apply a function `b -> a`; this means that `Printer` is a *contravariant functor*.)
