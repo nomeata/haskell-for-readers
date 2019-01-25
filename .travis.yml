@@ -49,6 +49,7 @@ script:
   - mv slides.html out/
   - mv *.pdf out/
   - mv *.css *.png out/
+  - mv files out/
 
 deploy:
   provider: pages

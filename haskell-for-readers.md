@@ -563,39 +563,39 @@ Prelude> sumSumDigits = twice sumDigits
 Currying
 --------
 
-We have already seen functions that *receive* a function as an argument. The way we use `twice` or `sumDigitsWith` here, we can think of them as a function that *return* functions. And this brings us to the deep and beautiful explanation why we write multiple arguments to functions the way we do: Because really, every function only ever has one argument, and returns another one.
+We have already seen functions that *receive* a function as an argument. The way we use `twice` or `sumDigitsWith` here, we can think of them as functions that *return* functions. And this brings us to the deep and beautiful explanation why we write multiple arguments to functions the way we do: Because really, every function only ever has one argument.
 
-We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function that takes one argument (the function `f`), and returns another function, that then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
+We can *think* of `twice` has having two arguments (the function `f`, and the value `x`), but really, `twice` is a function that takes one argument (the function `f`), and returns another function, which then takes the value `x`. This “other” function is what we named in the above definition of `sumSumDigits`.
 
 The composition operator ☆
 --------------------------
 
 Because writing code that passes functions around and modifies them (like in `twice` or `sumDigitsWith`) is so important in this style of programming, I should at this point introduce the composition operator. It is already pre-defined, but we can define it ourselves:
-```
-Prelude> (f . g) x = f (g x)
+``` {.haskell .slide}
+(f . g) x = f (g x)
 ```
 The dot is a poor approximation of the mathematical symbol for function composition, “∘”, and can be read as “`f` after `g`”. Note `x` is passed to `g` first, and then the result to `f`.
 
 It looks like a pretty vacuous definition, but it is very useful in writing high-level code. For example, it allows us the following, nicely abstract definition of `twice`:
-```
-Prelude> twice f = f . f
+``` {.haskell .slide}
+twice f = f . f
 ```
 
 Do you remember the example we used when introducing the dollar operator? We started with
-```
+``` {.haskell .slide}
 f5 (f4 (f3 (f2 (f1 42))))
 ```
 and rewrote it to
-```
+``` {.haskell .slide}
 f5 $ f4 $ f3 $ f2 $ f1 42
 ```
 
 Now imagine we want to abstract over 42:
-```
+``` {.haskell .slide}
 many_fs x = f5 (f4 (f3 (f2 (f1 x))))
 ```
 This function really is just the composition of a bunch of functions. So an idiomatic way of writing it would be
-```
+``` {.haskell .slide}
 many_fs  = f5 . f4 . f3 . f2 . f1
 ```
 where again, the actual value is no longer the emphasis, but rather the functions.
@@ -671,9 +671,9 @@ In fact, even `if … then … else` could just be a normal function with three 
 Types
 =====
 
-In the first section, we have seen how functional programming opens the way to abstraction, and to condense independent concerns into separate pieces of code. This is a very powerful tool for modularity, and to focus on the relevant part of a problem, while keeping the bookkeeping out of sight. But powerful is also dangerous -- using a higher order function correctly without any aid, can be mind-bending.
+In the first chapter, we have seen how functional programming opens the way to abstraction, and to condense independent concerns into separate pieces of code. This is a very powerful tool for modularity, and helps to focus on the relevant part of a problem while keeping the bookkeeping out of sight. But powerful is also dangerous -- using a higher order function correctly without any aid can be mind-bending.
 
-Whenever we write functions like in the previous section, we have an idea in our head about what their arguments are -- are they just numbers, or are they functions, and what kind of functions -- and what they return. It is obvious to us that writing `twice isEven` does not make sense, because `isEven` returns `True` or `False`, but expects a number, so it cannot be applied to itself.
+Whenever we write functions like in the previous section, we have an idea in our head about what their arguments are -- are they just numbers, or are they functions, and what kind of functions -- and what do they expect and what do they return. It is obvious to us that writing `twice isEven` does not make sense, because `isEven` returns `True` or `False`, but expects a number, so it cannot be applied twice in a row.
 
 This is all simple and obvious, but it is a lot to keep in your head as the code grows larger, and even more so once the code is changing and there are more people working on it.  So to keep this power and complexity manageable, Haskell has a strong static type system, which is essentially a way for you to communicate with the compiler about these ideas you have in your head. You can ask the compiler “what do you know about this function? what can it take, what kind of things does it return?”. And you can tell the compiler “this function ought to take this and return that (and please tell me if you disagree)”.
 
@@ -684,7 +684,8 @@ Besides communicating with the compiler, types are also crucial in communicating
 Tooling interlude: Editing files ☆
 ----------------------------------
 
-At this point, we should switch from working exclusively in the REPL to writing an actual Haskell file. We can start by creating a file `Types.hs`, and put in the code from the previous section:
+At this point, we should switch from working exclusively in the REPL to writing an actual Haskell file. We can start by creating a file [`types.hs`](https://haskell-for-readers.nomeata.de/files/types.hs), and putting in the code from the first chapter:
+section:
 
 ``` {.haskell .slide file=types.hs}
 isRound x = x `mod` 10 == 0
@@ -701,7 +702,7 @@ fixEq f x = if x == f x then x else fixEq f (f x)
 isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
 ```
 
-We can load this file into `ghci` by either starting it with `ghci Types.hs` or by typing `:load Types.hs`. After you change and save the file, you can reload with `:reload` (or simply `:r`)
+We can load this file into `ghci` by either starting it with `ghci Types.hs` or by typing `:load Types.hs` within `ghci`. After you change and save the file, you can reload with `:reload` (or simply `:r`).
 
 Basic types
 -----------
@@ -754,8 +755,9 @@ twice :: (t -> t) -> t -> t
 ```
 
 From this example, we learn that
+
  * the type of functions with multiple arguments is written using multiple arrows,
- * the function arrow can just as occur inside an argument, namely when an argument itself is a function.
+ * the function arrow can just as well occur inside an argument, namely when an argument itself is a function.
 
 But what is this type `t`? There is not, actually, a type called `t`. Instead, this is a *type variable*, meaning that the function `twice` can be used with any type. Any lower-case identifier in a type is a type variable (not just `t`), and concrete types are always upper-case.
 
@@ -838,7 +840,7 @@ to our file. In fact, in practice one *always* writes full type signatures for a
 Parametricity
 -------------
 
-One obvious use for such polymorphism is to write code once, and use it at different types. But there is another great advantage of polymorphic functions, even if we only ever intend to instantiate the type variables with the same type, and that is reasoning by parametricity.
+One obvious use for such polymorphism is to write code once, and use it at different types. But there is another great advantage of polymorphic functions, even if we only ever intend to instantiate the type variables with the same type, and that is reasoning by *parametricity*.
 
 In a function with a polymorphic type like `twice` there is not a lot we can do with the parameters. Sure, we can apply `f` to `x`, and maybe apply `f` more than once. But that is just about all we can do: Because `x` can have an arbitrary type, we cannot do arithmetic with it, we cannot print it, we cannot even compare it to other values of type `x`.
 
@@ -867,7 +869,7 @@ Algebraic data types
 
 The function type is very expressive, and one can model many data structures purely with functions. But of course it is more convenient to use dedicated data structures. There are a number of data structure types that come with the standard library, in particular tuples, lists, the `Maybe` type. But it is more instructive to first look at how we can define our own.
 
-We can declare new data types using the `data` keyword, the name of the type, the `=` sign, and then a list of *constructors*, separated by pipes (`|`). The form of these declarations is a bit odd, e.g. it uses `=` although it is not really an equality, but let us look at it step by step.
+We can declare new data types using the `data` keyword, the name of the type, the `=` sign, and then a list of *constructors*, separated by pipes (`|`). These declarations are a bit odd, since they use `=` although it is not really an equality, but let us look at it step by step.
 
 ### Enumerations
 
@@ -902,20 +904,20 @@ isRed _ = False
 ```
 
 The type `Bool` that we have already used before is merely one of these enumeration types, defined as
-```haskell
+``` {.haskell .slide}
 data Bool = False | True
 ```
 and we could do without `if … then … else …` by pattern-matching on `Bool`:
-```haskell
+``` {.haskell .slide}
 ifThenElse :: Bool -> a -> a -> a
 ifThenElse True x y = x
 ifThenElse False x y = y
 ```
 The only reason to have `if … then … else …`  is that it is a bit more readable.
 
-### Constructor with parameters
+### Product types
 
-So far, the constructors were just plain values. But we can also turn them into “containers” of sort, where we can store other values. As an basic example, maybe we want to introduce complex numbers:
+So far, the constructors were just plain values. But we can also turn them into “containers” of sort, where we can store other values. As an basic example, maybe we want to introduce a type for complex numbers:
 
 ```haskell
 data Complex = C Integer Integer
@@ -933,7 +935,7 @@ origin :: Complex
 origin = C 0 0
 ```
 
-Note that in the above declaration, `Complex` is a type, `C` is a term, but `Integer` is again a type.
+Note that in the above data type declaration, `Complex` is a type, `C` is a term, but `Integer` is again a type.
 
 Again the way to use a complex number is by pattern matching. This time we use pattern matching not to distinguish different cases -- *every* `Complex` is a `C` -- but to extract the parameters of the constructor:
 
@@ -948,6 +950,8 @@ isReal :: Complex -> Bool
 isReal (C _ 0) = True
 isReal _ = False
 ```
+
+### Sum types
 
 A type like `Complex`, with exactly one constructor, is called a *product type*. But we can of course have types with more than one constructor and constructor arguments:
 ```haskell
@@ -972,7 +976,7 @@ addR Infinity _  = Infinity
 addR _ Infinity  = Infinity
 ```
 
-A data type that has more than one constructor is commonly called a *sum type*. Because `data` allows you to build types from sums and products, they are called algebraic data types (ADTs).
+A data type that has more than one constructor is commonly called a *sum type*. Because `data` allows you to build types from sums and products, these types are called *algebraic data types* (ADTs).
 
 ### Recursive data types
 
@@ -1002,7 +1006,7 @@ Is this legal? What does it mean? Which occurrences of `Wat` are terms, and whic
 
 ::: Solution
 This type is legal. Every value of type `Wat` is built from the constructor `Wat`, applied to another value of type `Wat`. So, unless there are exceptions or nontermination around, it is just an infinite tower of `Wat`s:
-```
+```haskell
 wat :: Wat
 wat = Wat wat
 ```
@@ -1010,7 +1014,7 @@ wat = Wat wat
 
 ### Polymorphic data types
 
-The tree data type declared in the previous section ought to be useful not just for integers, but maybe for any type. But it would be seriously annoying to have to create a new tree data type for each type we want to store in the tree. Therefore, we haven have *polymorphic data types*. In the example of the tree, we can write:
+The tree data type declared in the previous section ought to be useful not just for integers, but maybe for any type. But it would be seriously annoying to have to create a new tree data type for each type we want to store in the tree. Therefore, we have *polymorphic data types*. In the example of the tree, we can write:
 ```{.haskell file=PolyTree.hs}
 data Tree a = Leaf | Node a (Tree a) (Tree a)
 ```
@@ -1032,7 +1036,7 @@ Again, parametricity makes the type signature of such a function more useful tha
 ### Functions in data types ☆
 
 Maybe this is obvious to you, after the emphasis on functions in the first chapter, but it is still worth pointing out that data type can also store functions. This blurs the distinction between data and code some more, as this nice example shows:
-``` {.haskell file=stream.hs}
+``` {.haskell file=stream.hs .slide}
 data Stream a b
     = NeedInput (a -> Stream a b)
     | HasOutput b (Stream a b)
@@ -1046,7 +1050,7 @@ The type `Stream a b` models a state machine that consumes values of type `a`, p
 
 We can create a state machine that does run-length encoding this way. This one does not ever stop, but that’s fine:
 
-``` {.haskell file=stream.hs}
+``` {.haskell file=stream.hs .slide}
 rle :: Eq a => Stream a (Integer,a)
 rle = NeedInput rle_start
 
@@ -1070,7 +1074,7 @@ As mentioned before, the values `True` and `False` are simply the constructors o
 data Bool = False | True
 ```
 
-There is nothing magic about the definition of `Bool`. But this type plays a special role because of the `if … then … else …` construct, and because of the pattern guards seen before.
+There is nothing magic about the definition of `Bool`. But this type plays a special role because of pattern guards and the `if … then … else …` construct.
 
 ### `Maybe`
 
@@ -1083,7 +1087,7 @@ You might see `Maybe`, for example, in the return type of a function that deseri
 ``` {.haskell .slide}
 parseFoo :: String -> Maybe Foo
 ```
-Such an operation can fail, and if the input is invalid, it would return `Nothing`. As a user of such a function, the only way to get to the value of type `a` therein is to pattern-match on the result, which forces me to think about and handle the case where the result is `Nothing`.
+Such an operation can fail, and if the input is invalid, it would return `Nothing`. As a user of such a function, the only way to get to the value of type `a` therein is to pattern-match on the result, which forces you to think about and handle the case where the result is `Nothing`.
 
 This is much more robust than the common idiom in C, where you have to remember to check for particular error values (-1, or `NULL`), or Go, where you get both a result and a separate error code, but you can still be lazy and use the result without checking the error code.
 
@@ -1094,7 +1098,7 @@ How many values are there of type `Maybe (Maybe Bool)`. When can it be useful to
 :::
 
 ::: Solution
-There are four: `Nothing`, `Just Nothing`, `Just False` and `Just True`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more speaking names could be preferred here.
+There are four: `Nothing`, `Just Nothing`, `Just (Just False)` and `Just (Just True)`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more speaking names could be preferred here.
 :::
 
 ### `Either` ☆
@@ -1113,21 +1117,21 @@ This gives us the same robustness benefits of `Maybe`, but also a more helpful e
 ### Tuples
 
 Imagine you are writing a function that wants to return two numbers -- say, the last digit and the rest of the number. The way to do that that you know so far would require defining a data type:
-``` {.haskell .slide file=tuples.hs}
+``` {.haskell .new-slide file=tuples.hs}
 data TwoIntegers = TwoIntegers Integer Integer
 splitLastDigit :: Integer -> TwoIntegers
 splitLastDigit n = TwoIntegers (n `div` 10) (n `mod` 10)
 ```
 
 Clearly, the concept of “passing around two values together“ is not particularly tied to `Integer`, and we can use polymorphism to generalize this definition:
-``` {.haskell .slide}
+``` {.haskell .new-slide}
 data Two a b = Two a b
 splitLastDigit :: Integer -> Two Integer Integer
 splitLastDigit n = Two (n `div` 10) (n `mod` 10)
 ```
 
 And because this is so useful, Haskell comes with built-in support for such pairs, including a nice and slim syntax:
-``` {.haskell .slide}
+``` {.haskell .new-slide}
 data (a,b) = (a,b)
 splitLastDigit :: Integer -> (Integer, Integer)
 splitLastDigit n = (n `div` 10, n `mod` 10)
@@ -1148,7 +1152,7 @@ Maybe (Integer, Integer)
 :::
 
 Useful predefined functions related to tuples are
-``` {.haskell .slide}
+``` {.haskell .new-slide}
 fst :: (a,b) -> a
 snd :: (a,b) -> b
 ```
@@ -1163,7 +1167,17 @@ data () = ()
 While this does not look very useful yet, we will see that it plays a crucial role later. Until then, you can think of it as a good choice when we have something polymorphic, but we do not actually need an “interesting” type there.
 
 ::: Exercise
-Write functions `fromEitherUnit :: Either () a -> Maybe a` and `toEitherUnit :: Maybe a -> Either () a` that are inverses to each other. In one of these type signatures you can replace `()` with a new type variable `b`, and still implement the function. In which one? Why?
+Write functions
+```haskell
+fromEitherUnit :: Either () a -> Maybe a
+```
+and
+```haskell
+toEitherUnit :: Maybe a -> Either () a
+```
+that are inverses to each other.
+
+In only one of these type signatures you can replace `()` with a new type variable `b`, and still implement the function. In which one? Why?
 :::
 
 ::: Solution
@@ -1192,15 +1206,19 @@ data [a] = [] | a : [a]
 ```
 In words: The type `[a]` is the type of lists with values of type `a`. Such a list is either the empty list, written as `[]`, or it is a non-empty list containing of a head `x` of type `a`, and a tail `xs`, and is written as `x:xs`. Note that the constructor `(:)`, called “cons”, is using operator syntax.
 
-There is more special syntax for lists:
+There is even more special syntax for lists:
 
 1. Finite lists can be written as `[1, 2, 3]` instead of `1 : 2 : 3 : []`.
 2. Lists of numbers can be enumerated, e.g. `[1..10]`, or `[0,2..10]`, or even (due to laziness) `[1..]`.
-3. List comprehensions look like `[ (x,y) | x <- xs, y <- ys, x < y ]`, reminiscent of the set comprehension syntax from mathematics. We will not discuss them now, I just wanted to show them and tell you what to search for.
+3. List comprehensions look like `[ (x,y) | x <- xs, y <- ys, x < y ]`, reminiscent of the set comprehension syntax from mathematics. We will not discuss them now, I just wanted to show them and give you terms to search for.
 
-Common operations on lists worth knowing are `(++)` to concatenate two lists. 
+Common operations on lists worth knowing are `(++)` to concatenate two lists, and `map` to apply a function to each element of list:
+``` {.haskell .slide}
+(++) :: [a] -> [a] -> [a]
+map :: (a -> b) -> [a] -> [b]
+```
 
-Lists are very useful for many applications, but they are not a particularly high-performance data structure -- random access and concatenation is expensive, and they use quite a bit of memory. Depending on the application, other types like arrays/vectors, finger trees, difference lists might be more suitable.
+Lists are very useful for many applications, but they are not a particularly high-performance data structure -- random access and concatenation is expensive, and they use quite a bit of memory. Depending on the application, other types like arrays/vectors, finger trees, difference lists, maps or sets might be more suitable.
 
 ### Characters and strings ☆
 
@@ -1216,7 +1234,7 @@ Prelude> 'h':'e':'l':'l':'o':[]
 "hello"
 ```
 
-Because `String` is built on the list type, all the usual list operations, in particular `++` for concatenation, work on strings as well.
+Because `String` is built on the list type, all the usual list operations, in particular `(++)` for concatenation, work on strings as well.
 
 But `String` also has the same performance issues as lists: While it is fine to use them  in non-critical parts of the code (diagnostic and error messages, command line and configuration file parsing, filenames), `String` is usually the wrong choice if large amounts of strings need to be processed, e.g. in a templating library. Additionally libraries provide more suitable data structures, in particular `ByteString` for binary data and `Text` for human-readable text.
 
@@ -1247,12 +1265,13 @@ moveOneLevelUp e = e { room = new_room }
 Record syntax has five aspects:
 
 1. The declaration has special syntax. In terms of the constructor `Employee`, the declaration is equivalent to
-    ```haskell
-    data Employee = Employee String Integer ByteString
-    ```
-    and it is always possible to use `Employee` as a normal prefix function in terms and patterns. But the record syntax declaration enables the following nice syntactic devices:
 
-2. Record creation: Instead of `Employee n r p` you can write `Employee { name = n; room = r; pubkey = p }`, and of course the order of the fields is irrelevant.
+   ```haskell
+   data Employee = Employee String Integer ByteString
+   ```
+   and it is always possible to use `Employee` as a normal prefix function in terms and patterns. But the record syntax declaration enables the following nice syntactic devices:
+
+2. Record creation: Instead of `Employee n r p` you can write `Employee { name = n; pubkey p= p; room = r }`, and the order of the fields becomes conveniently irrelevant.
 
 3. Record pattern matching. You can also write `Employee { name = n; room = r; pubkey = p }` in a pattern, to match on `Employee` and get `n`, `r` and `p` into scope.
 
@@ -1273,7 +1292,7 @@ Sometimes you will see a type declaration that uses `newtype` instead of `data`:
 newtype Riemann = Riemann (Maybe (Integer, Integer))
 ```
 
-For all purposes relevant to us so far you can mentally replace `newtype` with `data`. There are difference in memory representation (a `newtype` is “free” in some sense), but none that relevant at our current level.
+For all purposes relevant to us so far you can mentally replace `newtype` with `data`. There are difference in memory representation (a `newtype` is “free” in some sense), but that is, at this level, irrelevant for us.
 
 
 Type synonyms ☆
@@ -1297,6 +1316,7 @@ For Haskell libraries hosted in the central package repository *Hackage*, this d
 
 From this documentation you will also find links labeled “Source” that take you to the definition of a type or function in the source code, in a syntax-highlighted and crosslinked presentation of the source.
 
+Relatedly, you can also effectively search for functions with a certain type, using type-based search engine like [Hoogle](https://www.haskell.org/hoogle/) or [Hayoo](http://hayoo.fh-wedel.de/). These can also be set-up in house to index your private code base.
 
 Code structure small and large
 ==============================
@@ -2271,7 +2291,7 @@ data IO a =  ¯\_(ツ)_/¯
 
 * The first example is the `Maybe` type that we have looked at before. A value of type `Maybe a` is either `Just` a value of type `a`, or it is `Nothing`. So `Maybe` takes a type `a` and adjoins an extra element to it.
 
-   You can think of `Maybe a` as a container with zero or one element. But you can also think of it as a *computation* that can fail, or retun an `a`. This is commonly used for lookups in maps, or text parsing that can fail.
+   You can think of `Maybe a` as a container with zero or one element. But you can also think of it as a *computation* that can fail, or return an `a`. This is commonly used for lookups in maps, or text parsing that can fail.
 
    `Maybe` has kind `* -> *`, so it “fits” the `Monad` type class, and an `instance Monad Maybe` would make sense.
 
@@ -2474,7 +2494,7 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   ```
 * `mapM` and `forM` apply a monadic action to each element of a list, collecting the results. The variants with underscore do not collect the results, e.g. when you are only interested in the monadic effect, and are more efficient.
 
-   These functions demonstrate one benefit we get from monads that goes beyond some petty operator overloading: It distills the (still simple, but non-trivial) concept of “traversing a list while doing *something* on the side”. Thse functions are defined once, and we can use it in all those different contexts, whether that is handling failures, manipulating state, consuming parser input and backtracking or exploring all possibilities of non-deterministic computation.
+   These functions demonstrate one benefit we get from monads that goes beyond some petty operator overloading: It distills the (still simple, but non-trivial) concept of “traversing a list while doing *something* on the side”. These functions are defined once, and we can use it in all those different contexts, whether that is handling failures, manipulating state, consuming parser input and backtracking or exploring all possibilities of non-deterministic computation.
 
 * `when` and `unless` are pretty simple one: If the Boolean argument is true (respectively false), the action is executed, otherwise not.
 
@@ -2486,12 +2506,12 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   Since `when False action` is not supposed to execute `action`, it has no way of producing a `m a`. But it can always create a `m ()` using `return ()`.
   :::
 
-* `forever` just keeps executing the same action over and over. This does not make sense for every monad, but it is useful for some -- including `IO`, where you might find an event loop wrapped in `forever`. The return type `b` is completely unconstrained, because `forver` never “returns” anyways.
+* `forever` just keeps executing the same action over and over. This does not make sense for every monad, but it is useful for some -- including `IO`, where you might find an event loop wrapped in `forever`. The return type `b` is completely unconstrained, because `forever` never “returns” anyways.
 
 `do` notation ☆
 -------------
 
-So monads are powerful and ubiquitous, and we have these expressive monad operators to compose monadic action, both for concrete monads and for abstract monads. Code written using these opeations might look like this:
+So monads are powerful and ubiquitous, and we have these expressive monad operators to compose monadic action, both for concrete monads and for abstract monads. Code written using these operations might look like this:
 
 ``` {.haskell .slide}
 -- parses the format `23+42i` as a complex number

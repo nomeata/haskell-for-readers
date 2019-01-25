@@ -7,6 +7,7 @@ main = toJSONFilter go
     go (Pandoc meta blocks) = Pandoc meta $ concatMap goBlock blocks
 
     goBlock b@(CodeBlock (_,cs,_) _) | "slide" `elem` cs = [b]
+    goBlock b@(CodeBlock (_,cs,_) _) | "new-slide" `elem` cs = [HorizontalRule, b]
     goBlock (OrderedList _ bss) = concatMap goBlock (concat bss)
     goBlock (BulletList bss) = concatMap goBlock (concat bss)
     goBlock (DefinitionList bss) = concatMap goBlock (concat (concatMap snd bss))
