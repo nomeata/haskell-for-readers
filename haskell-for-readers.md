@@ -515,7 +515,7 @@ fixEq f x = if x == f x then x else fixEq f (f x)
 :::
 
 ::: Exercise
-Use this function and `sumDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `sumDigits` to `x` results in 3 or 9.
+Use this function and `sumDigits` to write a function `isMultipleOf3` so that `isMultipleOf3 x` is true if repeatedly applying `sumDigits` to `x` results in 3, 6 or 9.
 :::
 
 ::: Solution
