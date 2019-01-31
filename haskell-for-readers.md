@@ -685,7 +685,6 @@ Tooling interlude: Editing files ☆
 ----------------------------------
 
 At this point, we should switch from working exclusively in the REPL to writing an actual Haskell file. We can start by creating a file [`types.hs`](https://haskell-for-readers.nomeata.de/files/types.hs), and putting in the code from the first chapter:
-section:
 
 ``` {.haskell .slide file=types.hs}
 isRound x = x `mod` 10 == 0
@@ -1333,11 +1332,11 @@ The next big topic we need to learn is how programmers structure their code. Thi
 -----------------
 
 The most basic way of adding some structure within an expression is to give a name to a subexpression, and possibly use it later. So instead of
-```haskell
+``` {.haskell .slide}
 isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
 ```
 one could write
-```haskell
+``` {.haskell .slide}
 isMultipleOf3 x =
   let y = fixEq sumDigits x
   in y == 3 || y == 6 || y == 9
@@ -1353,7 +1352,7 @@ isMultipleOf3 x =
 might not do what you expect.
 
 In such a `let` expression, you can also do pattern-matching, e.g. to unpack a tuple:
-``` {.haskell .slide}
+``` {.haskell .new-slide}
 sumDigitsWith :: (Integer -> Integer) -> Integer -> Integer
 sumDigitsWith f n
   | n < 10 = f n
