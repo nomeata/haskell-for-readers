@@ -131,7 +131,7 @@ At this point, surely someone wants to know what happens when we divide by 0:
 Prelude> div 123 0
 *** Exception: divide by zero
 ```
-Haskell has exceptions, they can even be caught etc., but let us talk about that later.
+Haskell has exceptions, they can even be caught etc., but we will not talk about that for now.
 
 Of course, if the argument is not just a single number, we somehow have to make clear where the argument begins and ends:
 ```
@@ -505,7 +505,7 @@ This single mechanism -- abstracting over functions -- can [replace thick volume
 Note that if one would have to abstract `countDigits` and `sumDigits` to `sumDigitsWith` in practice, one would probably not rewrite them first with `id` etc., but just look at them and come up with `sumDigitsWith` directly.
 
 ::: Exercise
-Write a (recursive) function `fixEq` so that `fixEq f x` repeatedly applies `f` to `x` until the result does not change.
+Write a (recursive) function `fixEq` so that `fixEq f x` repeatedly applies `f` to `x` until the result of `f` is the same as its argument.
 :::
 
 ::: Solution
