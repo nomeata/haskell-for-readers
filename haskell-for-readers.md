@@ -200,7 +200,7 @@ Prelude> (+) 1 1
 ```
 
 **The dollar operator (non-syntactic sugar) ☆**:
-Consider an expression that takes a number, and applies a number of functions , maybe with arguments, to it, such as:
+Consider an expression that takes a number, and applies a number of functions, maybe with arguments, to it, such as:
 ```
 f5 (f4 (f3 (f2 (f1 42))))
 ```
@@ -1961,7 +1961,7 @@ fixEq f x = if x == f x then x else fixEq f (f x)
 which “iterates `f` on `x` until the value is equal to the one before.”. Compare this to the following version:
 ```{.haskell .slide}
 fixBy :: (a -> a -> Bool) -> (a -> a) -> a -> a
-fixBy p f x = if x `p` f x then x else fixEq p f (f x)
+fixBy p f x = if x `p` f x then x else fixBy p f (f x)
 ```
 This function iterates until a user-specified function tells it to stop. This might be useful for some iterative approximation algorithm, where we stop once the difference between subsequent approximations is smaller than some epsilon.
 
