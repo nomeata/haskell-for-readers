@@ -2483,7 +2483,7 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   (*>) :: Monad f => f a -> f b -> f b
   (*>) = liftA2 (\x y -> y)
   (>=>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
-  (a >=> b) x = a x >>= b
+  a >=> b = (\x -> a x >>= b)
   join :: Monad m => m (m a) -> m a
   join a = a >>= id
   ```
