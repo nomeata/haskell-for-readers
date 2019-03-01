@@ -2564,7 +2564,7 @@ do let x = e  ⟹  let x = e in do more           do a          ⟹  a
 
 Note the difference between `let x = e` and `x <- a`. The former is simply a pure `let`, i.e. gives a name to a pure expression; no monadic actions are executed here, no bind is involved. The latter invokes `(>>=)` and `x` is bound to the “result” of that monadic actions.
 
-When use use this style with the `IO` monad we end up with code that almost looks like normal, say, Python:
+When we use this style with the `IO` monad we end up with code that almost looks like normal, say, Python:
 
 ``` {.haskell .slide}
 copyFile :: FilePath -> FilePath -> IO ()
