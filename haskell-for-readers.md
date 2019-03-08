@@ -476,7 +476,7 @@ Prelude> countCountDigits x = twice countDigits x
 Prelude> sumSumDigits x = twice sumDigits x
 ```
 
-The ability to abstract very easily over functions is an important ingredient in making Haskell so excellent at abstraction: It allows to abstract over *behavior*, instead merely over *value*. To demonstrate that, let us recall the definitions of `countDigits` and `someDigits`:
+The ability to abstract very easily over functions is an important ingredient in making Haskell so excellent at abstraction: It allows to abstract over *behavior*, instead merely over *value*. To demonstrate that, let us recall the definitions of `countDigits` and `sumDigits`:
 ```
 Prelude> countDigits n = if n < 10 then 1 else countDigits (n `div` 10) + 1
 Prelude> sumDigits n = if n < 10 then n else sumDigits (n `div` 10) + (n `mod` 10)
