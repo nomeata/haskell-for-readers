@@ -701,7 +701,7 @@ fixEq f x = if x == f x then x else fixEq f (f x)
 isMultipleOf3 x = fixEq sumDigits x == 3 || fixEq sumDigits x == 6 || fixEq sumDigits x == 9
 ```
 
-We can load this file into `ghci` by either starting it with `ghci Types.hs` or by typing `:load Types.hs` within `ghci`. After you change and save the file, you can reload with `:reload` (or simply `:r`).
+We can load this file into `ghci` by either starting it with `ghci types.hs` or by typing `:load types.hs` within `ghci`. After you change and save the file, you can reload with `:reload` (or simply `:r`).
 
 Basic types
 -----------
