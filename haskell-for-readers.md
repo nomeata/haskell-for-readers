@@ -781,7 +781,7 @@ What does not work is passing a function to `twice` that works on numbers, but t
       In an equation for ‘it’: it = twice countDigits True
 ```
 
-In other words: The `t`s in the type of `twice` can become *any* type, but it has the be the same type everywhere.
+In other words: The `t`s in the type of `twice` can become *any* type, but it has to be the same type everywhere.
 
 ::: Exercise
 What do you think is the type of `id`?
