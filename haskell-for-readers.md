@@ -2608,7 +2608,7 @@ class Functor f where
   fmap :: (a -> b) -> f a -> f b
 
 -- Laws:
--- fmap id = i
+-- fmap id = id
 -- fmap f . fmap g = fmap (f . g)
 
 class Functor f => Applicative f where
