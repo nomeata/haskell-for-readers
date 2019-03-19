@@ -2062,7 +2062,7 @@ There are (at least) two sensible instances for the `Semigroup` type class for t
     ```haskell
     instance Semigroup (Tree a) where
         Leaf <> t = t
-        (Node x l r) t = Node x l (r <> t)
+        Node x l r <> t = Node x l (r <> t)
     ```
     There are variations of this code that are more likely to produce a balance tree -- although then it might be that associativity holds when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
 
