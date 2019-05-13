@@ -2390,7 +2390,7 @@ In this context, when `m` is a monad, we call a value of type `m a` “a monadic
 
 For additional intuition, squint at these type signatures, and imagine the `m` were not there:
 
- * Then the bind operator would simply have type `a -> (a -> b) -> b`, and due to parametricity it is clear what such an operator does: It is function application! (i.e. `($)` with parameters flipped, also available as [`(&)`](http://hackage.haskell.org/package/base/docs/Data-Function.html#v:-38-) in `Data.Function`.) The bind operator does morally the same, while at the same taking care of the particular meaning that is introduced by the type constructor `m`.
+ * Then the bind operator would simply have type `a -> (a -> b) -> b`, and due to parametricity it is clear what such an operator does: It is function application! (i.e. `($)` with parameters flipped, also available as [`(&)`](http://hackage.haskell.org/package/base/docs/Data-Function.html#v:-38-) in `Data.Function`.) The bind operator does morally the same, while at the same time taking care of the particular meaning that is introduced by the type constructor `m`.
 
  * Similarly, `return` has squinted type `a -> a` and thus simply becomes the identity function. So `return` doesn’t do anything interesting to its argument, it just makes it look like it *could* have additional meaning.
 
