@@ -47,9 +47,6 @@ Numbers and arithmetic operators
 --------------------------------
 
 The simplest form of data is numbers, and basic arithmetic is one way of creating new numbers from old numbers.
-{::comment}
-"data" and "numbers" are plural but "form" is singular, so I think that "are" should be "is".
-{:/comment}
 
 To play around with this, start the Haskell REPL (“read-eval-print-loop”) by running `ghci` (or maybe on [tryhaskell.org](https://tryhaskell.org/)), and enter some numbers, and some of the usual arithmetic operations:
 
@@ -166,9 +163,6 @@ Prelude> 1 + const 2 3 + 4
 :::
 
 **A note on syntactic sugar:** Haskell is a high-calorie language: There is lots of syntactic sugar. Syntactic sugar refers to when there are alternative ways of writing something that *looks* different, but *behaves* the same. The goal is to allow the programmer to write the code in a way that best suits the reader, which is good, but it also means that a reader needs to know about the sugar.
-{::comment}
-Not the "ways" look different but the "something" looks different.
-{:/comment}
 
 
 **Infix operator application (syntactic sugar)**:
@@ -307,9 +301,6 @@ False
 And now we are squarely in the realm of functional programming, as we have just defined out first function, `isRound`!
 
 Note that we defined `isRound` by way of an equation. And it really is an equation: Wherever we see `isRound something`, we can obtain its meaning by replacing it with ``something `mod` 10 == 0``. This *equational reasoning*, where you replace equals by equals, is one key technique to make sense of Haskell programs.
-{::comment}
-Either drop the "the" or add "function" after isRound.
-{:/comment}
 
 
 ::: Exercise
@@ -767,10 +758,7 @@ From this example, we learn that
  * the type of functions with multiple arguments is written using multiple arrows,
  * the function arrow can just as well occur inside an argument, namely when an argument itself is a function.
 
-But what is this type `t`? There is not, actually, a type called `t`. Instead, this is a *type variable*, meaning that the function `twice` can be used with any type. Any lower-case identifier in a type is a type variable (not just `t`), and concrete types are always upper-case.
-{::comment}
-That is not entirely accurate. It's whether they /start/ with a lower- or upper-case letter.
-{:/comment}
+But what is this type `t`? There is not, actually, a type called `t`. Instead, this is a *type variable*, meaning that the function `twice` can be used with any type. Any identifier in a type that starts with a lower-case letter is a type variable (not just `t`), and concrete types always start with an upper-case letter.
 
 Here we can see that we can use `twice` with numbers, Booleans, and even with functions:
 ```
@@ -1109,12 +1097,12 @@ How many values are there of type `Maybe (Maybe Bool)`. When can it be useful to
 :::
 
 ::: Solution
-There are four: `Nothing`, `Just Nothing`, `Just (Just False)` and `Just (Just True)`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more speaking names could be preferred here.
+There are four: `Nothing`, `Just Nothing`, `Just (Just False)` and `Just (Just True)`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more descriptive names could be preferred here.
 :::
 
 ### `Either` ☆
 
-With Maybe we can express “one or none”. Sometimes we want “one or another” type. For this, the standard library provides
+With `Maybe` we can express “one or none”. Sometimes we want “one or another” type. For this, the standard library provides
 ``` {.haskell .slide}
 data Either a b = Left a | Right b
 ```
@@ -1253,9 +1241,6 @@ Records ☆
 ---------
 
 Assume you want to create a type that represents an employee in an HR database. There are a fair number of fields to store -- name, date of birth, employee number, room, login handle, public key etc. You could use a tuple with many fields, or create your own data type with a constructor with many fields, but either way you will have to address the various fields by their position, which is verbose, easy to get wrong, and hard to extend.
-{::comment}
-The "H" in "HR" sounds like a vowel.
-{:/comment}
 
 In such a case, you can use records. These allow you to give names to the *field* of a constructor, and get some convenience functions along the way. Here we see how to declare and use them
 ``` {.haskell .slide}
@@ -1400,9 +1385,6 @@ rle stop =
   in NeedInput start
 ```
 In `start` we can now access `stop` just fine. If `start` and `count` were not local functions, then we would have to add `stop` as an explicit parameter to *both* local functions, significantly cluttering the code with administrative details.
-{::comment}
-Personally I found the rle example not easy to follow. What you tried to explain in each section was fine. But the usage of rle was not immediately clear. I guess this is an example of where an "interactive lecture" is the preferred presentation form.
-{:/comment}
 
 `where`-clauses ☆
 -----------------
@@ -2081,9 +2063,9 @@ There are (at least) two sensible instances for the `Semigroup` type class for t
         Leaf <> t = t
         Node x l r <> t = Node x l (r <> t)
     ```
-    There are variations of this code that are more likely to produce a balance tree -- although then it might be that associativity holds when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
+    There are variations of this code that are more likely to produce a balanced tree -- although then it might be that associativity holds when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
 
-2. Another one traverses both trees in parallel, using a `Semigroup` instance for the elements to combine values that are present in boht trees:
+2. Another one traverses both trees in parallel, using a `Semigroup` instance for the elements to combine values that are present in both trees:
 
     ```haskell
     instance Semigroup a => Semigroup (Tree a) where
@@ -2525,7 +2507,7 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   :::
 
   ::: Solution
-  Since `when False action` is not supposed to execute `action`, it has no way of producing a `m a`. But it can always create a `m ()` using `return ()`.
+  Since `when False action` is not supposed to execute `action`, it has no way of producing an `m a`. But it can always create an `m ()` using `return ()`.
   :::
 
 * `forever` just keeps executing the same action over and over. This does not make sense for every monad, but it is useful for some -- including `IO`, where you might find an event loop wrapped in `forever`. The return type `b` is completely unconstrained, because `forever` never “returns” anyways.
@@ -2678,7 +2660,7 @@ What can we do with that freedom? Create more instances!
   ```haskell
   instance Monoid r => Applicative ((,) r)
   ```
-  and the `Monoid` constraint on `r` gives us exactly the operations needed to to implement `pure` and `(<*>)`. Try it yourself!
+  and the `Monoid` constraint on `r` gives us exactly the operations needed to implement `pure` and `(<*>)`. Try it yourself!
   :::
 
 * And since we are discussing counter-examples, the type constructor
@@ -2691,23 +2673,3 @@ At a high level, the main advantage of an applicative computation over a monadic
 
 As a concrete example, consider a library that provides a type constructor `AParser` that is an instance of `Applicative`, but *not* of `Monad`. You write a parser `p :: AParser a` using this interface. Then the library can “run” this parser without actual input, and learn everything it *would* do. It could use that to provide a function `describe :: AParser a -> String` that produces a grammar for the given parser, which you can use as documentation, and thus these can never go out of sync.
 
-
-{::comment}
-Solution 16
-  p59: ... and dedicated data types with more *speaking* names ...
-       [In German "sprechend", like in Dutch "sprekend", would be fine, but
-        I think for English something like "descriptive" would be better.]
-Solution 23
-  p60: 1. ... that are more likely to produce a balance*d* tree ...
-       2. ... to combine values that are present in bo*th* trees:
-
-
-[On pages 61 and 62 the order of the solutions is: 24, 27, 25, 26, 28.]
-
-
-Solution 26
-  p62: "m" sounds like it starts with a vowel, so both "a m a" should be
-       *an m a*.
-Solution 28
-  p62: ... exactly the operations needed to [*-to*] implement pure ...
-{:/comment}
