@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Joachim Breitner, DFINITY Foundation" />
+  <title>Haskell for Readers</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="https://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+   href="inline-code.css" />
+  <script src="https://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Haskell for Readers</h1>
+  <p class="author">
+<a href="http://www.joachim-breitner.de/">Joachim Breitner</a>, <a href="https://dfinity.org/">DFINITY Foundation</a>
+  </p>
+</div>
+<div id="the-basics-of-functional-programming" class="title-slide slide section level1"><h1><span class="header-section-number">1</span> The basics of functional programming</h1></div><div id="numbers-and-arithmetic-operators" class="slide section level2">
+<h1><span class="header-section-number">1.1</span> Numbers and arithmetic operators</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 1</strong></p>
+<p>What associativity do you expect for <code>(+)</code> and <code>(-)</code>? Verify your expectation.</p>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 2</strong></p>
+<p>Look up the precedences of the other arithmetic operations, and see how that corresponds to the PEMDAS rule.</p>
+</div>
+</div>
+</div><div id="applying-functions" class="slide section level2">
+<h1><span class="header-section-number">1.2</span> Applying Functions</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 3</strong></p>
+<p>Can you predict the result of the following?</p>
+<pre><code>Prelude&gt; 1 + const 2 3 + 4</code></pre>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 4</strong></p>
+<p>What is the result of</p>
+<pre><code>Prelude&gt; (-) 5 $ div 16 $ (-) 10 $ 4 `div` 2</code></pre>
+</div>
+</div>
+</div><div id="booleans-and-branching" class="slide section level2">
+<h1><span class="header-section-number">1.3</span> Booleans and branching</h1>
+</div><div id="function-abstraction" class="slide section level2">
+<h1><span class="header-section-number">1.4</span> Function abstraction</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 5</strong></p>
+<p>Discuss: Think of other programming language that have concepts called functions. Can you always replace a function call with the function definition? Does it change the meaning of the program?</p>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 6</strong></p>
+<p>Write a function <code>absoluteValue</code> with one parameter. If the parameter is negative, returns its opposite number, otherwise the number itself.</p>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 7</strong></p>
+<p>Write a function <code>isHalfRound</code> that checks if a number is divisible by 5, by checking whether the last digit is 0 or 5.</p>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 8</strong></p>
+<p>Write a function <code>isEven</code> that checks if a number is divisible by 2, by checking whether the last digit is 0, 2, 4, 6, 8.</p>
+</div>
+</div>
+</div><div id="recursion" class="slide section level2">
+<h1><span class="header-section-number">1.5</span> Recursion</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 9</strong></p>
+<p>Write the function <code>sumDigits</code> that sums up the digits of a natural number.</p>
+</div>
+</div>
+</div><div id="higher-order-functions" class="slide section level2">
+<h1><span class="header-section-number">1.6</span> Higher-order functions</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 10</strong></p>
+<p>Write a (recursive) function <code>fixEq</code> so that <code>fixEq f x</code> repeatedly applies <code>f</code> to <code>x</code> until the result of <code>f</code> is the same as its argument.</p>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 11</strong></p>
+<p>Use this function and <code>sumDigits</code> to write a function <code>isMultipleOf3</code> so that <code>isMultipleOf3 x</code> is true if repeatedly applying <code>sumDigits</code> to <code>x</code> results in 3, 6 or 9.</p>
+</div>
+</div>
+</div><div id="anonymous-functions" class="slide section level2">
+<h1><span class="header-section-number">1.7</span> Anonymous functions</h1>
+</div><div id="higher-order-function-definition" class="slide section level2">
+<h1><span class="header-section-number">1.8</span> Higher-order function definition</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 12</strong></p>
+<p>Which other recent definitions can be changed accordingly?</p>
+</div>
+</div>
+</div><div id="currying" class="slide section level2">
+<h1><span class="header-section-number">1.9</span> Currying</h1>
+</div><div id="the-composition-operator" class="slide section level2">
+<h1><span class="header-section-number">1.10</span> The composition operator ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1">(f <span class="fu">.</span> g) x <span class="fu">=</span> f (g x)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" title="1">twice f <span class="fu">=</span> f <span class="fu">.</span> f</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" title="1">f5 (f4 (f3 (f2 (f1 <span class="dv">42</span>))))</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb6-1" title="1">f5 <span class="fu">$</span> f4 <span class="fu">$</span> f3 <span class="fu">$</span> f2 <span class="fu">$</span> f1 <span class="dv">42</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb7-1" title="1">many_fs x <span class="fu">=</span> f5 (f4 (f3 (f2 (f1 x))))</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb8-1" title="1">many_fs  <span class="fu">=</span> f5 <span class="fu">.</span> f4 <span class="fu">.</span> f3 <span class="fu">.</span> f2 <span class="fu">.</span> f1</a></code></pre></div>
+</div>
+</div><div id="pure" class="slide section level2">
+<h1><span class="header-section-number">1.11</span> Purity</h1>
+</div><div id="laziness" class="slide section level2">
+<h1><span class="header-section-number">1.12</span> Laziness ☆</h1>
+</div>
+<div id="types" class="title-slide slide section level1"><h1><span class="header-section-number">2</span> Types</h1></div><div id="tooling-interlude-editing-files" class="slide section level2">
+<h1><span class="header-section-number">2.1</span> Tooling interlude: Editing files ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb9" file="types.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb9-1" title="1">isRound x <span class="fu">=</span> x <span class="ot">`mod`</span> <span class="dv">10</span> <span class="fu">==</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb9-2" title="2">hasLastDigit x y <span class="fu">=</span> x <span class="ot">`mod`</span> <span class="dv">10</span> <span class="fu">==</span> y</a>
+<a class="sourceLine" id="cb9-3" title="3">isHalfRound x <span class="fu">=</span> x <span class="ot">`hasLastDigit`</span> <span class="dv">0</span> <span class="fu">||</span> x <span class="ot">`hasLastDigit`</span> <span class="dv">5</span></a>
+<a class="sourceLine" id="cb9-4" title="4">x <span class="ot">`divides`</span> y <span class="fu">=</span> x <span class="ot">`div`</span> y <span class="fu">==</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb9-5" title="5">twice f x <span class="fu">=</span> f (f x)</a>
+<a class="sourceLine" id="cb9-6" title="6">countCountDigits x <span class="fu">=</span> twice countDigits x</a>
+<a class="sourceLine" id="cb9-7" title="7">sumSumDigits x <span class="fu">=</span> twice sumDigits x</a>
+<a class="sourceLine" id="cb9-8" title="8">sumDigitsWith f n <span class="fu">=</span> <span class="kw">if</span> n <span class="fu">&lt;</span> <span class="dv">10</span> <span class="kw">then</span> f n <span class="kw">else</span> sumDigitsWith f (n <span class="ot">`div`</span> <span class="dv">10</span>) <span class="fu">+</span> f (n <span class="ot">`mod`</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb9-9" title="9">countDigits <span class="fu">=</span> sumDigitsWith (\d <span class="ot">-&gt;</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-10" title="10">sumDigits <span class="fu">=</span> sumDigitsWith (\d <span class="ot">-&gt;</span> d)</a>
+<a class="sourceLine" id="cb9-11" title="11">fixEq f x <span class="fu">=</span> <span class="kw">if</span> x <span class="fu">==</span> f x <span class="kw">then</span> x <span class="kw">else</span> fixEq f (f x)</a>
+<a class="sourceLine" id="cb9-12" title="12">isMultipleOf3 x <span class="fu">=</span> fixEq sumDigits x <span class="fu">==</span> <span class="dv">3</span> <span class="fu">||</span> fixEq sumDigits x <span class="fu">==</span> <span class="dv">6</span> <span class="fu">||</span> fixEq sumDigits x <span class="fu">==</span> <span class="dv">9</span></a></code></pre></div>
+</div>
+</div><div id="basic-types" class="slide section level2">
+<h1><span class="header-section-number">2.2</span> Basic types</h1>
+</div><div id="polymorphism" class="slide section level2">
+<h1><span class="header-section-number">2.3</span> Polymorphism</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 13</strong></p>
+<p>What do you think is the type of <code>id</code>?</p>
+</div>
+</div>
+</div><div id="constrained-types-a-first-glimpse" class="slide section level2">
+<h1><span class="header-section-number">2.4</span> Constrained types (a first glimpse)</h1>
+</div><div id="parametricity" class="slide section level2">
+<h1><span class="header-section-number">2.5</span> Parametricity</h1>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 14</strong></p>
+<p>A great example for the power of polymorphism is the following type signature:</p>
+<pre><code>(a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c</code></pre>
+<p>There is a function of that type in the standard library. Can you tell what it does? Can you guess its name? You can use a type-based search engine like <a href="https://www.haskell.org/hoogle/?hoogle=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c">Hoogle</a> or <a href="http://hayoo.fh-wedel.de/?query=%28a+-%3E+b+-%3E+c%29+-%3E+b+-%3E+a+-%3E+c">Hayoo</a> to find the function.</p>
+</div>
+</div>
+</div><div id="algebraic-data-types" class="slide section level2">
+<h1><span class="header-section-number">2.6</span> Algebraic data types</h1>
+</div><div class="slide section level2">
+
+<div id="enumerations" class="section level3">
+<h3><span class="header-section-number">2.7.1</span> Enumerations</h3>
+<div class="incremental">
+<div class="sourceCode" id="cb11"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">data</span> <span class="dt">Bool</span> <span class="fu">=</span> <span class="dt">False</span> <span class="fu">|</span> <span class="dt">True</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb12"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb12-1" title="1"><span class="ot">ifThenElse ::</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a</a>
+<a class="sourceLine" id="cb12-2" title="2">ifThenElse <span class="dt">True</span> x y <span class="fu">=</span> x</a>
+<a class="sourceLine" id="cb12-3" title="3">ifThenElse <span class="dt">False</span> x y <span class="fu">=</span> y</a></code></pre></div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="product-types" class="section level3">
+<h3><span class="header-section-number">2.8.1</span> Product types</h3>
+</div>
+</div><div class="slide section level2">
+
+<div id="sum-types" class="section level3">
+<h3><span class="header-section-number">2.9.1</span> Sum types</h3>
+</div>
+</div><div class="slide section level2">
+
+<div id="recursive-data-types" class="section level3">
+<h3><span class="header-section-number">2.10.1</span> Recursive data types</h3>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 15</strong></p>
+<p>Consider the following definition:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">data</span> <span class="dt">Wat</span> <span class="fu">=</span> <span class="dt">Wat</span> <span class="dt">Wat</span></a></code></pre></div>
+<p>Is this legal? What does it mean? Which occurrences of <code>Wat</code> are terms, and which are types? Can you define a value of type <code>Wat</code>?</p>
+</div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="polymorphic-data-types" class="section level3">
+<h3><span class="header-section-number">2.11.1</span> Polymorphic data types</h3>
+</div>
+</div><div class="slide section level2">
+
+<div id="functions-in-data-types" class="section level3">
+<h3><span class="header-section-number">2.12.1</span> Functions in data types ☆</h3>
+<div class="incremental">
+<div class="sourceCode" id="cb14" file="stream.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">data</span> <span class="dt">Stream</span> a b</a>
+<a class="sourceLine" id="cb14-2" title="2">    <span class="fu">=</span> <span class="dt">NeedInput</span> (a <span class="ot">-&gt;</span> <span class="dt">Stream</span> a b)</a>
+<a class="sourceLine" id="cb14-3" title="3">    <span class="fu">|</span> <span class="dt">HasOutput</span> b (<span class="dt">Stream</span> a b)</a>
+<a class="sourceLine" id="cb14-4" title="4">    <span class="fu">|</span> <span class="dt">Done</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb15" file="stream.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb15-1" title="1"><span class="ot">rle ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> <span class="dt">Stream</span> a (<span class="dt">Integer</span>,a)</a>
+<a class="sourceLine" id="cb15-2" title="2">rle <span class="fu">=</span> <span class="dt">NeedInput</span> rle_start</a>
+<a class="sourceLine" id="cb15-3" title="3"></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="ot">rle_start ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Stream</span> a (<span class="dt">Integer</span>, a)</a>
+<a class="sourceLine" id="cb15-5" title="5">rle_start x <span class="fu">=</span> <span class="dt">NeedInput</span> (rle_count x <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-6" title="6"></a>
+<a class="sourceLine" id="cb15-7" title="7"><span class="ot">rle_count ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Stream</span> a (<span class="dt">Integer</span>, a)</a>
+<a class="sourceLine" id="cb15-8" title="8">rle_count x n x&#39; <span class="fu">|</span> x <span class="fu">==</span> x&#39; <span class="fu">=</span> <span class="dt">NeedInput</span> (rle_count x (n <span class="fu">+</span> <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb15-9" title="9">                 <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span> <span class="dt">HasOutput</span> (n, x) (rle_start x&#39;)</a></code></pre></div>
+</div>
+</div>
+</div><div id="predefined-data-types" class="slide section level2">
+<h1><span class="header-section-number">2.13</span> Predefined data types</h1>
+</div><div class="slide section level2">
+
+<div id="booleans" class="section level3">
+<h3><span class="header-section-number">2.14.1</span> Booleans ☆</h3>
+<div class="incremental">
+<div class="sourceCode" id="cb16"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">data</span> <span class="dt">Bool</span> <span class="fu">=</span> <span class="dt">False</span> <span class="fu">|</span> <span class="dt">True</span></a></code></pre></div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="maybe" class="section level3">
+<h3><span class="header-section-number">2.15.1</span> <code>Maybe</code></h3>
+<div class="incremental">
+<div class="sourceCode" id="cb17"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">data</span> <span class="dt">Maybe</span> a <span class="fu">=</span> <span class="dt">Nothing</span> <span class="fu">|</span> <span class="dt">Just</span> a</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb18"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb18-1" title="1"><span class="ot">parseFoo ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Foo</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 16</strong></p>
+<p>How many values are there of type <code>Maybe (Maybe Bool)</code>. When can it be useful to nest <code>Maybe</code> in that way?</p>
+</div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="either" class="section level3">
+<h3><span class="header-section-number">2.16.1</span> <code>Either</code> ☆</h3>
+<div class="incremental">
+<div class="sourceCode" id="cb19"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">data</span> <span class="dt">Either</span> a b <span class="fu">=</span> <span class="dt">Left</span> a <span class="fu">|</span> <span class="dt">Right</span> b</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb20"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb20-1" title="1"><span class="ot">parseFoo ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">ParseError</span> <span class="dt">Foo</span></a></code></pre></div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="tuples" class="section level3">
+<h3><span class="header-section-number">2.17.1</span> Tuples</h3>
+</div>
+</div><div class="slide section level2">
+
+<div class="sourceCode" id="cb21" file="tuples.hs"><pre class="sourceCode haskell new-slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">data</span> <span class="dt">TwoIntegers</span> <span class="fu">=</span> <span class="dt">TwoIntegers</span> <span class="dt">Integer</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="ot">splitLastDigit ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">TwoIntegers</span></a>
+<a class="sourceLine" id="cb21-3" title="3">splitLastDigit n <span class="fu">=</span> <span class="dt">TwoIntegers</span> (n <span class="ot">`div`</span> <span class="dv">10</span>) (n <span class="ot">`mod`</span> <span class="dv">10</span>)</a></code></pre></div>
+</div><div class="slide section level2">
+
+<div class="sourceCode" id="cb22"><pre class="sourceCode haskell new-slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">data</span> <span class="dt">Two</span> a b <span class="fu">=</span> <span class="dt">Two</span> a b</a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="ot">splitLastDigit ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Two</span> <span class="dt">Integer</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb22-3" title="3">splitLastDigit n <span class="fu">=</span> <span class="dt">Two</span> (n <span class="ot">`div`</span> <span class="dv">10</span>) (n <span class="ot">`mod`</span> <span class="dv">10</span>)</a></code></pre></div>
+</div><div class="slide section level2">
+
+<div class="sourceCode" id="cb23"><pre class="sourceCode haskell new-slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">data</span> (a,b) <span class="fu">=</span> (a,b)</a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="ot">splitLastDigit ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> (<span class="dt">Integer</span>, <span class="dt">Integer</span>)</a>
+<a class="sourceLine" id="cb23-3" title="3">splitLastDigit n <span class="fu">=</span> (n <span class="ot">`div`</span> <span class="dv">10</span>, n <span class="ot">`mod`</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 17</strong></p>
+<p>How could you represent the Riemann numbers from the previous section using only these predefined data types?</p>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div class="sourceCode" id="cb24"><pre class="sourceCode haskell new-slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb24-1" title="1"><span class="fu">fst</span><span class="ot"> ::</span> (a,b) <span class="ot">-&gt;</span> a</a>
+<a class="sourceLine" id="cb24-2" title="2"><span class="fu">snd</span><span class="ot"> ::</span> (a,b) <span class="ot">-&gt;</span> b</a></code></pre></div>
+</div><div class="slide section level2">
+
+<div id="the-unit-type" class="section level3">
+<h3><span class="header-section-number">2.22.1</span> The unit type</h3>
+<div class="incremental">
+<div class="sourceCode" id="cb25"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">data</span> () <span class="fu">=</span> ()</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 18</strong></p>
+<p>Write functions</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb26-1" title="1"><span class="ot">fromEitherUnit ::</span> <span class="dt">Either</span> () a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> a</a></code></pre></div>
+<p>and</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb27-1" title="1"><span class="ot">toEitherUnit ::</span> <span class="dt">Maybe</span> a <span class="ot">-&gt;</span> <span class="dt">Either</span> () a</a></code></pre></div>
+<p>that are inverses to each other.</p>
+<p>In only one of these type signatures you can replace <code>()</code> with a new type variable <code>b</code>, and still implement the function. In which one? Why?</p>
+</div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="lists" class="section level3">
+<h3><span class="header-section-number">2.23.1</span> Lists</h3>
+<div class="incremental">
+<div class="sourceCode" id="cb28"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb28-1" title="1"><span class="kw">data</span> <span class="dt">List</span> a <span class="fu">=</span> <span class="dt">Empty</span> <span class="fu">|</span> <span class="dt">Link</span> a (<span class="dt">List</span> a)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb29"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">data</span> [a] <span class="fu">=</span> [] <span class="fu">|</span> a <span class="fu">:</span> [a]</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb30"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb30-1" title="1"><span class="ot">(++) ::</span> [a] <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]</a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="fu">map</span><span class="ot"> ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [b]</a></code></pre></div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="characters-and-strings" class="section level3">
+<h3><span class="header-section-number">2.24.1</span> Characters and strings ☆</h3>
+</div>
+</div><div id="records" class="slide section level2">
+<h1><span class="header-section-number">2.25</span> Records ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb31"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">data</span> <span class="dt">Employee</span> <span class="fu">=</span> <span class="dt">Employee</span></a>
+<a class="sourceLine" id="cb31-2" title="2">    {<span class="ot"> name ::</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb31-3" title="3">    ,<span class="ot"> room ::</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb31-4" title="4">    ,<span class="ot"> pubkey ::</span> <span class="dt">ByteString</span></a>
+<a class="sourceLine" id="cb31-5" title="5">    }</a>
+<a class="sourceLine" id="cb31-6" title="6"></a>
+<a class="sourceLine" id="cb31-7" title="7"><span class="ot">theBoss ::</span> <span class="dt">Employee</span></a>
+<a class="sourceLine" id="cb31-8" title="8">theBoss <span class="fu">=</span> <span class="dt">Employee</span> { name <span class="fu">=</span> <span class="st">&quot;Don Vito Corleone&quot;</span>, room <span class="fu">=</span> <span class="dv">101</span>, pubkey <span class="fu">=</span> <span class="st">&quot;0xAD…&quot;</span> }</a>
+<a class="sourceLine" id="cb31-9" title="9"></a>
+<a class="sourceLine" id="cb31-10" title="10"><span class="ot">willDrownWhenTheFloodComes ::</span> <span class="dt">Employee</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb31-11" title="11">willDrownWhenTheFloodComes <span class="dt">Employee</span> { room <span class="fu">=</span> r } <span class="fu">=</span> r <span class="fu">&lt;</span> <span class="dv">200</span></a>
+<a class="sourceLine" id="cb31-12" title="12"></a>
+<a class="sourceLine" id="cb31-13" title="13"><span class="ot">moveOneLevelUp ::</span> <span class="dt">Employee</span> <span class="ot">-&gt;</span> <span class="dt">Employee</span></a>
+<a class="sourceLine" id="cb31-14" title="14">moveOneLevelUp e <span class="fu">=</span> e { room <span class="fu">=</span> new_room }</a>
+<a class="sourceLine" id="cb31-15" title="15">  <span class="kw">where</span> new_room <span class="fu">=</span> room e <span class="fu">+</span> <span class="dv">100</span></a></code></pre></div>
+</div>
+</div><div id="newtypes" class="slide section level2">
+<h1><span class="header-section-number">2.26</span> Newtypes ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb32"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">newtype</span> <span class="dt">Riemann</span> <span class="fu">=</span> <span class="dt">Riemann</span> (<span class="dt">Maybe</span> (<span class="dt">Integer</span>, <span class="dt">Integer</span>))</a></code></pre></div>
+</div>
+</div><div id="type-synonyms" class="slide section level2">
+<h1><span class="header-section-number">2.27</span> Type synonyms ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb33"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">type</span> <span class="dt">String</span> <span class="fu">=</span> [<span class="dt">Char</span>]</a></code></pre></div>
+</div>
+</div><div id="haddock" class="slide section level2">
+<h1><span class="header-section-number">2.28</span> Haddock ☆</h1>
+</div>
+<div id="code-structure-small-and-large" class="title-slide slide section level1"><h1><span class="header-section-number">3</span> Code structure small and large</h1></div><div id="let-expressions" class="slide section level2">
+<h1><span class="header-section-number">3.1</span> <code>let</code>-expressions</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb34"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb34-1" title="1">isMultipleOf3 x <span class="fu">=</span> fixEq sumDigits x <span class="fu">==</span> <span class="dv">3</span> <span class="fu">||</span> fixEq sumDigits x <span class="fu">==</span> <span class="dv">6</span> <span class="fu">||</span> fixEq sumDigits x <span class="fu">==</span> <span class="dv">9</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb35"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb35-1" title="1">isMultipleOf3 x <span class="fu">=</span></a>
+<a class="sourceLine" id="cb35-2" title="2">  <span class="kw">let</span> y <span class="fu">=</span> fixEq sumDigits x</a>
+<a class="sourceLine" id="cb35-3" title="3">  <span class="kw">in</span> y <span class="fu">==</span> <span class="dv">3</span> <span class="fu">||</span> y <span class="fu">==</span> <span class="dv">6</span> <span class="fu">||</span> y <span class="fu">==</span> <span class="dv">9</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb36"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb36-1" title="1">isMultipleOf3 x <span class="fu">=</span></a>
+<a class="sourceLine" id="cb36-2" title="2">  <span class="kw">let</span> x <span class="fu">=</span> fixEq sumDigits x</a>
+<a class="sourceLine" id="cb36-3" title="3">  <span class="kw">in</span> x <span class="fu">==</span> <span class="dv">3</span> <span class="fu">||</span> x <span class="fu">==</span> <span class="dv">6</span> <span class="fu">||</span> x <span class="fu">==</span> <span class="dv">9</span></a></code></pre></div>
+</div>
+</div><div class="slide section level2">
+
+<div class="sourceCode" id="cb37"><pre class="sourceCode haskell new-slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb37-1" title="1"><span class="ot">sumDigitsWith ::</span> (<span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb37-2" title="2">sumDigitsWith f n</a>
+<a class="sourceLine" id="cb37-3" title="3">  <span class="fu">|</span> n <span class="fu">&lt;</span> <span class="dv">10</span> <span class="fu">=</span> f n</a>
+<a class="sourceLine" id="cb37-4" title="4">  <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span></a>
+<a class="sourceLine" id="cb37-5" title="5">    <span class="kw">let</span> (r,d) <span class="fu">=</span> splitLastDigit n</a>
+<a class="sourceLine" id="cb37-6" title="6">    <span class="kw">in</span> sumDigitsWith f r <span class="fu">+</span> f d</a></code></pre></div>
+<div class="incremental">
+<div class="sourceCode" id="cb38"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb38-1" title="1"><span class="ot">rle ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> <span class="dt">Stream</span> a (<span class="dt">Integer</span>,a)</a>
+<a class="sourceLine" id="cb38-2" title="2">rle <span class="fu">=</span></a>
+<a class="sourceLine" id="cb38-3" title="3">  <span class="kw">let</span> start x <span class="fu">=</span> <span class="dt">NeedInput</span> (count x <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb38-4" title="4">      count x n x&#39; <span class="fu">|</span> x <span class="fu">==</span> x&#39; <span class="fu">=</span> <span class="dt">NeedInput</span> (count x (n <span class="fu">+</span> <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb38-5" title="5">                   <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span> <span class="dt">HasOutput</span> (n, x) (start x&#39;)</a>
+<a class="sourceLine" id="cb38-6" title="6">  <span class="kw">in</span> <span class="dt">NeedInput</span> start</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb39"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb39-1" title="1"><span class="ot">rle ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Stream</span> a (<span class="dt">Integer</span>,a)</a>
+<a class="sourceLine" id="cb39-2" title="2">rle stop <span class="fu">=</span></a>
+<a class="sourceLine" id="cb39-3" title="3">  <span class="kw">let</span> start x <span class="fu">|</span> x <span class="fu">==</span> stop <span class="fu">=</span> <span class="dt">Done</span></a>
+<a class="sourceLine" id="cb39-4" title="4">              <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span> <span class="dt">NeedInput</span> (count x <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb39-5" title="5">      count x n x&#39; <span class="fu">|</span> x <span class="fu">==</span> x&#39; <span class="fu">=</span> <span class="dt">NeedInput</span> (count x (n <span class="fu">+</span> <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb39-6" title="6">                   <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span> <span class="dt">HasOutput</span> (n, x) (start x&#39;)</a>
+<a class="sourceLine" id="cb39-7" title="7">  <span class="kw">in</span> <span class="dt">NeedInput</span> start</a></code></pre></div>
+</div>
+</div><div id="where-clauses" class="slide section level2">
+<h1><span class="header-section-number">3.3</span> <code>where</code>-clauses ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb40"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb40-1" title="1"><span class="ot">rle ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Stream</span> a (<span class="dt">Integer</span>,a)</a>
+<a class="sourceLine" id="cb40-2" title="2">rle stop <span class="fu">=</span> <span class="dt">NeedInput</span> start</a>
+<a class="sourceLine" id="cb40-3" title="3">  <span class="kw">where</span></a>
+<a class="sourceLine" id="cb40-4" title="4">    start x <span class="fu">|</span> x <span class="fu">==</span> stop <span class="fu">=</span> <span class="dt">Done</span></a>
+<a class="sourceLine" id="cb40-5" title="5">            <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span> <span class="dt">NeedInput</span> (count x <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb40-6" title="6"></a>
+<a class="sourceLine" id="cb40-7" title="7">    count x n x&#39; <span class="fu">|</span> x <span class="fu">==</span> x&#39; <span class="fu">=</span> <span class="dt">NeedInput</span> (count x (n <span class="fu">+</span> <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb40-8" title="8">                 <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span> <span class="dt">HasOutput</span> (n, x) (start x&#39;)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb41"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb41-1" title="1"><span class="ot">sumDigitsWith ::</span> (<span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb41-2" title="2">sumDigitsWith f n</a>
+<a class="sourceLine" id="cb41-3" title="3">  <span class="fu">|</span> n <span class="fu">&lt;</span> <span class="dv">10</span> <span class="fu">=</span> f d</a>
+<a class="sourceLine" id="cb41-4" title="4">  <span class="fu">|</span> <span class="fu">otherwise</span> <span class="fu">=</span> sumDigitsWith f r <span class="fu">+</span> f d</a>
+<a class="sourceLine" id="cb41-5" title="5">  <span class="kw">where</span> (r,d) <span class="fu">=</span> splitLastDigit n</a></code></pre></div>
+</div>
+</div><div id="comments" class="slide section level2">
+<h1><span class="header-section-number">3.4</span> Comments ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb42"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb42-1" title="1">answer <span class="fu">=</span> <span class="dv">42</span> <span class="co">-- but what is the question?</span></a>
+<a class="sourceLine" id="cb42-2" title="2"></a>
+<a class="sourceLine" id="cb42-3" title="3"><span class="co">{-</span></a>
+<a class="sourceLine" id="cb42-4" title="4"><span class="co">In the following code, we write a function that correctly tells</span></a>
+<a class="sourceLine" id="cb42-5" title="5"><span class="co">us whether a Turing machine halts:</span></a>
+<a class="sourceLine" id="cb42-6" title="6"><span class="co">-}</span></a>
+<a class="sourceLine" id="cb42-7" title="7"><span class="ot">halts ::</span> <span class="dt">TuringMachine</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb42-8" title="8">halts turing_machine <span class="fu">=</span> halts turing_machine</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb43"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb43-1" title="1"><span class="co">{- |</span></a>
+<a class="sourceLine" id="cb43-2" title="2"><span class="co">In the following code, we write a function that correctly tells</span></a>
+<a class="sourceLine" id="cb43-3" title="3"><span class="co">us whether a turing machine halts:</span></a>
+<a class="sourceLine" id="cb43-4" title="4"><span class="co">-}</span></a>
+<a class="sourceLine" id="cb43-5" title="5"><span class="ot">halts ::</span> <span class="dt">TuringMachine</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb43-6" title="6">halts turing_machine <span class="fu">=</span> halts turing_machine</a></code></pre></div>
+</div>
+</div><div id="the-structure-of-a-module" class="slide section level2">
+<h1><span class="header-section-number">3.5</span> The structure of a module</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb44"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb44-1" title="1"><span class="co">-- in file Foo/Bar/Baz.hs</span></a>
+<a class="sourceLine" id="cb44-2" title="2"><span class="kw">module</span> <span class="dt">Foo.Bar.Baz</span> <span class="kw">where</span></a></code></pre></div>
+</div>
+</div><div id="importing-other-modules" class="slide section level2">
+<h1><span class="header-section-number">3.6</span> Importing other modules</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb45" file="Target.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb45-1" title="1"><span class="co">-- file Target.hs</span></a>
+<a class="sourceLine" id="cb45-2" title="2"><span class="kw">module</span> <span class="dt">Target</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb45-3" title="3"><span class="ot">who ::</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb45-4" title="4">who <span class="fu">=</span> <span class="st">&quot;world&quot;</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb46" file="Tropes.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb46-1" title="1"><span class="co">-- file Tropes.hs</span></a>
+<a class="sourceLine" id="cb46-2" title="2"><span class="kw">module</span> <span class="dt">Tropes</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb46-3" title="3"></a>
+<a class="sourceLine" id="cb46-4" title="4"><span class="kw">import</span> <span class="dt">Target</span></a>
+<a class="sourceLine" id="cb46-5" title="5"></a>
+<a class="sourceLine" id="cb46-6" title="6"><span class="ot">greeting ::</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb46-7" title="7">greeting <span class="fu">=</span> <span class="st">&quot;Hello &quot;</span> <span class="fu">++</span> who <span class="fu">++</span> <span class="st">&quot;!&quot;</span></a></code></pre></div>
+</div>
+</div><div id="import-lists" class="slide section level2">
+<h1><span class="header-section-number">3.7</span> Import lists ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb47"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">import</span> <span class="dt">Data.Maybe</span> (mapMaybe)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb48"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb48-1" title="1"><span class="kw">import</span> <span class="dt">Data.Function</span> ((&amp;), on)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb49" file="Riemann.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb49-1" title="1"><span class="co">-- file Riemann.hs</span></a>
+<a class="sourceLine" id="cb49-2" title="2"><span class="kw">module</span> <span class="dt">Riemann</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb49-3" title="3"><span class="kw">data</span> <span class="dt">Complex</span> <span class="fu">=</span> <span class="dt">C</span> <span class="dt">Integer</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb49-4" title="4"><span class="kw">data</span> <span class="dt">Riemann</span> <span class="fu">=</span> <span class="dt">Complex</span> <span class="dt">Complex</span> <span class="fu">|</span> <span class="dt">Infinity</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb50"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">import</span> <span class="dt">Riemann</span> (<span class="dt">Complex</span>(<span class="dt">C</span>), <span class="dt">Riemann</span>(<span class="dt">Complex</span>, <span class="dt">Infinity</span>))</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb51"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb51-1" title="1"><span class="kw">import</span> <span class="dt">Riemann</span> (<span class="dt">Complex</span>(..), <span class="dt">Riemann</span>(..))</a></code></pre></div>
+</div>
+</div><div id="export-lists-and-abstract-types" class="slide section level2">
+<h1><span class="header-section-number">3.8</span> Export lists and abstract types ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb52"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb52-1" title="1"><span class="kw">module</span> <span class="dt">Riemann</span> (<span class="dt">Complex</span>, <span class="dt">Riemann</span>(<span class="fu">..</span>)) <span class="kw">where</span></a>
+<a class="sourceLine" id="cb52-2" title="2">…</a></code></pre></div>
+</div>
+</div><div id="language-extensions" class="slide section level2">
+<h1><span class="header-section-number">3.9</span> Language extensions</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb53"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb53-1" title="1"><span class="ot">{-# LANGUAGE ApplicativeDo #-}</span></a>
+<a class="sourceLine" id="cb53-2" title="2"><span class="ot">{-# LANGUAGE CPP #-}</span></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="ot">{-# LANGUAGE DataKinds #-}</span></a>
+<a class="sourceLine" id="cb53-4" title="4"><span class="ot">{-# LANGUAGE FlexibleContexts #-}</span></a>
+<a class="sourceLine" id="cb53-5" title="5"><span class="ot">{-# LANGUAGE MonoLocalBinds #-}</span></a>
+<a class="sourceLine" id="cb53-6" title="6"><span class="ot">{-# LANGUAGE OverloadedStrings #-}</span></a>
+<a class="sourceLine" id="cb53-7" title="7"><span class="ot">{-# LANGUAGE PartialTypeSignatures #-}</span></a>
+<a class="sourceLine" id="cb53-8" title="8"><span class="ot">{-# LANGUAGE RecordWildCards #-}</span></a>
+<a class="sourceLine" id="cb53-9" title="9"><span class="ot">{-# LANGUAGE ScopedTypeVariables #-}</span></a>
+<a class="sourceLine" id="cb53-10" title="10"><span class="ot">{-# LANGUAGE TypeFamilies #-}</span></a>
+<a class="sourceLine" id="cb53-11" title="11"><span class="kw">module</span> <span class="dt">Foo</span> <span class="kw">where</span></a></code></pre></div>
+</div>
+</div><div id="haskell-packages" class="slide section level2">
+<h1><span class="header-section-number">3.10</span> Haskell packages ☆</h1>
+</div>
+<div id="io" class="title-slide slide section level1"><h1><span class="header-section-number">4</span> Imperative (looking) Haskell ☆</h1></div><div id="io-functions" class="slide section level2">
+<h1><span class="header-section-number">4.1</span> <code>IO</code>-functions</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb54"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb54-1" title="1"><span class="fu">getLine</span><span class="ot"> ::</span> <span class="dt">IO</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb54-2" title="2"><span class="fu">putStrLn</span><span class="ot"> ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb54-3" title="3"></a>
+<a class="sourceLine" id="cb54-4" title="4"><span class="fu">readFile</span><span class="ot"> ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb54-5" title="5"><span class="fu">writeFile</span><span class="ot"> ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a></code></pre></div>
+</div>
+</div><div id="the-main-function-and-do-notation" class="slide section level2">
+<h1><span class="header-section-number">4.2</span> The <code>main</code> function and <code>do</code> notation</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb55" file="copy.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb55-1" title="1">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb55-2" title="2">    <span class="fu">putStrLn</span> <span class="st">&quot;Which file do you want to copy?&quot;</span></a>
+<a class="sourceLine" id="cb55-3" title="3">    from <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb55-4" title="4">    <span class="fu">putStrLn</span> <span class="st">&quot;Where do you want to copy it to?&quot;</span></a>
+<a class="sourceLine" id="cb55-5" title="5">    to <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb55-6" title="6">    content <span class="ot">&lt;-</span> <span class="fu">readFile</span> from</a>
+<a class="sourceLine" id="cb55-7" title="7">    <span class="fu">putStrLn</span> (<span class="st">&quot;Read &quot;</span> <span class="fu">++</span> <span class="fu">show</span> (<span class="fu">length</span> content) <span class="fu">++</span> <span class="st">&quot; bytes.&quot;</span>)</a>
+<a class="sourceLine" id="cb55-8" title="8">    <span class="fu">writeFile</span> to content</a>
+<a class="sourceLine" id="cb55-9" title="9">    <span class="fu">putStrLn</span> <span class="st">&quot;Done copying.&quot;</span></a></code></pre></div>
+</div>
+</div><div id="writing-io-functions" class="slide section level2">
+<h1><span class="header-section-number">4.3</span> Writing <code>IO</code> functions</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb56" file="copy.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb56-1" title="1"><span class="ot">copyFile ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb56-2" title="2">copyFile from to <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb56-3" title="3">    content <span class="ot">&lt;-</span> <span class="fu">readFile</span> from</a>
+<a class="sourceLine" id="cb56-4" title="4">    <span class="fu">putStrLn</span> (<span class="st">&quot;Read &quot;</span> <span class="fu">++</span> <span class="fu">show</span> (<span class="fu">length</span> content) <span class="fu">++</span> <span class="st">&quot; bytes.&quot;</span>)</a>
+<a class="sourceLine" id="cb56-5" title="5">    <span class="fu">writeFile</span> to content</a>
+<a class="sourceLine" id="cb56-6" title="6"></a>
+<a class="sourceLine" id="cb56-7" title="7"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb56-8" title="8">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb56-9" title="9">    <span class="fu">putStrLn</span> <span class="st">&quot;Which file do you want to copy?&quot;</span></a>
+<a class="sourceLine" id="cb56-10" title="10">    from <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb56-11" title="11">    <span class="fu">putStrLn</span> <span class="st">&quot;Where do you want to copy it to?&quot;</span></a>
+<a class="sourceLine" id="cb56-12" title="12">    to <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb56-13" title="13">    copyFile from to</a>
+<a class="sourceLine" id="cb56-14" title="14">    <span class="fu">putStrLn</span> <span class="st">&quot;Done copying.&quot;</span></a></code></pre></div>
+</div>
+</div><div id="the-return-function" class="slide section level2">
+<h1><span class="header-section-number">4.4</span> The <code>return</code> function</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb57" file="copy.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb57-1" title="1"><span class="fu">return</span><span class="ot"> ::</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> a</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb58" file="copy.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb58-1" title="1"><span class="ot">fileSize ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb58-2" title="2">fileSize path <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb58-3" title="3">  content <span class="ot">&lt;-</span> <span class="fu">readFile</span> path</a>
+<a class="sourceLine" id="cb58-4" title="4">  <span class="fu">return</span> (<span class="fu">length</span> content)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 19</strong></p>
+<p>What does this program print?</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb59-1" title="1"><span class="ot">theAnswer ::</span> <span class="dt">IO</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb59-2" title="2">theAnswer <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb59-3" title="3">  <span class="fu">putStrLn</span> <span class="st">&quot;Pondering the question...&quot;</span></a>
+<a class="sourceLine" id="cb59-4" title="4">  <span class="fu">return</span> <span class="dv">23</span></a>
+<a class="sourceLine" id="cb59-5" title="5">  <span class="fu">return</span> <span class="dv">42</span></a>
+<a class="sourceLine" id="cb59-6" title="6"></a>
+<a class="sourceLine" id="cb59-7" title="7"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb59-8" title="8">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb59-9" title="9">  a <span class="ot">&lt;-</span> theAnswer</a>
+<a class="sourceLine" id="cb59-10" title="10">  <span class="fu">putStrLn</span> (<span class="fu">show</span> a)</a></code></pre></div>
+</div>
+</div>
+</div><div id="passing-io-functions-around" class="slide section level2">
+<h1><span class="header-section-number">4.5</span> Passing <code>IO</code> functions around</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb60"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb60-1" title="1"><span class="ot">copyFile ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb60-2" title="2">copyFile from to <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb60-3" title="3">    content <span class="ot">&lt;-</span> <span class="fu">readFile</span> from</a>
+<a class="sourceLine" id="cb60-4" title="4">    <span class="fu">putStrLn</span> (<span class="st">&quot;Read &quot;</span> <span class="fu">++</span> <span class="fu">show</span> (<span class="fu">length</span> content) <span class="fu">++</span> <span class="st">&quot; bytes.&quot;</span>)</a>
+<a class="sourceLine" id="cb60-5" title="5">    <span class="fu">writeFile</span> to content</a>
+<a class="sourceLine" id="cb60-6" title="6"></a>
+<a class="sourceLine" id="cb60-7" title="7"><span class="ot">ignore ::</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb60-8" title="8">ignore unused <span class="fu">=</span> <span class="fu">putStrLn</span> <span class="st">&quot;I ignore my argument!&quot;</span></a>
+<a class="sourceLine" id="cb60-9" title="9"></a>
+<a class="sourceLine" id="cb60-10" title="10"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb60-11" title="11">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb60-12" title="12">    <span class="fu">putStrLn</span> <span class="st">&quot;Which file do you want to copy?&quot;</span></a>
+<a class="sourceLine" id="cb60-13" title="13">    from <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb60-14" title="14">    <span class="fu">putStrLn</span> <span class="st">&quot;Where do you want to copy it to?&quot;</span></a>
+<a class="sourceLine" id="cb60-15" title="15">    to <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb60-16" title="16">    ignore (copyFile from to)</a>
+<a class="sourceLine" id="cb60-17" title="17">    <span class="fu">putStrLn</span> <span class="st">&quot;Done copying.&quot;</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb61" file="copy-dont-ignore.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb61-1" title="1"><span class="ot">copyFile ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb61-2" title="2">copyFile from to <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb61-3" title="3">    content <span class="ot">&lt;-</span> <span class="fu">readFile</span> from</a>
+<a class="sourceLine" id="cb61-4" title="4">    <span class="fu">putStrLn</span> (<span class="st">&quot;Read &quot;</span> <span class="fu">++</span> <span class="fu">show</span> (<span class="fu">length</span> content) <span class="fu">++</span> <span class="st">&quot; bytes.&quot;</span>)</a>
+<a class="sourceLine" id="cb61-5" title="5">    <span class="fu">writeFile</span> to content</a>
+<a class="sourceLine" id="cb61-6" title="6"></a>
+<a class="sourceLine" id="cb61-7" title="7"><span class="ot">don&#39;tignore ::</span> <span class="dt">IO</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb61-8" title="8">don&#39;tignore action <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb61-9" title="9">    <span class="fu">putStrLn</span> <span class="st">&quot;About to execute the action.&quot;</span></a>
+<a class="sourceLine" id="cb61-10" title="10">    action</a>
+<a class="sourceLine" id="cb61-11" title="11">    <span class="fu">putStrLn</span> <span class="st">&quot;I executed the action.&quot;</span></a>
+<a class="sourceLine" id="cb61-12" title="12"></a>
+<a class="sourceLine" id="cb61-13" title="13"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb61-14" title="14">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb61-15" title="15">    <span class="fu">putStrLn</span> <span class="st">&quot;Which file do you want to copy?&quot;</span></a>
+<a class="sourceLine" id="cb61-16" title="16">    from <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb61-17" title="17">    <span class="fu">putStrLn</span> <span class="st">&quot;Where do you want to copy it to?&quot;</span></a>
+<a class="sourceLine" id="cb61-18" title="18">    to <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb61-19" title="19">    don&#39;tignore (copyFile from to)</a>
+<a class="sourceLine" id="cb61-20" title="20">    <span class="fu">putStrLn</span> <span class="st">&quot;Done copying.&quot;</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 20</strong></p>
+<p>What does this program do?</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb62-1" title="1"><span class="ot">foo ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb62-2" title="2">foo <span class="dv">0</span> a <span class="fu">=</span> <span class="fu">putStrLn</span> <span class="st">&quot;Done&quot;</span></a>
+<a class="sourceLine" id="cb62-3" title="3">foo n a <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb62-4" title="4">   <span class="kw">if</span> n <span class="fu">==</span> <span class="dv">1</span> <span class="kw">then</span> <span class="fu">putStrLn</span> <span class="st">&quot;Almost done&quot;</span></a>
+<a class="sourceLine" id="cb62-5" title="5">             <span class="kw">else</span> <span class="fu">return</span> ()</a>
+<a class="sourceLine" id="cb62-6" title="6">   a</a>
+<a class="sourceLine" id="cb62-7" title="7">   foo (n<span class="fu">-</span><span class="dv">1</span>) a</a>
+<a class="sourceLine" id="cb62-8" title="8"></a>
+<a class="sourceLine" id="cb62-9" title="9"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb62-10" title="10">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb62-11" title="11">   foo <span class="dv">4</span> (<span class="fu">putStrLn</span> <span class="st">&quot;Hooray!&quot;</span>)</a>
+<a class="sourceLine" id="cb62-12" title="12">   foo <span class="dv">0</span> (<span class="fu">putStrLn</span> <span class="st">&quot;And up she rises.&quot;</span>)</a></code></pre></div>
+</div>
+</div>
+</div><div id="let-in-do" class="slide section level2">
+<h1><span class="header-section-number">4.6</span> <code>let</code> in <code>do</code> ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb63"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb63-1" title="1"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb63-2" title="2">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb63-3" title="3">    <span class="fu">putStrLn</span> <span class="st">&quot;Which file do you want to copy?&quot;</span></a>
+<a class="sourceLine" id="cb63-4" title="4">    from <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb63-5" title="5">    <span class="kw">let</span> to <span class="fu">=</span> from <span class="fu">++</span> <span class="st">&quot;.bak&quot;</span></a>
+<a class="sourceLine" id="cb63-6" title="6">    copyFile from to</a>
+<a class="sourceLine" id="cb63-7" title="7">    <span class="fu">putStrLn</span> (<span class="st">&quot;Created backup at &quot;</span> <span class="fu">++</span> to)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb64" file="let-do.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb64-1" title="1"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb64-2" title="2">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb64-3" title="3">    <span class="fu">putStrLn</span> <span class="st">&quot;Please press enter.&quot;</span></a>
+<a class="sourceLine" id="cb64-4" title="4">    input1 <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb64-5" title="5">    <span class="fu">putStrLn</span> <span class="st">&quot;Enter pressed.&quot;</span></a>
+<a class="sourceLine" id="cb64-6" title="6"></a>
+<a class="sourceLine" id="cb64-7" title="7">    <span class="fu">putStrLn</span> <span class="st">&quot;Please press enter.&quot;</span></a>
+<a class="sourceLine" id="cb64-8" title="8">    <span class="kw">let</span> input2 <span class="fu">=</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb64-9" title="9">    <span class="fu">putStrLn</span> <span class="st">&quot;Enter pressed.&quot;</span></a></code></pre></div>
+</div>
+</div><div id="the-operator" class="slide section level2">
+<h1><span class="header-section-number">4.7</span> The <code>&lt;$&gt;</code> operator ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb65"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb65-1" title="1"><span class="ot">fileSize ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb65-2" title="2">fileSize path <span class="fu">=</span> <span class="fu">length</span> <span class="fu">&lt;$&gt;</span> <span class="fu">readFile</span> path</a></code></pre></div>
+</div>
+</div>
+<div id="type-classes" class="title-slide slide section level1"><h1><span class="header-section-number">5</span> Type classes</h1></div><div id="overloading" class="slide section level2">
+<h1><span class="header-section-number">5.1</span> Overloading</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb66" file="Riemann.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb66-1" title="1"><span class="ot">eqComplex ::</span> <span class="dt">Complex</span> <span class="ot">-&gt;</span> <span class="dt">Complex</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb66-2" title="2">eqComplex (<span class="dt">C</span> x1 y1) (<span class="dt">C</span> x2 y2) <span class="fu">=</span> x1 <span class="fu">==</span> x2 <span class="fu">&amp;&amp;</span> y1 <span class="fu">==</span> y2</a>
+<a class="sourceLine" id="cb66-3" title="3"></a>
+<a class="sourceLine" id="cb66-4" title="4"><span class="ot">eqRiemann ::</span> <span class="dt">Riemann</span> <span class="ot">-&gt;</span> <span class="dt">Riemann</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb66-5" title="5">eqRiemann (<span class="dt">Complex</span> c1) (<span class="dt">Complex</span> c2) <span class="fu">=</span> c1 <span class="ot">`eqComplex`</span> c2</a>
+<a class="sourceLine" id="cb66-6" title="6">eqRiemann <span class="dt">Infinity</span> <span class="dt">Infinity</span> <span class="fu">=</span> <span class="dt">True</span></a>
+<a class="sourceLine" id="cb66-7" title="7">eqRiemann _ _ <span class="fu">=</span> <span class="dt">False</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb67"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb67-1" title="1"><span class="kw">class</span> <span class="dt">Eq</span> a <span class="kw">where</span></a>
+<a class="sourceLine" id="cb67-2" title="2"><span class="ot">    (==) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb68" file="Riemann.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb68-1" title="1"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Complex</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb68-2" title="2">    <span class="dt">C</span> x1 y1 <span class="fu">==</span> <span class="dt">C</span> x2 y2 <span class="fu">=</span> x1 <span class="fu">==</span> x2 <span class="fu">&amp;&amp;</span> y1 <span class="fu">==</span> y2</a>
+<a class="sourceLine" id="cb68-3" title="3"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Riemann</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb68-4" title="4">    (<span class="fu">==</span>) <span class="fu">=</span> eqRiemann</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 21</strong></p>
+<p>Write an <code>Eq</code> instance for <code>Employee</code>, using record accessors. Is there a problem with this code?</p>
+</div>
+</div>
+</div><div id="implicit-dependency-injection" class="slide section level2">
+<h1><span class="header-section-number">5.2</span> Implicit dependency injection</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb69"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb69-1" title="1"><span class="ot">fixEq ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a</a>
+<a class="sourceLine" id="cb69-2" title="2">fixEq f x <span class="fu">=</span> <span class="kw">if</span> x <span class="fu">==</span> f x <span class="kw">then</span> x <span class="kw">else</span> fixEq f (f x)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb70"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb70-1" title="1"><span class="ot">fixBy ::</span> (a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a</a>
+<a class="sourceLine" id="cb70-2" title="2">fixBy p f x <span class="fu">=</span> <span class="kw">if</span> x <span class="ot">`p`</span> f x <span class="kw">then</span> x <span class="kw">else</span> fixBy p f (f x)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb71"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb71-1" title="1"><span class="ot">fixEq ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a</a>
+<a class="sourceLine" id="cb71-2" title="2">fixEq <span class="fu">=</span> fixBy (<span class="fu">==</span>)</a></code></pre></div>
+</div>
+</div><div id="polymorphism-over-types-with-structure" class="slide section level2">
+<h1><span class="header-section-number">5.3</span> Polymorphism over types with structure</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb72" file="PolyTree.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb72-1" title="1"><span class="ot">isSorted ::</span> <span class="dt">Ord</span> a <span class="ot">=&gt;</span> <span class="dt">Tree</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb72-2" title="2">isSorted <span class="fu">=</span> everyNode <span class="fu">$</span> \y t1 t2 <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb72-3" title="3">    everyValue (\x <span class="ot">-&gt;</span> x <span class="fu">&lt;=</span> y) t1 <span class="fu">&amp;&amp;</span></a>
+<a class="sourceLine" id="cb72-4" title="4">    everyValue (\z <span class="ot">-&gt;</span> y <span class="fu">&lt;=</span> z) t2</a>
+<a class="sourceLine" id="cb72-5" title="5"></a>
+<a class="sourceLine" id="cb72-6" title="6"><span class="ot">everyValue ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> <span class="dt">Tree</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb72-7" title="7">everyValue p <span class="fu">=</span> everyNode (\x _ _ <span class="ot">-&gt;</span> p x)</a>
+<a class="sourceLine" id="cb72-8" title="8"></a>
+<a class="sourceLine" id="cb72-9" title="9"><span class="ot">everyNode ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Tree</span> a <span class="ot">-&gt;</span> <span class="dt">Tree</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> <span class="dt">Tree</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb72-10" title="10">everyNode p (<span class="dt">Node</span> x t1 t2) <span class="fu">=</span> p x t1 t2 <span class="fu">&amp;&amp;</span> everyNode p t1 <span class="fu">&amp;&amp;</span> everyNode p t2</a>
+<a class="sourceLine" id="cb72-11" title="11">everyNode _ <span class="dt">Leaf</span> <span class="fu">=</span> <span class="dt">True</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb73" file="PolyTree.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb73-1" title="1"><span class="kw">data</span> <span class="dt">ABC</span> <span class="fu">=</span> <span class="dt">A</span> <span class="fu">|</span> <span class="dt">B</span> <span class="fu">|</span> <span class="dt">C</span> <span class="kw">deriving</span> <span class="dt">Eq</span></a>
+<a class="sourceLine" id="cb73-2" title="2"><span class="kw">instance</span> <span class="dt">Ord</span> <span class="dt">ABC</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb73-3" title="3">  x <span class="fu">&lt;=</span> y <span class="fu">|</span> x <span class="fu">==</span> y <span class="fu">=</span> <span class="dt">True</span></a>
+<a class="sourceLine" id="cb73-4" title="4">  <span class="dt">A</span> <span class="fu">&lt;=</span> <span class="dt">B</span> <span class="fu">=</span> <span class="dt">True</span></a>
+<a class="sourceLine" id="cb73-5" title="5">  <span class="dt">B</span> <span class="fu">&lt;=</span> <span class="dt">C</span> <span class="fu">=</span> <span class="dt">True</span></a>
+<a class="sourceLine" id="cb73-6" title="6">  _ <span class="fu">&lt;=</span> _ <span class="fu">=</span> <span class="dt">False</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb74"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb74-1" title="1"><span class="kw">class</span> <span class="dt">IntAble</span> a <span class="kw">where</span><span class="ot"> toInteger ::</span> a <span class="ot">-&gt;</span> <span class="dt">Integer</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 22</strong></p>
+<p>Look up the <code>Semigroup</code> type class, and find its laws.</p>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 23</strong></p>
+<p>Can you think of a <code>Semigroup (Tree a)</code> instance? Or maybe even more than one? How can you be sure it is a lawful instance?</p>
+</div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 24</strong></p>
+<p>The <a href="http://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid"><code>Monoid</code> class</a> extends the <code>Semigroup</code> class with an operation <code>mempty :: Monoid a =&gt; a</code> that is supposed to be a neutral element of <code>(&lt;&gt;)</code>.</p>
+<p>Given a function signature <code>summarize :: Monoid a =&gt; Tree a -&gt; a</code>, can you guess what it does? What would be the implementation you expect?</p>
+<p>With that implementation, can you use <code>summarize</code> to distinguish trees that differ in shape, but have the same elements in the same order? What does this imply for search trees?</p>
+</div>
+</div>
+</div><div id="type-driven-code-synthesis" class="slide section level2">
+<h1><span class="header-section-number">5.4</span> Type-driven code synthesis</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb75" file="Finite.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb75-1" title="1"><span class="kw">class</span> <span class="dt">Finite</span> a <span class="kw">where</span></a>
+<a class="sourceLine" id="cb75-2" title="2"><span class="ot">    size ::</span> <span class="dt">Integer</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb76" file="Finite-pragmas"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb76-1" title="1"><span class="ot">{-# LANGUAGE AllowAmbiguousTypes #-}</span></a>
+<a class="sourceLine" id="cb76-2" title="2"><span class="ot">{-# LANGUAGE TypeApplications #-}</span></a>
+<a class="sourceLine" id="cb76-3" title="3"><span class="ot">{-# LANGUAGE ScopedTypeVariables #-}</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb77" file="Finite.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb77-1" title="1"><span class="kw">instance</span> <span class="dt">Finite</span> <span class="dt">Bool</span> <span class="kw">where</span> size <span class="fu">=</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb77-2" title="2"><span class="kw">instance</span> <span class="dt">Finite</span> () <span class="kw">where</span> size <span class="fu">=</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb77-3" title="3"><span class="kw">data</span> <span class="dt">Suit</span> <span class="fu">=</span> <span class="dt">Diamonds</span> <span class="fu">|</span> <span class="dt">Clubs</span> <span class="fu">|</span> <span class="dt">Hearts</span> <span class="fu">|</span> <span class="dt">Spades</span></a>
+<a class="sourceLine" id="cb77-4" title="4"><span class="kw">instance</span> <span class="dt">Finite</span> <span class="dt">Suit</span> <span class="kw">where</span> size <span class="fu">=</span> <span class="dv">4</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb78" file="Finite.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb78-1" title="1"><span class="kw">instance</span> <span class="dt">Finite</span> a <span class="ot">=&gt;</span> <span class="dt">Finite</span> (<span class="dt">Maybe</span> a) <span class="kw">where</span></a>
+<a class="sourceLine" id="cb78-2" title="2">    size <span class="fu">=</span> size <span class="fu">@</span>a <span class="fu">+</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb78-3" title="3"><span class="kw">instance</span> (<span class="dt">Finite</span> a, <span class="dt">Finite</span> b) <span class="ot">=&gt;</span> <span class="dt">Finite</span> (a,b) <span class="kw">where</span></a>
+<a class="sourceLine" id="cb78-4" title="4">    size <span class="fu">=</span> size <span class="fu">@</span>a <span class="fu">*</span> size <span class="fu">@</span>b</a>
+<a class="sourceLine" id="cb78-5" title="5"><span class="kw">instance</span> (<span class="dt">Finite</span> a, <span class="dt">Finite</span> b) <span class="ot">=&gt;</span> <span class="dt">Finite</span> (<span class="dt">Either</span> a b) <span class="kw">where</span></a>
+<a class="sourceLine" id="cb78-6" title="6">    size <span class="fu">=</span> size <span class="fu">@</span>a <span class="fu">+</span> size <span class="fu">@</span>b</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb79" file="Finite.hs"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb79-1" title="1"><span class="kw">instance</span> (<span class="dt">Finite</span> a, <span class="dt">Finite</span> b) <span class="ot">=&gt;</span> <span class="dt">Finite</span> (a <span class="ot">-&gt;</span> b) <span class="kw">where</span></a>
+<a class="sourceLine" id="cb79-2" title="2">    size <span class="fu">=</span> size <span class="fu">@</span>b <span class="fu">^</span> size <span class="fu">@</span>a</a></code></pre></div>
+</div>
+</div><div id="common-pre-defined-type-classes" class="slide section level2">
+<h1><span class="header-section-number">5.5</span> Common pre-defined type classes ☆</h1>
+</div>
+<div id="monads" class="title-slide slide section level1"><h1><span class="header-section-number">6</span> Monads</h1></div><div id="kinds" class="slide section level2">
+<h1><span class="header-section-number">6.1</span> Kinds</h1>
+</div><div id="the-kind-of-type-classes" class="slide section level2">
+<h1><span class="header-section-number">6.2</span> The kind of type classes</h1>
+</div><div id="a-close-look-at--" class="slide section level2">
+<h1><span class="header-section-number">6.3</span> A close look at <code>* -&gt; *</code></h1>
+<div class="incremental">
+<div class="sourceCode" id="cb80"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb80-1" title="1"><span class="kw">data</span> <span class="dt">Maybe</span> a <span class="fu">=</span> <span class="dt">Nothing</span> <span class="fu">|</span> <span class="dt">Just</span> a</a>
+<a class="sourceLine" id="cb80-2" title="2"><span class="kw">data</span> <span class="dt">Either</span> e a <span class="fu">=</span> <span class="dt">Left</span> e <span class="fu">|</span> <span class="dt">Right</span> a</a>
+<a class="sourceLine" id="cb80-3" title="3"><span class="kw">data</span> [a] <span class="fu">=</span> [] <span class="fu">|</span> a <span class="fu">:</span> [a]</a>
+<a class="sourceLine" id="cb80-4" title="4"><span class="kw">newtype</span> <span class="dt">Identity</span> a <span class="fu">=</span> <span class="dt">Identity</span> a</a>
+<a class="sourceLine" id="cb80-5" title="5"><span class="kw">data</span> <span class="dt">Proxy</span> a <span class="fu">=</span> <span class="dt">Proxy</span></a>
+<a class="sourceLine" id="cb80-6" title="6"><span class="kw">newtype</span> <span class="dt">Reader</span> r a <span class="fu">=</span> <span class="dt">Reader</span> (r <span class="ot">-&gt;</span> a))</a>
+<a class="sourceLine" id="cb80-7" title="7"><span class="kw">newtype</span> <span class="dt">State</span> s a <span class="fu">=</span> <span class="dt">State</span> (s <span class="ot">-&gt;</span> (a, s))</a>
+<a class="sourceLine" id="cb80-8" title="8"><span class="kw">newtype</span> <span class="dt">Parser</span> a <span class="fu">=</span> <span class="dt">Parser</span> (<span class="dt">String</span> <span class="ot">-&gt;</span> [(a,<span class="dt">String</span>)])</a>
+<a class="sourceLine" id="cb80-9" title="9"><span class="kw">data</span> <span class="dt">IO</span> a <span class="fu">=</span>  ¯\_(ツ)_<span class="fu">/</span>¯</a></code></pre></div>
+</div>
+</div><div id="the-monad-type-class" class="slide section level2">
+<h1><span class="header-section-number">6.4</span> The <code>Monad</code> type class</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb81"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb81-1" title="1"><span class="ot">andThen ::</span> <span class="dt">Maybe</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b) <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b</a>
+<a class="sourceLine" id="cb81-2" title="2"><span class="ot">andThenEither ::</span> <span class="dt">Either</span> e a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Either</span> e b) <span class="ot">-&gt;</span> <span class="dt">Either</span> e b</a>
+<a class="sourceLine" id="cb81-3" title="3"><span class="ot">flipConcatMap ::</span> [a] <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> [b]) <span class="ot">-&gt;</span> [b]</a>
+<a class="sourceLine" id="cb81-4" title="4"><span class="ot">bindIdentity ::</span> <span class="dt">Identity</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Identity</span> b) <span class="ot">-&gt;</span> <span class="dt">Identity</span> b</a>
+<a class="sourceLine" id="cb81-5" title="5"><span class="ot">bindProxy ::</span> <span class="dt">Proxy</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Proxy</span> b) <span class="ot">-&gt;</span> <span class="dt">Proxy</span> b</a>
+<a class="sourceLine" id="cb81-6" title="6"><span class="ot">bindReader ::</span> <span class="dt">Reader</span> r a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Reader</span> r b) <span class="ot">-&gt;</span> <span class="dt">Reader</span> r b</a>
+<a class="sourceLine" id="cb81-7" title="7"><span class="ot">bindState ::</span> <span class="dt">State</span> s a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">State</span> s b) <span class="ot">-&gt;</span> <span class="dt">State</span> s b</a>
+<a class="sourceLine" id="cb81-8" title="8"><span class="ot">bindParser ::</span> <span class="dt">Parser</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Parser</span> b) <span class="ot">-&gt;</span> <span class="dt">Parser</span> b</a>
+<a class="sourceLine" id="cb81-9" title="9"><span class="ot">bindIO ::</span> <span class="dt">IO</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">IO</span> b) <span class="ot">-&gt;</span> <span class="dt">IO</span> b</a></code></pre></div>
+</div>
+</div><div class="slide section level2">
+
+<div id="the-definition" class="section level3">
+<h3><span class="header-section-number">6.5.1</span> The definition</h3>
+<div class="incremental">
+<div class="sourceCode" id="cb82"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb82-1" title="1"><span class="kw">class</span> <span class="dt">Applicative</span> m <span class="ot">=&gt;</span> <span class="dt">Monad</span> m <span class="kw">where</span></a>
+<a class="sourceLine" id="cb82-2" title="2"><span class="ot">    return ::</span> a <span class="ot">-&gt;</span> m a</a>
+<a class="sourceLine" id="cb82-3" title="3"><span class="ot">    (&gt;&gt;=)  ::</span> m a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> m b</a>
+<a class="sourceLine" id="cb82-4" title="4"></a>
+<a class="sourceLine" id="cb82-5" title="5"><span class="co">-- Laws:</span></a>
+<a class="sourceLine" id="cb82-6" title="6"><span class="co">-- return a &gt;&gt;= k = k a</span></a>
+<a class="sourceLine" id="cb82-7" title="7"><span class="co">-- m &gt;&gt;= return = m</span></a>
+<a class="sourceLine" id="cb82-8" title="8"><span class="co">-- m &gt;&gt;= (\x -&gt; k x &gt;&gt;= h) = (m &gt;&gt;= k) &gt;&gt;= h</span></a></code></pre></div>
+</div>
+</div>
+</div><div class="slide section level2">
+
+<div id="the-operations" class="section level3">
+<h3><span class="header-section-number">6.6.1</span> The operations</h3>
+</div>
+</div><div class="slide section level2">
+
+<div id="the-laws" class="section level3">
+<h3><span class="header-section-number">6.7.1</span> The laws</h3>
+</div>
+</div><div class="slide section level2">
+
+<div id="no-escape" class="section level3">
+<h3><span class="header-section-number">6.8.1</span> No escape?</h3>
+</div>
+</div><div id="monad-ops" class="slide section level2">
+<h1><span class="header-section-number">6.9</span> More monad operations ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb83"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb83-1" title="1"><span class="ot">(&gt;&gt;)    ::</span> <span class="dt">Monad</span> m       <span class="ot">=&gt;</span> m a        <span class="ot">-&gt;</span> m b <span class="ot">-&gt;</span> m b</a>
+<a class="sourceLine" id="cb83-2" title="2"><span class="fu">fmap</span><span class="ot">    ::</span> <span class="dt">Functor</span> f     <span class="ot">=&gt;</span>   (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</a>
+<a class="sourceLine" id="cb83-3" title="3"><span class="ot">(&lt;$&gt;)   ::</span> <span class="dt">Functor</span> f     <span class="ot">=&gt;</span>   (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</a>
+<a class="sourceLine" id="cb83-4" title="4"><span class="ot">(&lt;$)    ::</span> <span class="dt">Functor</span> f     <span class="ot">=&gt;</span>   a        <span class="ot">-&gt;</span> f b <span class="ot">-&gt;</span> f a</a>
+<a class="sourceLine" id="cb83-5" title="5"><span class="ot">(&lt;*&gt;)   ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> f (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</a>
+<a class="sourceLine" id="cb83-6" title="6"><span class="ot">(&lt;*)    ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> f a        <span class="ot">-&gt;</span> f b <span class="ot">-&gt;</span> f a</a>
+<a class="sourceLine" id="cb83-7" title="7"><span class="ot">(*&gt;)    ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> f a        <span class="ot">-&gt;</span> f b <span class="ot">-&gt;</span> f b</a>
+<a class="sourceLine" id="cb83-8" title="8"><span class="ot">liftA2  ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> c) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b <span class="ot">-&gt;</span> f c</a>
+<a class="sourceLine" id="cb83-9" title="9"><span class="ot">(&gt;=&gt;)   ::</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> (b <span class="ot">-&gt;</span> m c) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> m c)</a>
+<a class="sourceLine" id="cb83-10" title="10"><span class="ot">join    ::</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> m (m a) <span class="ot">-&gt;</span> m a</a>
+<a class="sourceLine" id="cb83-11" title="11"><span class="fu">mapM</span><span class="ot">    ::</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> m [b]</a>
+<a class="sourceLine" id="cb83-12" title="12"><span class="fu">mapM_</span><span class="ot">   ::</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> m ()</a>
+<a class="sourceLine" id="cb83-13" title="13"><span class="ot">forM    ::</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> [a] <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> m [b]</a>
+<a class="sourceLine" id="cb83-14" title="14"><span class="ot">forM_   ::</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> [a] <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> m ()</a>
+<a class="sourceLine" id="cb83-15" title="15"><span class="ot">when    ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> f () <span class="ot">-&gt;</span> f ()</a>
+<a class="sourceLine" id="cb83-16" title="16"><span class="ot">unless  ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> f () <span class="ot">-&gt;</span> f ()</a>
+<a class="sourceLine" id="cb83-17" title="17"><span class="ot">forever ::</span> <span class="dt">Applicative</span> f <span class="ot">=&gt;</span> f a <span class="ot">-&gt;</span> f b</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb84"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb84-1" title="1"><span class="ot">getName ::</span> <span class="dt">IO</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb84-2" title="2">getName <span class="fu">=</span> <span class="fu">putStr</span> <span class="st">&quot;What is your name? &quot;</span> <span class="fu">&gt;&gt;</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb84-3" title="3"></a>
+<a class="sourceLine" id="cb84-4" title="4"><span class="co">-- parses the format `23+42i` as a complex number</span></a>
+<a class="sourceLine" id="cb84-5" title="5"><span class="ot">parseComplex ::</span> <span class="dt">Parser</span> <span class="dt">Complex</span></a>
+<a class="sourceLine" id="cb84-6" title="6">parseComplex <span class="fu">=</span> <span class="dt">C</span> <span class="fu">&lt;$&gt;</span> parseInteger <span class="fu">&lt;*</span> parseStr <span class="st">&quot;+&quot;</span> <span class="fu">&lt;*&gt;</span> parseInteger <span class="fu">&lt;*</span> parseStr <span class="st">&quot;i&quot;</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 25</strong></p>
+<p>Give definitions of the operators up to <code>join</code> using <code>(&gt;&gt;=)</code>, <code>return</code>, and operators you already defined. (You will have to change the constraints to <code>Monad</code> for this to typecheck.)</p>
+</div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb85"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb85-1" title="1"><span class="fu">return</span> <span class="fu">&gt;=&gt;</span> m <span class="fu">=</span> m</a>
+<a class="sourceLine" id="cb85-2" title="2">m <span class="fu">&gt;=&gt;</span> <span class="fu">return</span> <span class="fu">=</span> m</a>
+<a class="sourceLine" id="cb85-3" title="3">(a <span class="fu">&gt;=&gt;</span> b) <span class="fu">&gt;=&gt;</span> c <span class="fu">=</span> a <span class="fu">&gt;=&gt;</span> (b <span class="fu">&gt;=&gt;</span> c)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 26</strong></p>
+<p>Why is the type not <code>when :: Bool -&gt; m a -&gt; m a</code>?</p>
+</div>
+</div>
+</div><div id="do-notation" class="slide section level2">
+<h1><span class="header-section-number">6.10</span> <code>do</code> notation ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb86"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb86-1" title="1"><span class="co">-- parses the format `23+42i` as a complex number</span></a>
+<a class="sourceLine" id="cb86-2" title="2"><span class="ot">parseComplex ::</span> <span class="dt">Parser</span> <span class="dt">Complex</span></a>
+<a class="sourceLine" id="cb86-3" title="3">parseComplex <span class="fu">=</span></a>
+<a class="sourceLine" id="cb86-4" title="4">  parseInteger <span class="fu">&gt;&gt;=</span> \r <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb86-5" title="5">  parseStr <span class="st">&quot;+&quot;</span> <span class="fu">&gt;&gt;=</span> \_ <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb86-6" title="6">  parseInteger <span class="fu">&gt;&gt;=</span> \i <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb86-7" title="7">  parseStr <span class="st">&quot;i&quot;</span> <span class="fu">&gt;&gt;=</span> \_ <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb86-8" title="8">  <span class="fu">return</span> (<span class="dt">C</span> r i)</a>
+<a class="sourceLine" id="cb86-9" title="9"></a>
+<a class="sourceLine" id="cb86-10" title="10"><span class="co">-- parses a sequence of such numbers, with the length given before</span></a>
+<a class="sourceLine" id="cb86-11" title="11"><span class="ot">parseSequence ::</span> <span class="dt">Parser</span> [<span class="dt">Complex</span>]</a>
+<a class="sourceLine" id="cb86-12" title="12">parseSequence <span class="fu">=</span></a>
+<a class="sourceLine" id="cb86-13" title="13">  parseInteger <span class="fu">&gt;&gt;=</span> \n <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb86-14" title="14">  forM [<span class="dv">1</span><span class="fu">..</span>n] (\_ <span class="ot">-&gt;</span> parseComplex)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb87"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb87-1" title="1"><span class="co">-- parses the format `23+42i` as a complex number</span></a>
+<a class="sourceLine" id="cb87-2" title="2"><span class="ot">parseComplex ::</span> <span class="dt">Parser</span> <span class="dt">Complex</span></a>
+<a class="sourceLine" id="cb87-3" title="3">parseComplex <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb87-4" title="4">  r <span class="ot">&lt;-</span> parseInteger</a>
+<a class="sourceLine" id="cb87-5" title="5">  parseStr <span class="st">&quot;+&quot;</span></a>
+<a class="sourceLine" id="cb87-6" title="6">  i <span class="ot">&lt;-</span> parseInteger</a>
+<a class="sourceLine" id="cb87-7" title="7">  parseStr <span class="st">&quot;i&quot;</span></a>
+<a class="sourceLine" id="cb87-8" title="8">  <span class="fu">return</span> (<span class="dt">C</span> r i)</a>
+<a class="sourceLine" id="cb87-9" title="9"></a>
+<a class="sourceLine" id="cb87-10" title="10"><span class="co">-- parses a sequence of such numbers, with the length given before</span></a>
+<a class="sourceLine" id="cb87-11" title="11"><span class="ot">parseSequence ::</span> <span class="dt">Parser</span> [<span class="dt">Complex</span>]</a>
+<a class="sourceLine" id="cb87-12" title="12">parseSequence <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb87-13" title="13">  n <span class="ot">&lt;-</span> parseInteger</a>
+<a class="sourceLine" id="cb87-14" title="14">  forM [<span class="dv">1</span><span class="fu">..</span>n] (\_ <span class="ot">-&gt;</span> parseComplex)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb88"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb88-1" title="1"><span class="kw">do</span> x <span class="ot">&lt;-</span> a     ⟹  a <span class="fu">&gt;&gt;=</span> (\x <span class="ot">-&gt;</span> <span class="kw">do</span> more)          <span class="kw">do</span> a          ⟹  a <span class="fu">&gt;&gt;=</span> (\_ <span class="ot">-&gt;</span> <span class="kw">do</span> more)</a>
+<a class="sourceLine" id="cb88-2" title="2">   more                                             more</a>
+<a class="sourceLine" id="cb88-3" title="3"></a>
+<a class="sourceLine" id="cb88-4" title="4"><span class="kw">do</span> <span class="kw">let</span> x <span class="fu">=</span> e  ⟹  <span class="kw">let</span> x <span class="fu">=</span> e <span class="kw">in</span> <span class="kw">do</span> more           <span class="kw">do</span> a          ⟹  a</a>
+<a class="sourceLine" id="cb88-5" title="5">   more</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb89"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb89-1" title="1"><span class="ot">copyFile ::</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">FilePath</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb89-2" title="2">copyFile from to <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb89-3" title="3">    content <span class="ot">&lt;-</span> <span class="fu">readFile</span> from</a>
+<a class="sourceLine" id="cb89-4" title="4">    <span class="fu">putStrLn</span> (<span class="st">&quot;Read &quot;</span> <span class="fu">++</span> <span class="fu">show</span> (<span class="fu">length</span> content) <span class="fu">++</span> <span class="st">&quot; bytes.&quot;</span>)</a>
+<a class="sourceLine" id="cb89-5" title="5">    <span class="fu">writeFile</span> to content</a>
+<a class="sourceLine" id="cb89-6" title="6"></a>
+<a class="sourceLine" id="cb89-7" title="7"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb89-8" title="8">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb89-9" title="9">    <span class="fu">putStrLn</span> <span class="st">&quot;Which file do you want to copy?&quot;</span></a>
+<a class="sourceLine" id="cb89-10" title="10">    from <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb89-11" title="11">    <span class="fu">putStrLn</span> <span class="st">&quot;Where do you want to copy it to?&quot;</span></a>
+<a class="sourceLine" id="cb89-12" title="12">    to <span class="ot">&lt;-</span> <span class="fu">getLine</span></a>
+<a class="sourceLine" id="cb89-13" title="13">    copyFile from to</a>
+<a class="sourceLine" id="cb89-14" title="14">    <span class="fu">putStrLn</span> <span class="st">&quot;Done copying.&quot;</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 27</strong></p>
+<p>Implement <code>forM :: Monad m =&gt; [a] -&gt; (a -&gt; m b) -&gt; m [b]</code> using <code>do</code>-notation.</p>
+</div>
+</div>
+</div><div id="functor-and-applicative" class="slide section level2">
+<h1><span class="header-section-number">6.11</span> <code>Functor</code> and <code>Applicative</code> ☆</h1>
+<div class="incremental">
+<div class="sourceCode" id="cb90"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb90-1" title="1"><span class="kw">class</span> <span class="dt">Functor</span> f <span class="kw">where</span></a>
+<a class="sourceLine" id="cb90-2" title="2"><span class="ot">  fmap ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</a>
+<a class="sourceLine" id="cb90-3" title="3"></a>
+<a class="sourceLine" id="cb90-4" title="4"><span class="co">-- Laws:</span></a>
+<a class="sourceLine" id="cb90-5" title="5"><span class="co">-- fmap id = id</span></a>
+<a class="sourceLine" id="cb90-6" title="6"><span class="co">-- fmap f . fmap g = fmap (f . g)</span></a>
+<a class="sourceLine" id="cb90-7" title="7"></a>
+<a class="sourceLine" id="cb90-8" title="8"><span class="kw">class</span> <span class="dt">Functor</span> f <span class="ot">=&gt;</span> <span class="dt">Applicative</span> f <span class="kw">where</span></a>
+<a class="sourceLine" id="cb90-9" title="9"><span class="ot">  pure ::</span> a <span class="ot">-&gt;</span> f a</a>
+<a class="sourceLine" id="cb90-10" title="10"><span class="ot">  (&lt;*&gt;) ::</span> f (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> f a <span class="ot">-&gt;</span> f b</a>
+<a class="sourceLine" id="cb90-11" title="11"></a>
+<a class="sourceLine" id="cb90-12" title="12"><span class="co">-- Laws:</span></a>
+<a class="sourceLine" id="cb90-13" title="13"><span class="co">-- pure id &lt;*&gt; v = v</span></a>
+<a class="sourceLine" id="cb90-14" title="14"><span class="co">-- pure (.) &lt;*&gt; u &lt;*&gt; v &lt;*&gt; w = u &lt;*&gt; (v &lt;*&gt; w)</span></a>
+<a class="sourceLine" id="cb90-15" title="15"><span class="co">-- pure f &lt;*&gt; pure x = pure (f x)</span></a>
+<a class="sourceLine" id="cb90-16" title="16"><span class="co">-- u &lt;*&gt; pure y = pure ($ y) &lt;*&gt; u</span></a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb91"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb91-1" title="1"><span class="kw">data</span> <span class="dt">Two</span> a <span class="fu">=</span> <span class="dt">Two</span> a a</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb92"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb92-1" title="1"><span class="kw">instance</span> <span class="dt">Functor</span> <span class="dt">Two</span> <span class="kw">where</span> <span class="fu">fmap</span> f (<span class="dt">Two</span> x y) <span class="fu">=</span> <span class="dt">Two</span> (f x) (f y)</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb93"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb93-1" title="1"><span class="kw">data</span> <span class="dt">Tagged</span> t a <span class="fu">=</span> <span class="dt">Tagged</span> t a</a></code></pre></div>
+</div>
+<div class="incremental">
+<div class="Exercise">
+<p><strong>Exercise 28</strong></p>
+<p>You might observe that <code>Tagged</code> is simply the existing pair type. There is an <code>Applicative</code> instance for pairs. Look it up! How does that fit to what I just said?</p>
+</div>
+</div>
+<div class="incremental">
+<div class="sourceCode" id="cb94"><pre class="sourceCode haskell slide"><code class="sourceCode haskell"><a class="sourceLine" id="cb94-1" title="1"><span class="kw">newtype</span> <span class="dt">Printer</span> a <span class="fu">=</span> <span class="dt">Printer</span> (a <span class="ot">-&gt;</span> <span class="dt">String</span>)</a></code></pre></div>
+</div>
+</div>
+</body>
+</html>

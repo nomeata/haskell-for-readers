@@ -1,0 +1,38 @@
+/*
+body {
+    counter-reset:exercise;
+}
+
+div.Exercise:before {
+    counter-increment:exercise;
+    content:"Exercise " counter(exercise);
+    font-weight:bold;
+}
+
+div.Solution:before {
+    content:"Solution " counter(exercise);
+    font-weight:bold;
+}
+*/
+
+@media only screen {
+  div.Solution {
+    filter: blur(.3em);
+  }
+  div.Solution.revealed {
+    filter: none;
+    transition: filter 1s;
+  }
+}
+@media only print {
+  /* does not work
+
+  div.Solution {
+    filter: scale(-1,-1);
+  }
+  div.Solution.revealed {
+    filter: none;
+    transition: filter 1s;
+  }
+  */
+}
