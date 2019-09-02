@@ -14,7 +14,7 @@ This goal implies a higher focus on syntax (because you can *write* programs ign
 
 On the other hand, less words will be spent on how to approach writing the program, e.g. how to set up your tooling, how to please Haskell’s layout rules, how to design your data type, which libraries to pick, how to read error messages. That said, we hope that even Haskell programmers will gain useful insight from this tutorial.
 
-Nevertheless it is hard to understand a programming paradigm without writing any code, so there will some amount of hands-on work to be done, especially early on, when we start with a introduction to basic functional programming.
+Nevertheless it is hard to understand a programming paradigm without writing any code, so there will some amount of hands-on work to be done, especially early on, when we start with an introduction to basic functional programming.
 
 ### Form {.unnumbered}
 
@@ -24,11 +24,11 @@ This document is also meant to be more on the concise side, assuming the audienc
 
 This makes these notes less ideal for independent study, but that said, it should be possible to work attentively through them and still learn a lot.
 
-There is a printable versions of [the whole document](http://haskell-for-readers.nomeata.de/haskell-for-readers.pdf) (with solutions at the end), of [just the exercises](http://haskell-for-readers.nomeata.de/haskell-for-readers-exercises.pdf) and of [just the solutions](http://haskell-for-readers.nomeata.de/haskell-for-readers-solutions.pdf).
+There is a printable version of [the whole document](http://haskell-for-readers.nomeata.de/haskell-for-readers.pdf) (with solutions at the end), of [just the exercises](http://haskell-for-readers.nomeata.de/haskell-for-readers-exercises.pdf) and of [just the solutions](http://haskell-for-readers.nomeata.de/haskell-for-readers-solutions.pdf).
 
 ### Audience {.unnumbered}
 
-I expect the audience to be familiar with programming and computer science in general, but do not assume prior knowledge of functional program (or, in case you are worried about this, category theory).
+I expect the audience to be familiar with programming and computer science in general, but do not assume prior knowledge of functional programming (or, in case you are worried about this, category theory).
 
 The exercises are all very small, in the order of minutes, and are meant to be done along the way, especially as later material may refer to their results. If you are reading this on your own and you really do not feel like doing them, you can click on the blurred solutions to at least read them. The exercises are not sufficient in number and depth to provide the reader with the experience needed to really learn Haskell.
 
@@ -46,7 +46,7 @@ Functional programming is the the art of thinking about *data* and how the new d
 Numbers and arithmetic operators
 --------------------------------
 
-The simplest form of data are numbers, and basic arithmetic is one way of creating new numbers from old numbers.
+The simplest form of data is numbers, and basic arithmetic is one way of creating new numbers from old numbers.
 
 To play around with this, start the Haskell REPL (“read-eval-print-loop”) by running `ghci` (or maybe on [tryhaskell.org](https://tryhaskell.org/)), and enter some numbers, and some of the usual arithmetic operations:
 
@@ -162,7 +162,7 @@ Prelude> 1 + const 2 3 + 4
 ```
 :::
 
-**A note on syntactic sugar:** Haskell is a high-calorie language: There is lots of syntactic sugar. Syntactic sugar refers to when there are alternative ways of writing something that *look* different, but *behave* the same. The goal is to allow the programmer to write the code in a way that best suits the reader, which is good, but it also means that a reader needs to know about the sugar.
+**A note on syntactic sugar:** Haskell is a high-calorie language: There is lots of syntactic sugar. Syntactic sugar refers to when there are alternative ways of writing something that *looks* different, but *behaves* the same. The goal is to allow the programmer to write the code in a way that best suits the reader, which is good, but it also means that a reader needs to know about the sugar.
 
 
 **Infix operator application (syntactic sugar)**:
@@ -300,7 +300,7 @@ False
 
 And now we are squarely in the realm of functional programming, as we have just defined out first function, `isRound`!
 
-Note that we defined the `isRound` by way of an equation. And it really is an equation: Wherever we see `isRound something`, we can obtain its meaning by replacing it with ``something `mod` 10 == 0``. This *equational reasoning*, where you replace equals by equals, is one key technique to make sense of Haskell programs.
+Note that we defined `isRound` by way of an equation. And it really is an equation: Wherever we see `isRound something`, we can obtain its meaning by replacing it with ``something `mod` 10 == 0``. This *equational reasoning*, where you replace equals by equals, is one key technique to make sense of Haskell programs.
 
 
 ::: Exercise
@@ -468,7 +468,7 @@ Prelude> twice countDigits (15^15)
 Prelude> twice sumDigits (15^15)
 18
 ```
-This is our first *higher order function*, and it is called so because it is a function that take another function as an argument. More precisely, it is called a second-order function, because it takes a normal, i.e. first-order function, as an argument. Abstracting over a second order function yields a third order function, and so on. Up to [sixth-order functions](https://doi.org/10.1017/S0956796898003001) are seen in the wild.
+This is our first *higher order function*, and it is called so because it is a function that takes another function as an argument. More precisely, it is called a second-order function, because it takes a normal, i.e. first-order function, as an argument. Abstracting over a second order function yields a third order function, and so on. Up to [sixth-order functions](https://doi.org/10.1017/S0956796898003001) are seen in the wild.
 
 If you look at the last two lines, we again see a common pattern. And abstracting over that, we recover very nice and declarative definitions for `countCountDigits` and `sumSumDigits`:
 ```
@@ -539,7 +539,7 @@ These are also called *lambda abstractions*, because they are derived from the L
 Higher-order function definition
 --------------------------------
 
-Lets look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
+Let's look at the previous two definitions, and remember that when we define a function this way, we define what to replace the left-hand side with. But notice that the argument `n` is not touched at all by this definition! So we should get the same result if we simply omit it from the equation, right? And indeed, we can just as well write
 
 ```
 Prelude> countDigits = sumDigitsWith (\d -> 1)
@@ -614,7 +614,7 @@ This is because, fundamentally, those things do not exist in Haskell. A Haskell 
 
 Granted, there are some Haskell expressions do not denote a value: Some go into an infinite loop, or raise an exception (e.g. division by zero). But there are still no side-effects here.
 
-Because functions a simply abstracted expressions, they are also pure: The return value depends *only* on the value of the arguments to the function; not on the time of day, the user’s mood or the system’s random number generator. In that sense they behave just like mathematical functions.
+Because functions are simply abstracted expressions, they are also pure: The return value depends *only* on the value of the arguments to the function; not on the time of day, the user’s mood or the system’s random number generator. In that sense they behave just like mathematical functions.
 
 But if expressions and functions can’t *do* anything, how can we write useful programs? Programs that respond to network requests, or do an in-place array sort, or use concurrency? Can we do that, and still have a pure language? Yes, we can, and Haskell’s solution to this dilemma are monads. We will handle that topic in a quick-and-dirty way in [the chapter on imperative code](#io) and more properly [the chapter on monads](#monads).
 
@@ -758,7 +758,7 @@ From this example, we learn that
  * the type of functions with multiple arguments is written using multiple arrows,
  * the function arrow can just as well occur inside an argument, namely when an argument itself is a function.
 
-But what is this type `t`? There is not, actually, a type called `t`. Instead, this is a *type variable*, meaning that the function `twice` can be used with any type. Any lower-case identifier in a type is a type variable (not just `t`), and concrete types are always upper-case.
+But what is this type `t`? There is not, actually, a type called `t`. Instead, this is a *type variable*, meaning that the function `twice` can be used with any type. Any identifier in a type that starts with a lower-case letter is a type variable (not just `t`), and concrete types always start with an upper-case letter.
 
 Here we can see that we can use `twice` with numbers, Booleans, and even with functions:
 ```
@@ -916,7 +916,7 @@ The only reason to have `if … then … else …`  is that it is a bit more rea
 
 ### Product types
 
-So far, the constructors were just plain values. But we can also turn them into “containers” of sort, where we can store other values. As an basic example, maybe we want to introduce a type for complex numbers:
+So far, the constructors were just plain values. But we can also turn them into “containers” of sort, where we can store other values. As a basic example, maybe we want to introduce a type for complex numbers:
 
 ```haskell
 data Complex = C Integer Integer
@@ -979,7 +979,7 @@ A data type that has more than one constructor is commonly called a *sum type*. 
 
 ### Recursive data types
 
-It it worth pointing out that it is completely fine to have a constructor argument of the type that we are currently defining. This way, we obtain a *recursive data type*, and this is the foundation for many important data structures, in particular lists and trees of various sorts. Here is a simple example, a binary tree with numbers on all internal nodes:
+It is worth pointing out that it is completely fine to have a constructor argument of the type that we are currently defining. This way, we obtain a *recursive data type*, and this is the foundation for many important data structures, in particular lists and trees of various sorts. Here is a simple example, a binary tree with numbers on all internal nodes:
 ``` {.haskell file=tree.hs}
 data Tree = Leaf | Node Integer Tree Tree
 ```
@@ -1034,7 +1034,7 @@ Again, parametricity makes the type signature of such a function more useful tha
 
 ### Functions in data types ☆
 
-Maybe this is obvious to you, after the emphasis on functions in the first chapter, but it is still worth pointing out that data type can also store functions. This blurs the distinction between data and code some more, as this nice example shows:
+Maybe this is obvious to you, after the emphasis on functions in the first chapter, but it is still worth pointing out that data types can also store functions. This blurs the distinction between data and code some more, as this nice example shows:
 ``` {.haskell file=stream.hs .slide}
 data Stream a b
     = NeedInput (a -> Stream a b)
@@ -1097,12 +1097,12 @@ How many values are there of type `Maybe (Maybe Bool)`. When can it be useful to
 :::
 
 ::: Solution
-There are four: `Nothing`, `Just Nothing`, `Just (Just False)` and `Just (Just True)`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more speaking names could be preferred here.
+There are four: `Nothing`, `Just Nothing`, `Just (Just False)` and `Just (Just True)`. It can be useful if, for example, the outer `Maybe` indicates whether some input was *valid*, whereas `Just Nothing` could indicate that the input was valid, but empty. But arguably this is not best practice, and dedicated data types with more descriptive names could be preferred here.
 :::
 
 ### `Either` ☆
 
-With maybe we can express “one or none”. Sometimes we want “one or another” type. For this, the standard library provides
+With `Maybe` we can express “one or none”. Sometimes we want “one or another” type. For this, the standard library provides
 ``` {.haskell .slide}
 data Either a b = Left a | Right b
 ```
@@ -1111,7 +1111,7 @@ Commonly, this type is used for computations that can fail, but that provide som
 ``` {.haskell .slide}
 parseFoo :: String -> Either ParseError Foo
 ```
-This gives us the same robustness benefits of `Maybe`, but also a more helpful error messages. If used in this way, then the `Left` value is always used for the error or failure case, and the `Right` value for when everything went all right.
+This gives us the same robustness benefits of `Maybe`, but also a more helpful error message. If used in this way, then the `Left` value is always used for the error or failure case, and the `Right` value for when everything went all right.
 
 ### Tuples
 
@@ -1203,7 +1203,7 @@ This data structure is so ubiquitous in functional programming that it not only 
 ``` {.haskell .slide}
 data [a] = [] | a : [a]
 ```
-In words: The type `[a]` is the type of lists with values of type `a`. Such a list is either the empty list, written as `[]`, or it is a non-empty list containing of a head `x` of type `a`, and a tail `xs`, and is written as `x:xs`. Note that the constructor `(:)`, called “cons”, is using operator syntax.
+In words: The type `[a]` is the type of lists with values of type `a`. Such a list is either the empty list, written as `[]`, or it is a non-empty list consisting of a head `x` of type `a`, and a tail `xs`, and is written as `x:xs`. Note that the constructor `(:)`, called “cons”, is using operator syntax.
 
 There is even more special syntax for lists:
 
@@ -1211,7 +1211,7 @@ There is even more special syntax for lists:
 2. Lists of numbers can be enumerated, e.g. `[1..10]`, or `[0,2..10]`, or even (due to laziness) `[1..]`.
 3. List comprehensions look like `[ (x,y) | x <- xs, y <- ys, x < y ]`, reminiscent of the set comprehension syntax from mathematics. We will not discuss them now, I just wanted to show them and give you terms to search for.
 
-Common operations on lists worth knowing are `(++)` to concatenate two lists, and `map` to apply a function to each element of list:
+Common operations on lists worth knowing are `(++)` to concatenate two lists, and `map` to apply a function to each element of a list:
 ``` {.haskell .slide}
 (++) :: [a] -> [a] -> [a]
 map :: (a -> b) -> [a] -> [b]
@@ -1221,7 +1221,7 @@ Lists are very useful for many applications, but they are not a particularly hig
 
 ### Characters and strings ☆
 
-Unexpectedly, Haskell has built-in support for characters and text. A single character has type `Char`, and is written in single quotes, e.g. `'a'`, `'☃'`, `'\''`, `'\0'`, `'\xcafe'`. These character are Unicode code points, and not just 7 or 8 bit characters.
+Unexpectedly, Haskell has built-in support for characters and text. A single character has type `Char`, and is written in single quotes, e.g. `'a'`, `'☃'`, `'\''`, `'\0'`, `'\xcafe'`. These characters are Unicode code points, and not just 7 or 8 bit characters.
 
 The built-in type `String` is just an alias for `[Char]`, i.e. a list of characters. Haskell supports special built-in syntax for strings, using double quotes, but this is just syntactic sugar to the list syntax:
 ```
@@ -1235,12 +1235,12 @@ Prelude> 'h':'e':'l':'l':'o':[]
 
 Because `String` is built on the list type, all the usual list operations, in particular `(++)` for concatenation, work on strings as well.
 
-But `String` also has the same performance issues as lists: While it is fine to use them  in non-critical parts of the code (diagnostic and error messages, command line and configuration file parsing, filenames), `String` is usually the wrong choice if large amounts of strings need to be processed, e.g. in a templating library. Additionally libraries provide more suitable data structures, in particular `ByteString` for binary data and `Text` for human-readable text.
+But `String` also has the same performance issues as lists: While it is fine to use them  in non-critical parts of the code (diagnostic and error messages, command line and configuration file parsing, filenames), `String` is usually the wrong choice if large amounts of strings need to be processed, e.g. in a templating library. Additional libraries provide more suitable data structures, in particular `ByteString` for binary data and `Text` for human-readable text.
 
 Records ☆
 ---------
 
-Assume you want to create a type that represents an employee in a HR database. There are a fair number of field to store -- name, date of birth, employee number, room, login handle, public key etc. You could use a tuple with many fields, or create your own data type with a constructor with many fields, but either way you will have to address the various fields by their position, which is verbose, easy to get wrong, and hard to extend.
+Assume you want to create a type that represents an employee in an HR database. There are a fair number of fields to store -- name, date of birth, employee number, room, login handle, public key etc. You could use a tuple with many fields, or create your own data type with a constructor with many fields, but either way you will have to address the various fields by their position, which is verbose, easy to get wrong, and hard to extend.
 
 In such a case, you can use records. These allow you to give names to the *field* of a constructor, and get some convenience functions along the way. Here we see how to declare and use them
 ``` {.haskell .slide}
@@ -1270,7 +1270,7 @@ Record syntax has five aspects:
    ```
    and it is always possible to use `Employee` as a normal prefix function in terms and patterns. But the record syntax declaration enables the following nice syntactic devices:
 
-2. Record creation: Instead of `Employee n r p` you can write `Employee { name = n; pubkey p= p; room = r }`, and the order of the fields becomes conveniently irrelevant.
+2. Record creation: Instead of `Employee n r p` you can write `Employee { name = n; pubkey = p; room = r }`, and the order of the fields becomes conveniently irrelevant.
 
 3. Record pattern matching. You can also write `Employee { name = n; room = r; pubkey = p }` in a pattern, to match on `Employee` and get `n`, `r` and `p` into scope.
 
@@ -1315,7 +1315,7 @@ For Haskell libraries hosted in the central package repository *Hackage*, this d
 
 From this documentation you will also find links labeled “Source” that take you to the definition of a type or function in the source code, in a syntax-highlighted and crosslinked presentation of the source.
 
-Relatedly, you can also effectively search for functions with a certain type, using type-based search engine like [Hoogle](https://www.haskell.org/hoogle/) or [Hayoo](http://hayoo.fh-wedel.de/). These can also be set-up in house to index your private code base.
+Relatedly, you can also effectively search for functions with a certain type, using a type-based search engine like [Hoogle](https://www.haskell.org/hoogle/) or [Hayoo](http://hayoo.fh-wedel.de/). These can also be set-up in-house to index your private code base.
 
 Code structure small and large
 ==============================
@@ -1385,7 +1385,6 @@ rle stop =
   in NeedInput start
 ```
 In `start` we can now access `stop` just fine. If `start` and `count` were not local functions, then we would have to add `stop` as an explicit parameter to *both* local functions, significantly cluttering the code with administrative details.
-
 
 `where`-clauses ☆
 -----------------
@@ -1458,7 +1457,7 @@ Haskell module names are always capitalized.
 
 If a file does not have such a header (which is usually only the case for experiments and the entry point of a Haskell program), then it is implicitly called `Main`. This is why the GHCi prompt says `Main>` after loading such a file.
 
-The rest of the module is are declarations: Values, functions, types, type synonyms etc. The important bit to know here is that the order of declarations is completely irrelevant: You can use functions you that are defined further down, you can mix type and function declarations, you can even separate the type signature of a function from its definition (but you have to keep multiple equations of one function together). This allows the author to sort functions by topic, or by relevance, rather than by dependency, and it is not uncommon to first show the main entry-point of a module, and put all the helper functions it uses below.
+The rest of the module are declarations: Values, functions, types, type synonyms etc. The important bit to know here is that the order of declarations is completely irrelevant: You can use functions that are defined further down, you can mix type and function declarations, you can even separate the type signature of a function from its definition (but you have to keep multiple equations of one function together). This allows the author to sort functions by topic, or by relevance, rather than by dependency, and it is not uncommon to first show the main entry-point of a module, and put all the helper functions it uses below.
 
 Importing other modules
 -----------------------
@@ -1491,7 +1490,7 @@ greeting = "Hello " ++ Target.who ++ "!"
 ```
 and use the *fully qualified* name of `who`. This can be useful for disambiguation, or simply for clarity. There must not be spaces around the period, or else it would refer to the composition operator.
 
-If we only ever intend to refer the things we import from a module by their qualified names, then we can use a *qualified* import:
+If we only ever intend to refer to the things we import from a module by their qualified names, then we can use a *qualified* import:
 ```haskell
 import qualified Target
 ```
@@ -1545,7 +1544,7 @@ module Riemann (Complex, Riemann(..)) where
 ```
 A short export list is a great help when trying to understand the role and purpose of a module: If it only exports one or a small number of functions, it is clear that these are the (only) entry points to the code, and that all other declarations are purely internal, and may be refactored without affecting anything else.
 
-By excluding the constructors of a data type from the export list, as we did in this example with the `Complex` type, we can make this type *abstract*: Users of our module now have no knowledge of the internal structure of `Complex`, and they are unable to create or arbitrarily inspect values of type `Complex`. Instead, they are only able to do so using the *other* functions that we export along with `Complex`. This way we can ensure certain invariant in our types – think of a search tree with the invariant that it is sorted – or reserve the ability to change the shape of the type without breaking depending code.
+By excluding the constructors of a data type from the export list, as we did in this example with the `Complex` type, we can make this type *abstract*: Users of our module now have no knowledge of the internal structure of `Complex`, and they are unable to create or arbitrarily inspect values of type `Complex`. Instead, they are only able to do so using the *other* functions that we export along with `Complex`. This way we can ensure certain invariants in our types – think of a search tree with the invariant that it is sorted – or reserve the ability to change the shape of the type without breaking depending code.
 
 Proper user of abstract types greatly helps to make code more readable, more maintainable and more robust, quite similar to how polymorphism does it on a smaller scale.
 
@@ -1557,7 +1556,7 @@ Haskell is a language with a reasonably precise specification, the *Haskell Repo
 
 Since 1998, Haskell developers and implementors wanted to add more and more features to the language. But the report was written, and the compiler writers wanted to support Haskell, as specified, by default. Therefore, the system of *language extensions* was introduced.
 
-A language extension is a feature that extends Haskell98 in some way. It could add more syntactic sugar, additional features on the type system or enable whole meta-programming facilities. A Haskell source file needs to explicitly declare the extensions they are using, right at the top before the `module` header, and a typical Haskell file these days might start with a number of them, and look like this:
+A language extension is a feature that extends Haskell98 in some way. It could add more syntactic sugar, additional features of the type system or enable whole meta-programming facilities. A Haskell source file needs to explicitly declare the extensions they are using, right at the top before the `module` header, and a typical Haskell file these days might start with a number of them, and look like this:
 ``` {.haskell .slide}
 {-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE CPP #-}
@@ -1875,7 +1874,7 @@ When reading such code, you can think of `<$>` as a variant of `$`, with the dif
 Type classes
 ============
 
-The language features we have seen so far can be found, with slight variations, in most functional programming languages. In this chapter, we will look at a feature that Haskell is particularly renown for: *Type classes*.
+The language features we have seen so far can be found, with slight variations, in most functional programming languages. In this chapter, we will look at a feature that Haskell is particularly renowned for: *Type classes*.
 
 Let me start by pointing out what type classes are not: They are not classes as we know them from object oriented programming, so please do not try to attempt to understand them by analogy to that.
 
@@ -1925,7 +1924,7 @@ Now we can hopefully better understand the type signature of `(==)`:
 Prelude> :t (==)
 (==) :: Eq a => a -> a -> Bool
 ```
-The part after the `=>` indicates the argument and return types of `(==)`. But the type variable `a` cannot just be any type (as it was the case with fully polymorphic functions like `const`): It has to be a type that is an instance of the `Eq` class. This is expressed by the *constraint* on the left of the `=>`.
+The part after the `=>` indicates the argument and return types of `(==)`. But the type variable `a` cannot just be any type (as was the case with fully polymorphic functions like `const`): It has to be a type that is an instance of the `Eq` class. This is expressed by the *constraint* on the left of the `=>`.
 
 ::: Exercise
 Write an `Eq` instance for `Employee`, using record accessors.
@@ -1974,7 +1973,7 @@ fixEq = fixBy (==)
 ```
 So whenever a parameter to a polymorphic function is, for the given concrete type, the same, one can use type classes and overloading to make this parameter selection implicit.
 
-Note that just because one *can* do that, one does not have to. Often explicit arguments are easier to understand and maintain and more flexible (e.g. if you might want different argument that have the same types). I consider this application of type classes less relevant than the other application presented here.
+Note that just because one *can* do that, one does not have to. Often explicit arguments are easier to understand and maintain and more flexible (e.g. if you might want different arguments that have the same types). I consider this application of type classes less relevant than the other application presented here.
 
 Polymorphism over types with structure
 --------------------------------------
@@ -2064,9 +2063,9 @@ There are (at least) two sensible instances for the `Semigroup` type class for t
         Leaf <> t = t
         Node x l r <> t = Node x l (r <> t)
     ```
-    There are variations of this code that are more likely to produce a balance tree -- although then it might be that associativity holds when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
+    There are variations of this code that are more likely to produce a balanced tree -- although then it might be that associativity holds when one considers different shapes of the same data equivalent (which is commonly the case for search trees).
 
-2. Another one traverses both trees in parallel, using a `Semigroup` instance for the elements to combine values that are present in boht trees:
+2. Another one traverses both trees in parallel, using a `Semigroup` instance for the elements to combine values that are present in both trees:
 
     ```haskell
     instance Semigroup a => Semigroup (Tree a) where
@@ -2109,7 +2108,7 @@ for some values `x`, `y` and `z`, then we will always have `summarize t1 = summa
 Type-driven code synthesis
 --------------------------
 
-Let us turn to the most sophisticated use of type classes (within this lecture): Type driven code synthesis! Again, this is a fancy word for something rather simple, but it is very powerful, and a driving idiom for many problems in the Haskell space.
+Let us turn to the most sophisticated use of type classes (within this lecture): Type-driven code synthesis! Again, this is a fancy word for something rather simple, but it is very powerful, and a driving idiom for many problems in the Haskell space.
 
 In the previous chapter we have seen a number of common types that can be combined to build larger types -- `Maybe`, tuples, `Either`, list, etc. If there is functionality that we want to provide at many different types, then we can use type classes to describe how to get that functionality for each of these building blocks, assuming we have it for their argument types, and then the user automatically gets the functionality for any complex type they build.
 
@@ -2175,7 +2174,7 @@ Prelude> size @((Suit -> Suit) -> Maybe Bool)
 4109609521811665540548899435521
 ```
 
-The utility of such a `size` function is questionable (but not completely void), but I hope you understand the power behind this approach, and also recognize the pattern if you see in the wild.
+The utility of such a `size` function is questionable (but not completely void), but I hope you understand the power behind this approach, and also recognize the pattern if you see it in the wild.
 
 In fact, instances of the `Eq` and `Ord` class for the container types like tuples and lists etc. also follow this pattern.
 
@@ -2213,9 +2212,9 @@ Really, the concept of a monad is surprisingly small. It is a pattern of abstrac
 
 I can’t help but notice that monads are like burritos: What is a burrito? It is a bunch of protein and seasoning, neatly wrapped in a flour tortilla. That's it. But with just that knowledge, it is impossible to fully appreciate or recreate the wealth and richness of Mexican cuisine. The idea is simple, but the applications are rich and manifold and, and therefore require skill and experience to master.
 
-(Oh, and of course, sometimes a taco would do better than of a burrito. Monads are not always the right tool.)
+(Oh, and of course, sometimes a taco would do better than a burrito. Monads are not always the right tool.)
 
-This is a cute analogy, but it does not help the aspiring Haskell reader. So how to we proceed from here? This material offers two choices:
+This is a cute analogy, but it does not help the aspiring Haskell reader. So how do we proceed from here? This material offers two choices:
 
  * A quick path to understanding “imperative Haskell code”, i.e. Haskell code that uses the `IO` monad and `do` notation, and looks similar to, say, Python code. This path avoids almost all technical details about monads, and simply gives you a way to decipher the syntax. This is in the [chapter on imperative Haskell](#io).
 
@@ -2318,7 +2317,7 @@ data IO a =  ¯\_(ツ)_/¯
 
 * A similar idea is behind the `State` type constructor. Here, a value of type `State s a` is “a value of type `a`, if you give me an `s`, and by the way, I will also give you a new value of type `s`”, or, maybe more helpfully, “a computation that accesses state of type `s` and produces a value of type `a`”.
 
-* The `Parser` type constructor implements a backtracking parser. Let’s not looking at the definition too much, and just appreciate that going from `a` to “something that can parse a value of type `a`” can be modeled as a type constructor.
+* The `Parser` type constructor implements a backtracking parser. Let’s not look at the definition too much, and just appreciate that going from `a` to “something that can parse a value of type `a`” can be modeled as a type constructor.
 
 * And finally there is the `IO a` type constructor, for which the definition is opaque. But it still has a clear meaning: A value of type `IO a` is a computation that, after interacting with the external world (terminal, files, network, randomness, etc.), produces a value of type `a`. (See the [chapter on imperative code](#io) if you want a diversion.)
 
@@ -2366,7 +2365,7 @@ This brings us to the concept of a monad: A type constructor that allows composi
 
 ### The definition
 
-Finally, this is time to look at the actual [definition of the `Monad` type class](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Prelude.html#t:Monad) (with optional and obsolete methods omitted):
+Finally, it is time to look at the actual [definition of the `Monad` type class](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Prelude.html#t:Monad) (with optional and obsolete methods omitted):
 ```{.haskell .slide}
 class Applicative m => Monad m where
     return :: a -> m a
@@ -2398,7 +2397,7 @@ For additional intuition, squint at these type signatures, and imagine the `m` w
 
 As discussed before, a type class is more than just a set of function signatures: The laws that come with it are equally important.
 
- * The first two laws can be summarized as “`return` is the neutral element of bind”. Notice how `return` is a function that perfectly fits as the second argument to bind? If we do so, the bind operator composes the particular meaning of the first argument of type `m a` with the particular meaning introduced by `return`. The second law says that this this does *not* actually affect the meaning, we could have just used the original `m a`. In that sense, `return` turns an `a` into something that has the shape of an `m a`, without giving it any interesting meaning beyond the value of type `a` itself.
+ * The first two laws can be summarized as “`return` is the neutral element of bind”. Notice how `return` is a function that perfectly fits as the second argument to bind? If we do so, the bind operator composes the particular meaning of the first argument of type `m a` with the particular meaning introduced by `return`. The second law says that this does *not* actually affect the meaning, we could have just used the original `m a`. In that sense, `return` turns an `a` into something that has the shape of an `m a`, without giving it any interesting meaning beyond the value of type `a` itself.
 
  * The last law expresses that the bind operator is associative. Composing monadic operations -- `m`, `k` and `h` in the law -- we get the same result independent of whether we combine `m` with `k` first or `k` with `h` first.
 
@@ -2508,7 +2507,7 @@ For now, pretend that instead of `Applicative` or `Functor` it would read `Monad
   :::
 
   ::: Solution
-  Since `when False action` is not supposed to execute `action`, it has no way of producing a `m a`. But it can always create a `m ()` using `return ()`.
+  Since `when False action` is not supposed to execute `action`, it has no way of producing an `m a`. But it can always create an `m ()` using `return ()`.
   :::
 
 * `forever` just keeps executing the same action over and over. This does not make sense for every monad, but it is useful for some -- including `IO`, where you might find an event loop wrapped in `forever`. The return type `b` is completely unconstrained, because `forever` never “returns” anyways.
@@ -2562,7 +2561,7 @@ do let x = e  ⟹  let x = e in do more           do a          ⟹  a
    more
 ```
 
-Note the difference between `let x = e` and `x <- a`. The former is simply a pure `let`, i.e. gives a name to a pure expression; no monadic actions are executed here, no bind is involved. The latter invokes `(>>=)` and `x` is bound to the “result” of that monadic actions.
+Note the difference between `let x = e` and `x <- a`. The former is simply a pure `let`, i.e. gives a name to a pure expression; no monadic actions are executed here, no bind is involved. The latter invokes `(>>=)` and `x` is bound to the “result” of that monadic action.
 
 When we use this style with the `IO` monad we end up with code that almost looks like normal, say, Python:
 
@@ -2661,7 +2660,7 @@ What can we do with that freedom? Create more instances!
   ```haskell
   instance Monoid r => Applicative ((,) r)
   ```
-  and the `Monoid` constraint on `r` gives us exactly the operations needed to to implement `pure` and `(<*>)`. Try it yourself!
+  and the `Monoid` constraint on `r` gives us exactly the operations needed to implement `pure` and `(<*>)`. Try it yourself!
   :::
 
 * And since we are discussing counter-examples, the type constructor
@@ -2670,8 +2669,7 @@ What can we do with that freedom? Create more instances!
   ```
   is not even a `Functor`: Since a `Printer a` *expects* a value of type `a`, you can’t apply a function `a -> b` anywhere. (You could apply a function `b -> a`; this means that `Printer` is a *contravariant functor*.)
 
-At a high level, the main advantage of an applicative computation over a monadic is that the *structure of the computation* is static, and can be known ahead of times. This is not the case in a monadic computation, because the second argument to `(>>=)` is an opaque function, and only once a concrete `a` was extracted from the first argument do we know what kind of computation is produced by the second.
+At a high level, the main advantage of an applicative computation over a monadic one is that the *structure of the computation* is static, and can be known ahead of time. This is not the case in a monadic computation, because the second argument to `(>>=)` is an opaque function, and only once a concrete `a` was extracted from the first argument do we know what kind of computation is produced by the second.
 
 As a concrete example, consider a library that provides a type constructor `AParser` that is an instance of `Applicative`, but *not* of `Monad`. You write a parser `p :: AParser a` using this interface. Then the library can “run” this parser without actual input, and learn everything it *would* do. It could use that to provide a function `describe :: AParser a -> String` that produces a grammar for the given parser, which you can use as documentation, and thus these can never go out of sync.
-
 
