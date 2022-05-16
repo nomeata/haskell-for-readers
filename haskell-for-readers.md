@@ -352,7 +352,7 @@ which, if you read it out, is almost a transliteration of the specification! Her
 **Infix operator application again (syntactic sugar)**:
 By the way, you can use infix operator syntax already when defining a function:
 ```
-x `divides` y = x `div` y == 0
+x `divides` y = x `mod` y == 0
 ```
 
 Recursion
@@ -690,7 +690,7 @@ At this point, we should switch from working exclusively in the REPL to writing 
 isRound x = x `mod` 10 == 0
 hasLastDigit x y = x `mod` 10 == y
 isHalfRound x = x `hasLastDigit` 0 || x `hasLastDigit` 5
-x `divides` y = x `div` y == 0
+x `divides` y = x `mod` y == 0
 twice f x = f (f x)
 countCountDigits x = twice countDigits x
 sumSumDigits x = twice sumDigits x
@@ -1957,7 +1957,7 @@ Recall our definition of `fixEq`:
 fixEq :: Eq a => (a -> a) -> a -> a
 fixEq f x = if x == f x then x else fixEq f (f x)
 ```
-which “iterates `f` on `x` until the value is equal to the one before.”. Compare this to the following version:
+which “iterates `f` on `x` until the value is equal to the one before.” Compare this to the following version:
 ```{.haskell .slide}
 fixBy :: (a -> a -> Bool) -> (a -> a) -> a -> a
 fixBy p f x = if x `p` f x then x else fixBy p f (f x)
@@ -2287,7 +2287,7 @@ data Either e a = Left e | Right a
 data [a] = [] | a : [a]
 newtype Identity a = Identity a
 data Proxy a = Proxy
-newtype Reader r a = Reader (r -> a))
+newtype Reader r a = Reader (r -> a)
 newtype State s a = State (s -> (a, s))
 newtype Parser a = Parser (String -> [(a,String)])
 data IO a =  ¯\_(ツ)_/¯
